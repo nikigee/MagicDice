@@ -1,0 +1,154 @@
+@font-face {
+    font-family: "Timeless";
+    src: url("../fonts/Timeless.ttf");
+}
+html, body{
+    margin: 0px;
+}
+body{
+    background: url("../img/B9GzBa8.jpg") center center fixed;
+    background-size: cover;
+    font-family: "Timeless", Georgia, 'Times New Roman', Times, serif;
+    color: black;
+}
+h1, h2, h3{
+    font-weight: normal;
+    margin: 0px;
+}
+#header{
+    background: #08080863;
+    padding: 20px;
+}
+#header h1{
+    color: #FF9800;
+    font-size: 39px;
+}
+#main{
+    margin: 15px;
+    text-align: center;
+}
+.playerBox{
+    display: inline-block;
+    background: #ffffff80;
+    min-height: 500px;
+    padding: 5px;
+    box-shadow: black 0px 0px 10px;
+    border-radius: 3px;
+    margin: 10px;
+    user-select: none;
+    transition: 0.3s;
+    -webkit-transition: 0.3s;
+}
+.playerBox:hover{
+    box-shadow: black 0px 0px 20px;
+}
+.playerBox img{
+    max-height: 500px;
+    border-radius: 5px;
+    box-shadow: black 0px 0px 5px;
+}
+.playerInfo{
+    display: inline-block;
+    vertical-align: top;
+    padding-left: 15px;
+    padding-right: 15px;
+    width: 510px;
+    text-align: left;
+}
+.playerInfo h3{
+    font-size: 35px;
+    color: #1a1a1a;
+    text-shadow: 0px 0px 1px black;
+}
+.playerInfo p{
+    margin: 0px;
+    font-size: 18px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+.lvl-class{
+    font-style: italic;
+    display: block;
+    margin-bottom: 10px;
+}
+.label{
+    font-size: 18px;
+    font-weight: bold;
+}
+.fill-bar{
+    width: 500px;
+    background: #272727d4;
+    box-shadow: #1a1a1a 0px 0px 1px;
+}
+.fill{
+    text-align: center;
+    width: 80.8%;
+    display: block;
+    color: white;
+    padding-top: 2px;
+    padding-bottom: 2px;
+    background: limegreen;
+}
+.row{
+    width: 100%;
+    display: block;
+}
+.mod_pill{
+    background: #ffffffdb;
+    display: inline-block;
+    width: 70px;
+    padding: 5px;
+    font-weight: bold;
+    box-shadow: black 0px 0px 2px;
+    border-radius: 2px;
+    margin-top: 2px;
+    margin-bottom: 2px;
+}
+.mod_pill:hover{
+    box-shadow: #32cd32 0px 0px 10px;
+}
+.mod_pill span{
+    text-align: center;
+    display: block;
+}
+.mod_title{
+    font-size: 12px;
+}
+.mod_score{
+    font-size: 28px;
+}
+.mod_raw{
+    font-size: 12px;
+    color: #2f2f2f;
+}
+.magic_stats{
+    margin-top: 5px;
+    text-align: center;
+}
+.magic_pill{
+    background: #ffffffdb;
+    display: inline-block;
+    width: 120px;
+    margin-top: 2px;
+    margin-bottom: 2px;
+    box-shadow: black 0px 0px 2px;
+    border-radius: 2px;
+}
+.magic_pill:hover{
+    box-shadow: #32cd32 0px 0px 10px;
+}
+.magic_pill span{
+    display: block;
+    text-align: center;
+}
+.magic_score{
+    font-size: 28px;
+    font-weight: bold;
+    padding: 3px;
+}
+.magic_title{
+    font-size: 12px;
+    background: #2f2f2f;
+    color: white;
+    padding: 5px;
+}

@@ -2,35 +2,44 @@
     font-family: "Timeless";
     src: url("../fonts/Timeless.ttf");
 }
-html, body{
+
+html,
+body {
     margin: 0px;
 }
-body{
+
+body {
     background: url("../img/B9GzBa8.jpg") center center fixed;
     background-size: cover;
     font-family: "Timeless", Georgia, 'Times New Roman', Times, serif;
     color: black;
 }
-h1, h2, h3{
+
+h1,
+h2,
+h3 {
     font-weight: normal;
     margin: 0px;
 }
-#header{
+
+#header {
     background: #08080863;
     padding: 20px;
 }
-#header h1{
+
+#header h1 {
     color: #FF9800;
     font-size: 39px;
 }
-#main{
+
+#main {
     margin: 15px;
     text-align: center;
 }
-.playerBox{
+
+.playerBox {
     display: inline-block;
     background: #ffffff80;
-    min-height: 500px;
     padding: 5px;
     box-shadow: black 0px 0px 10px;
     border-radius: 3px;
@@ -39,15 +48,18 @@ h1, h2, h3{
     transition: 0.3s;
     -webkit-transition: 0.3s;
 }
-.playerBox:hover{
+
+.playerBox:hover {
     box-shadow: black 0px 0px 20px;
 }
-.playerBox img{
+
+.playerBox img {
     max-height: 500px;
     border-radius: 5px;
     box-shadow: black 0px 0px 5px;
 }
-.playerInfo{
+
+.playerInfo {
     display: inline-block;
     vertical-align: top;
     padding-left: 15px;
@@ -55,32 +67,38 @@ h1, h2, h3{
     width: 510px;
     text-align: left;
 }
-.playerInfo h3{
+
+.playerInfo h3 {
     font-size: 35px;
     color: #1a1a1a;
     text-shadow: 0px 0px 1px black;
 }
-.playerInfo p{
+
+.playerInfo p {
     margin: 0px;
     font-size: 18px;
     margin-top: 5px;
     margin-bottom: 5px;
 }
-.lvl-class{
+
+.lvl-class {
     font-style: italic;
     display: block;
     margin-bottom: 10px;
 }
-.label{
+
+.label {
     font-size: 18px;
     font-weight: bold;
 }
-.fill-bar{
+
+.fill-bar {
     width: 500px;
     background: #272727d4;
     box-shadow: #1a1a1a 0px 0px 1px;
 }
-.fill{
+
+.fill {
     text-align: center;
     width: 80.8%;
     display: block;
@@ -89,11 +107,13 @@ h1, h2, h3{
     padding-bottom: 2px;
     background: limegreen;
 }
-.row{
+
+.row {
     width: 100%;
     display: block;
 }
-.mod_pill{
+
+.mod_pill {
     background: #ffffffdb;
     display: inline-block;
     width: 70px;
@@ -104,28 +124,35 @@ h1, h2, h3{
     margin-top: 2px;
     margin-bottom: 2px;
 }
-.mod_pill:hover{
+
+.mod_pill:hover {
     box-shadow: #32cd32 0px 0px 10px;
 }
-.mod_pill span{
+
+.mod_pill span {
     text-align: center;
     display: block;
 }
-.mod_title{
+
+.mod_title {
     font-size: 12px;
 }
-.mod_score{
+
+.mod_score {
     font-size: 28px;
 }
-.mod_raw{
+
+.mod_raw {
     font-size: 12px;
     color: #2f2f2f;
 }
-.magic_stats{
+
+.magic_stats {
     margin-top: 5px;
     text-align: center;
 }
-.magic_pill{
+
+.magic_pill {
     background: #ffffffdb;
     display: inline-block;
     width: 120px;
@@ -134,21 +161,139 @@ h1, h2, h3{
     box-shadow: black 0px 0px 2px;
     border-radius: 2px;
 }
-.magic_pill:hover{
+
+.magic_pill:hover {
     box-shadow: #32cd32 0px 0px 10px;
 }
-.magic_pill span{
+
+.magic_pill span {
     display: block;
     text-align: center;
 }
-.magic_score{
+
+.magic_score {
     font-size: 28px;
     font-weight: bold;
     padding: 3px;
 }
-.magic_title{
+
+.magic_title {
     font-size: 12px;
     background: #2f2f2f;
     color: white;
     padding: 5px;
+}
+
+.spellbook {
+    display: inline-block;
+    max-width: 1000px;
+    min-width: 800px;
+    margin: 10px;
+    max-height: 800px;
+    vertical-align: top;
+}
+
+.spellbook span {
+    display: block;
+}
+
+.spellwindow {
+    display: inline-block;
+    background: #ffffff80;
+    padding: 5px;
+    box-shadow: black 0px 0px 10px;
+    user-select: none;
+    width: 50%;
+    transition: 0.3s;
+    -webkit-transition: 0.3s;
+    vertical-align: top;
+    text-align: left;
+    overflow: auto;
+    height: -webkit-fill-available;
+}
+.spellwindow span, h2{
+    margin-left: 10px;
+}
+.spellwindow h2{
+    font-weight: bold;
+    margin-top: 10px;
+    font-size: 36px;
+}
+.spellscription{
+    font-style: italic;
+    margin-bottom: 7px;
+}
+.spellrow{
+    margin: 3px;
+}
+.spellwindow iframe{
+    margin-top: 40px;
+    width: calc(100% - 10px);
+    margin-right: 5px;
+    margin-left: 5px;
+    height: 560px;
+    border: none;
+    box-shadow: black 0px 0px 2px;
+}
+
+.spell-list {
+    background: #ffffff80;
+    padding: 5px;
+    box-shadow: black 0px 0px 10px;
+    user-select: none;
+    width: calc(50% - 25px);
+    transition: 0.3s;
+    -webkit-transition: 0.3s;
+    overflow: auto;
+    display: inline-block;
+    height: -webkit-fill-available;
+}
+.spell-list span{
+    display: inline-block;
+}
+
+div::-webkit-scrollbar-track {
+    background-color: none;
+}
+
+div::-webkit-scrollbar {
+    width: 12px;
+    background-color: none;
+    height: 12px;
+}
+
+div::-webkit-scrollbar-thumb {
+    background-color: #1a1a1a;
+}
+
+.spell {
+    font-size: 16px;
+    background: #000000ba;
+    display: inline-block;
+    width: calc(100% - 43px);
+    color: white;
+    box-shadow: black 0px 0px 2px;
+    margin-top: 3px;
+    margin-bottom: 3px;
+    padding: 7px;
+    transition: 0.1s;
+}
+
+.spell:hover {
+    background: #ffffffdb;
+    color: black !important;
+    font-weight: bold;
+}
+
+.lvl{
+    width: 15px;
+    font-size: 16px;
+    background: #000000db;
+    display: inline-block;
+    color: white;
+    box-shadow: black 0px 0px 2px;
+    margin-top: 3px;
+    margin-bottom: 3px;
+    padding: 7px;
+    transition: 0.1s;
 }

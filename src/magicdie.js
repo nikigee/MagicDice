@@ -87,57 +87,61 @@ const Load = (() => {
     return Loadf
 })();
 
-class Spell {
-    constructor(props = {}) {
-        const {
-            name = "Unkown Spell",
-                level = 1,
-                school = "Spell",
-                components = ["V", "S"],
-                ctime = "1 Action",
-                duration = 0,
-                range = 10,
-                roll = "0d4",
-                url = ""
-        } = props;
-        this.name = name;
-        this.level = level;
-        this.ctime = ctime;
-        this.school = school;
-        this.components = components;
-        this.duration = duration;
-        this.range = range;
-        this.roll = roll;
-        this.url = url;
-    }
-    cast(lvl) {
-        var attck = this.roll;
-        if (lvl > this.level) {
-            attck = die.cvt(attck);
-            attck[0] += (lvl - this.level); // add x dice per level
-            attck = attck[0] + "d" + attck[1] + ((attck[2]) ? "+" + attck[2] : ""); // convert back to xdx+m format
+const Spell = (() => {
+    class Spell {
+        constructor(props = {}) {
+            const {
+                name = "Unkown Spell",
+                    level = 1,
+                    school = "Spell",
+                    components = "V S",
+                    ctime = "1 Action",
+                    duration = 0,
+                    range = 10,
+                    roll = "0d4",
+                    url = ""
+            } = props;
+            this.name = name;
+            this.level = level;
+            this.ctime = ctime;
+            this.school = school;
+            this.components = (typeof (components) != "string") ? components.join(" ") : components;
+            this.duration = duration;
+            this.range = range;
+            this.roll = roll;
+            this.url = url;
         }
-        console.log("Rolling (" + attck + ")");
-        return die.r(attck);
-    };
-    get wiki() {
-        window.open(this.url);
-    };
-    get x() {
-        var getGetOrdinal = function (n) {
-            var s = ["th", "st", "nd", "rd"],
-                v = n % 100;
-            return (n != 0) ? n + (s[(v - 20) % 10] || s[v] || s[0]) : "Cantrip";
+        cast(lvl) {
+            let attck = this.roll;
+            if (lvl > this.level) {
+                attck = die.cvt(attck);
+                attck.iterator += (lvl - this.level); // add x dice per level
+                attck = attck.iterator + "d" + attck.face + ((attck.modifier) ? "+" + attck.modifier : ""); // convert back to xdx+m format
+            }
+            console.log("Rolling (" + attck + ")");
+            return die.r(attck);
+        };
+        get wiki() {
+            window.open(this.url);
+        };
+        get x() {
+            var getGetOrdinal = function (n) {
+                var s = ["th", "st", "nd", "rd"],
+                    v = n % 100;
+                return (n != 0) ? n + (s[(v - 20) % 10] || s[v] || s[0]) : "Cantrip";
+            }
+            console.log("\n" + this.name.toUpperCase());
+            console.log(getGetOrdinal(this.level) + "-level " + this.school);
+            console.log("Casting Time: " + this.ctime);
+            console.log("Range: " + this.range + " feet");
+            console.log("Components: " + this.components);
+            console.log("Duration: " + ((this.duration !== 0) ? this.duration + " minutes" : "Instantaneous"));
+            console.log(`Roll: ${this.roll}`);
         }
-        console.log("\n" + this.name.toUpperCase());
-        console.log(getGetOrdinal(this.level) + "-level " + this.school);
-        console.log("Casting Time: " + this.ctime);
-        console.log("Range: " + this.range + " feet");
-        console.log("Components: " + this.components.join(", "));
-        console.log("Duration: " + ((this.duration !== 0) ? this.duration + " minutes" : "Instantaneous"));
-        console.log(`Roll: ${this.roll}`);
-    }
-};
+    };
+    return Spell;
+})();
+
 class Item {
     constructor(props = {}) {
         const {
@@ -236,6 +240,22 @@ const Player = (() => {
         }
     }
 
+    function MapToObj(strMap) {
+        let obj = {};
+        for (let [k, v] of strMap) {
+            obj[k] = v;
+        }
+        return obj;
+    }
+
+    function objToMap(obj) {
+        let map = new Map();
+        for (let k of Object.keys(obj)) {
+            map.set(k, obj[k]);
+        }
+        return map;
+    }
+
     class playerClass {
         constructor(props = {}) {
             const {
@@ -270,7 +290,7 @@ const Player = (() => {
                     spells = {},
                     preparedSpells = []
             } = props;
-            this.spells = spells;
+            this.spells = objToMap(spells);
             this.parent = parent;
             this.preparedSpells = preparedSpells;
         }
@@ -286,12 +306,26 @@ const Player = (() => {
         get Mod() {
             return this.parent.stats.ability_mod[this.spcMod];
         }
+        add() {
+            const objSpell = new Spell(JSON.parse(prompt("Please enter the object string.")));
+            this.spells.set(objSpell.name, objSpell);
+            this.sort();
+            objSpell.x;
+            return console.log("%cNew Spell Added!", "color: limegreen");
+        }
+        sort() {
+            const spellArray = Array.from(this.spells);
+            spellArray.sort((a, b) => {
+                return a[1].level - b[1].level;
+            });
+            this.spells = new Map(spellArray);
+        }
         qCast(spell) {
-            if (!spell || !this.spells[spell]) {
+            if (!spell || !this.spells.get(spell)) {
                 console.log("You didn't specify a valid spell");
                 return;
             } else {
-                return this.spells[spell].cast();
+                return this.spells.get(spell).cast();
             }
         }
         prepare(spell) {
@@ -302,7 +336,7 @@ const Player = (() => {
                 console.log("You already prepared this spell!");
                 return;
             }
-            var maxPrepared = this.Mod + this.parent.lvl;
+            const maxPrepared = this.Mod + this.parent.lvl;
             if (maxPrepared > this.preparedSpells.length) {
                 this.preparedSpells.push(spell.name);
                 console.log("'" + spell.name + "' has been prepared successfuly! (" + this.preparedSpells.length + "/" + maxPrepared + ")");
@@ -315,39 +349,69 @@ const Player = (() => {
                 name = undefined,
                     lvl = undefined
             } = args;
-            var sp_array = [];
             if (args.name) {
                 args.name = args.name.toLowerCase();
             }
             console.log("\nSPELL RESULTS: ");
-            for (var property in this.spells) {
-                if (this.spells.hasOwnProperty(property)) {
-                    var spellName = this.spells[property].name.toLowerCase();
-                    if ((args.lvl == undefined || args.lvl == this.spells[property].level) && (spellName.includes(args.name) || !args.name)) {
-                        // if spell is prepared, change color
-                        var prep_clr = "auto";
-                        if (this.preparedSpells.indexOf(this.spells[property].name) != -1) {
-                            prep_clr = "#c451d8";
-                        }
-                        console.log("- %c" + this.spells[property].name + " %c(Level " + this.spells[property].level + ")", "color: " + prep_clr, "color: #03a9f4");
-                        sp_array.push(this.spells[property]);
+            this.spells.forEach((v) => {
+                const spellName = v.name.toLowerCase();
+                if ((args.lvl == undefined || args.lvl == v.level) && (spellName.includes(args.name) || !args.name)) {
+                    // if spell is prepared, change color
+                    let prep_clr = "auto";
+                    if (this.preparedSpells.indexOf(v.name) != -1) {
+                        prep_clr = "#c451d8";
                     }
+                    console.log("- %c" + v.name + " %c(Level " + v.level + ")", "color: " + prep_clr, "color: #03a9f4");
                 }
-            }
-            if (sp_array.length <= 5) {
-                return (sp_array.length == 1) ? sp_array[0] : sp_array;
-            }
+            })
         }
     }
     class Render {
         constructor(props = {}) {
             const {
                 parent = undefined,
-                    avatar = "https://via.placeholder.com/529x924"
+                    avatar = "https://i.pinimg.com/originals/9c/60/e9/9c60e9f811ba8203d35f2da1746c6d04.jpg"
             } = props;
             this.avatar = avatar;
             this.ID = Math.floor(Math.random() * 999999);
             this.parent = parent;
+        }
+        display_spell(spell) {
+            const getGetOrdinal = function (n) {
+                const s = ["th", "st", "nd", "rd"],
+                    v = n % 100;
+                return (n != 0) ? n + (s[(v - 20) % 10] || s[v] || s[0]) : "Cantrip";
+            }
+            const window = document.getElementsByClassName("spellwindow")[0];
+            window.innerHTML = `
+            <h2>${spell.name}</h2>
+            <span class="spellscription">${getGetOrdinal(spell.level) + "-level " + spell.school}</span>
+            <span class="spellrow"><strong>Casting Time:</strong> ${spell.ctime}</span>
+            <span class="spellrow"><strong>Range:</strong> ${spell.range} feet</span>
+            <span class="spellrow"><strong>Components:</strong> ${spell.components}</span>
+            <span class="spellrow"><strong>Duration:</strong> ${(spell.duration !== 0) ? spell.duration + " minutes" : "Instantaneous"}</span>
+            <span class="spellrow"><strong>Damage:</strong> ${spell.roll}</span>
+            <iframe src="https://roll20.net/compendium/dnd5e/${encodeURIComponent(spell.name)}#toc_1"></iframe>
+            `;
+            return spell.x;
+        };
+        spellbook() {
+            const main = document.getElementById("main");
+            main.innerHTML = `
+            <div class="spellbook">
+                <div class="spellwindow">
+                </div>
+                <div class="spell-list">
+                </div>
+            </div>
+            `;
+            const list = document.getElementsByClassName("spell-list")[0];
+            this.parent.magic.spells.forEach((x) => {
+                list.insertAdjacentHTML('beforeend', `<span class="lvl">${x.level}</span><span class="spell" ${(this.parent.magic.preparedSpells.indexOf(x.name) != -1) ? `style=color:${"#e658ff"}` : ""}>${x.name}</span>`);
+                list.lastChild.addEventListener("click", () => {
+                    this.display_spell(x);
+                });
+            });
         }
         update() {
             const percent = (this.parent.health.currentHP / this.parent.health.maxHP) * 100;
@@ -401,6 +465,7 @@ const Player = (() => {
                         <span class="mod_score">${this.parent.stats.ability_mod.chr}</span>
                         <span class="mod_raw">${this.parent.stats.ability.chr}</span>
                     </div>
+                    ${(this.parent.player_class.spcMod) ? `
                     <div class="magic_stats">
                         <div class="magic_pill">
                             <span class="magic_score">${this.parent.magic.Mod}</span>
@@ -414,7 +479,7 @@ const Player = (() => {
                             <span class="magic_score">${this.parent.magic.SPAttack}</span>
                             <span class="magic_title">Spellattack Bonus</span>
                         </div>
-                    </div>
+                    </div>` : ""}
                 </div>
             `;
         }
@@ -476,6 +541,7 @@ const Player = (() => {
                         <span class="mod_score">${this.parent.stats.ability_mod.chr}</span>
                         <span class="mod_raw">${this.parent.stats.ability.chr}</span>
                     </div>
+                    ${(this.parent.player_class.spcMod) ? `
                     <div class="magic_stats">
                         <div class="magic_pill">
                             <span class="magic_score">${this.parent.magic.Mod}</span>
@@ -489,12 +555,12 @@ const Player = (() => {
                             <span class="magic_score">${this.parent.magic.SPAttack}</span>
                             <span class="magic_title">Spellattack Bonus</span>
                         </div>
-                    </div>
+                    </div>` : ""}
                 </div>
             </div>
             </div>
             `;
-            list.innerHTML += newHTML;
+            list.insertAdjacentHTML('beforeend', newHTML);
             console.log("Rendered!");
             document.getElementsByClassName(`${this.ID}`)[0].parentElement.addEventListener("mousedown", () => {
                 console.log("Render updated!");
@@ -646,7 +712,7 @@ const Player = (() => {
             };
             this.exp = parent.exp;
             this.magicData = {
-                spells: parent.magic.spells,
+                spells: MapToObj(parent.magic.spells),
                 spcMod: parent.magic.spcMod,
                 preparedSpells: parent.magic.preparedSpells
             };
@@ -896,14 +962,18 @@ const Player = (() => {
             // default keybinds
             const {
                 self = "x",
+                    gfx_self = "X",
                     skills = "c",
                     inv = "i",
-                    magic = "m"
+                    magic = "m",
+                    gfx_magic = "M"
             } = keybinds;
             console.log("Shortcuts enabled!");
             document.addEventListener("keypress", (e) => {
                 if (e.key == self) {
                     this.self;
+                } else if (e.key == gfx_self) {
+                    this.render.generate();
                 } else if (e.key == skills) {
                     this.stats.list_sthrows();
                     this.stats.list_skills();
@@ -911,6 +981,8 @@ const Player = (() => {
                     this.inv.list();
                 } else if (e.key == magic) {
                     this.magic.list();
+                } else if (e.key == gfx_magic) {
+                    this.render.spellbook();
                 }
             });
         }

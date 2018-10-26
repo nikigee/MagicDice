@@ -679,7 +679,7 @@ const Player = (() => {
         }
         useHitDie(numDice) {
             let constitution = (!this.parent.stats) ? 0 : this.parent.stats.ability_mod.cnst;
-            const dice = die.cvt(this.hitdie);
+            let dice = die.cvt(this.hitdie);
             if (numDice > dice.iterator) {
                 console.log("You don't have enough hit die!");
                 return;

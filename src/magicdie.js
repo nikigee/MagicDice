@@ -689,7 +689,7 @@ const Player = (() => {
             }
             dice.iterator -= numDice; // take from remaining hitdie
             const pointsHealed = die.r(String(numDice + "d" + dice.face + "+" + constitution));
-            this.add(pointsHealed);
+            this.add(pointsHealed); 
             dice = `${dice.iterator}d${dice.face}`;
             this.hitdie = dice;
             console.log(dice + " remaining");

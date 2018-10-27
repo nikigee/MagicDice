@@ -36,6 +36,13 @@ const die = (() => {
                 console.log("Total roll: " + total);
             }
             return total;
+        },
+        s: function (diceObj) {
+            let roll = `${diceObj.iterator}d${diceObj.face}`;
+            if (diceObj.foreach_modifier) {
+                roll += `+${diceObj.foreach_modifier}`
+            }
+            return roll;
         }
     }
     return dief
@@ -689,7 +696,7 @@ const Player = (() => {
             }
             dice.iterator -= numDice; // take from remaining hitdie
             const pointsHealed = die.r(String(numDice + "d" + dice.face + "+" + constitution));
-            this.add(pointsHealed); 
+            this.add(pointsHealed);
             dice = `${dice.iterator}d${dice.face}`;
             this.hitdie = dice;
             console.log(dice + " remaining");

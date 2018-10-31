@@ -320,11 +320,13 @@ div::-webkit-scrollbar-thumb {
 }
 
 .richContent h3,
-h4,
-p,
-span {
+.richContent h4,
+.richContent p,
+.richContent span {
     margin: 0px;
     display: block;
+    margin-left: 10px;
+    margin-right: 10px;
 }
 
 .richDice p {
@@ -340,29 +342,34 @@ span {
     margin-top: 5px;
     font-size: 18px;
 }
+.richDice h4, .richDice span{
+    text-align: left;
+}
 
 .richContent {
     text-align: left;
-    padding: 10px;
+    padding-top: 10px;
     background: #ffffff9c;
     transition: 0.2s;
     -webkit-transition: 0.2s;
+    padding-bottom: 20px;
 }
 
 .richDice img {
-    margin-top: 15px;
-    border-radius: 5px;
     box-shadow: #1a1a1a 0px 0px 3px;
     max-width: 500px;
+    margin-bottom: 5px;
 }
-.richBar{
+
+.richBar {
     background: #1a1a1aeb;
     padding-top: 4px;
     padding-bottom: 4px;
     text-align: right;
     padding: 4px;
 }
-.richClose{
+
+.richClose {
     display: inline-block;
     background: #a51010;
     border-radius: 50%;
@@ -371,7 +378,8 @@ span {
     transition: 0.2s;
     -webkit-transition: 0.2s;
 }
-.richClose:hover{
+
+.richClose:hover {
     background: red;
     cursor: pointer;
 }

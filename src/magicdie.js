@@ -78,7 +78,7 @@ const richDice = (() => {
             this.x = x,
                 this.y = y,
                 this.css = "",
-                this.alignment = "left",
+                this.alignment = "center",
                 this.title = "Untitled Window",
                 this.fields = new Map(),
                 this.image = "",
@@ -124,12 +124,12 @@ const richDice = (() => {
             if (this.desc) {
                 content += `<p>${this.desc}</p>`;
             }
+            content += this.image;
             this.fields.forEach((v, k) => {
                 content += `
                 <h4>${k}</h4>
                 <span>${v}</span>`;
             });
-            content += this.image;
 
             /* The richDice Container */
             let container = `
@@ -600,7 +600,7 @@ const Player = (() => {
                     const roll = die.r("d20", true);
                     rd.setTitle(`${list_of_skills[i].getElementsByClassName("mod_title")[0].textContent} Check`);
                     rd.setLeftAlign(true);
-                    rd.setSize(250);
+                    rd.setSize(280);
                     rd.setBackground("./src/img/tavern.png");
                     rd.setDescription(`With a raw roll of <strong>${roll}</strong> and a ${list_of_skills[i].getElementsByClassName("mod_title")[0].textContent} bonus of <strong>${list_of_skills[i].getElementsByClassName("mod_score")[0].textContent}</strong>, it looks like your overall result is...`);
                     rd.addField("Result", roll + Number(list_of_skills[i].getElementsByClassName("mod_score")[0].textContent));

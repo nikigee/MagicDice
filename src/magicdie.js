@@ -78,7 +78,7 @@ const richDice = (() => {
             this.x = x,
                 this.y = y,
                 this.css = "",
-                this.alignment = "center",
+                this.alignment = "left",
                 this.title = "Untitled Window",
                 this.fields = new Map(),
                 this.image = "",

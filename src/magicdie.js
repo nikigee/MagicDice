@@ -43,9 +43,110 @@ const die = (() => {
                 roll += `+${diceObj.foreach_modifier}`
             }
             return roll;
+        },
+        gfx_dice: function (arg, x, y) {
+            const rollObj = this.cvt(arg);
+            const dice = new richDice(x, y);
+            dice.setTitle(`Roll ${arg}`);
+            dice.setDescription(`The result of rolling ${arg}...`);
+            dice.setLeftAlign(true);
+            let roll;
+            let total = 0;
+            if (rollObj.iterator > 1) {
+                for (let i = 1; i <= rollObj.iterator; i++) {
+                    roll = Math.floor(Math.random() * rollObj.face) + 1;
+                    if (rollObj.foreach_modifier) {
+                        roll += rollObj.foreach_modifier;
+                    }
+                    dice.addField(`Roll ${i}: `, roll);
+                    total += roll;
+                }
+            } else {
+                total = Math.floor(Math.random() * rollObj.face) + 1;
+            }
+            dice.addField(`Total: `, total);
+            dice.render();
+            return dice;
         }
     }
     return dief
+})();
+
+const richDice = (() => {
+    class richDice {
+        constructor(x = 0, y = 0) {
+            this.x = x,
+                this.y = y,
+                this.css = "",
+                this.alignment = "center",
+                this.title = "Untitled Window",
+                this.fields = new Map(),
+                this.image = "",
+                this.background = "",
+                this.ID = Math.floor(Math.random() * 100000);
+        }
+        setTitle(title) {
+            this.title = title;
+        }
+        setSize(width, height) {
+            this.width = width;
+            this.height = height;
+            this.css += `max-width: ${width}px; max-height: ${height}px;`
+        }
+        setBackground(url) {
+            this.background = `background: url('${url}') center center;`;
+        }
+        setDescription(desc) {
+            this.desc = desc;
+        }
+        setImage(url) {
+            this.image = `<img src="${url}" alt="Image">`;
+        }
+        setLeftAlign(boolean) {
+            if (boolean === true) {
+                this.alignment = "left"
+            } else {
+                this.alignment = "center"
+            }
+        }
+        addField(title, content) {
+            this.fields.set(title, content);
+        }
+        get dom() {
+            return document.getElementsByClassName(this.ID)[0];
+        }
+        render() {
+            if (this.dom) {
+                this.dom.remove();
+            }
+            /* The richDice Content */
+            let content = `<h3>${this.title}</h3>`;
+            if (this.desc) {
+                content += `<p>${this.desc}</p>`;
+            }
+            this.fields.forEach((v, k) => {
+                content += `
+                <h4>${k}</h4>
+                <span>${v}</span>`;
+            });
+            content += this.image;
+
+            /* The richDice Container */
+            let container = `
+            <div class="richDice ${this.ID}" style="left: ${this.x}px; top: ${this.y}px; ${this.background}">
+            <div class="richBar"><span class="richClose"></span></div>
+            <div class="richContent" style="text-align: ${this.alignment}; ${this.css}">
+                ${content}
+            </div>
+            </div>
+            `;
+            document.getElementById("main").insertAdjacentHTML('beforeend', container);
+            this.dom.firstElementChild.getElementsByClassName("richClose")[0].addEventListener("click", () => {
+                this.dom.remove();
+            })
+        }
+    }
+    return richDice;
 })();
 
 
@@ -400,6 +501,9 @@ const Player = (() => {
             <span class="spellrow"><strong>Damage:</strong> ${spell.roll}</span>
             <iframe src="https://roll20.net/compendium/dnd5e/${encodeURIComponent(spell.name)}#toc_1"></iframe>
             `;
+            document.getElementsByClassName("spellrow")[4].addEventListener("mousedown", (e) => {
+                die.gfx_dice(spell.roll, e.clientX, e.clientY);
+            });
             return spell.x;
         };
         spellbook() {
@@ -489,6 +593,20 @@ const Player = (() => {
                     </div>` : ""}
                 </div>
             `;
+            const list_of_skills = document.getElementsByClassName(`${this.ID}`)[0].parentElement.getElementsByClassName("mod_pill");
+            for (let i = 0; i < list_of_skills.length; i++) {
+                list_of_skills[i].addEventListener("mousedown", (e) => {
+                    let rd = new richDice(e.clientX, e.clientY);
+                    const roll = die.r("d20", true);
+                    rd.setTitle(`${list_of_skills[i].getElementsByClassName("mod_title")[0].textContent} Check`);
+                    rd.setLeftAlign(true);
+                    rd.setSize(250);
+                    rd.setBackground("./src/img/tavern.png");
+                    rd.setDescription(`With a raw roll of <strong>${roll}</strong> and a ${list_of_skills[i].getElementsByClassName("mod_title")[0].textContent} bonus of <strong>${list_of_skills[i].getElementsByClassName("mod_score")[0].textContent}</strong>, it looks like your overall result is...`);
+                    rd.addField("Result", roll + Number(list_of_skills[i].getElementsByClassName("mod_score")[0].textContent));
+                    rd.render();
+                });
+            }
         }
         generate(clear) {
             const list = document.getElementById("main");
@@ -508,62 +626,7 @@ const Player = (() => {
             <div class="playerBox">
             <img src="${this.avatar}" alt="Avatar">
             <div class="playerInfo ${this.ID}">
-                <h3>${this.parent.name}</h3>
-                <span class="lvl-class">Level ${this.parent.lvl} ${this.parent.player_class.name}</span>
-                <div class="row">
-                    <span class="label">HP</span>
-                    <div class="fill-bar"><span class="fill" style="width: ${percent}%; background: ${getColor(percent)}">${this.parent.health.currentHP}/${this.parent.health.maxHP}</span></div>
-                </div>
-                <p><strong>AC: </strong>${this.parent.health.currentAC}</p>
-                <p><strong>Gold: </strong>${this.parent.inv.gold} GP</p>
-                <p><strong>Inventory: </strong>${invCount} Items</p>
-                <div class="ability_scores">
-                    <div class="mod_pill">
-                        <span class="mod_title">Strength</span>
-                        <span class="mod_score">${this.parent.stats.ability_mod.str}</span>
-                        <span class="mod_raw">${this.parent.stats.ability.str}</span>
-                    </div>
-                    <div class="mod_pill">
-                        <span class="mod_title">Dexterity</span>
-                        <span class="mod_score">${this.parent.stats.ability_mod.dex}</span>
-                        <span class="mod_raw">${this.parent.stats.ability.dex}</span>
-                    </div>
-                    <div class="mod_pill">
-                        <span class="mod_title">Constitution</span>
-                        <span class="mod_score">${this.parent.stats.ability_mod.cnst}</span>
-                        <span class="mod_raw">${this.parent.stats.ability.cnst}</span>
-                    </div>
-                    <div class="mod_pill">
-                        <span class="mod_title">Intelligence</span>
-                        <span class="mod_score">${this.parent.stats.ability_mod.int}</span>
-                        <span class="mod_raw">${this.parent.stats.ability.int}</span>
-                    </div>
-                    <div class="mod_pill">
-                        <span class="mod_title">Wisdom</span>
-                        <span class="mod_score">${this.parent.stats.ability_mod.wis}</span>
-                        <span class="mod_raw">${this.parent.stats.ability.wis}</span>
-                    </div>
-                    <div class="mod_pill">
-                        <span class="mod_title">Charisma</span>
-                        <span class="mod_score">${this.parent.stats.ability_mod.chr}</span>
-                        <span class="mod_raw">${this.parent.stats.ability.chr}</span>
-                    </div>
-                    ${(this.parent.player_class.spcMod) ? `
-                    <div class="magic_stats">
-                        <div class="magic_pill">
-                            <span class="magic_score">${this.parent.magic.Mod}</span>
-                            <span class="magic_title">Spellcasting Ability</span>
-                        </div>
-                        <div class="magic_pill">
-                            <span class="magic_score">${this.parent.magic.DC}</span>
-                            <span class="magic_title">Spellsave DC</span>
-                        </div>
-                        <div class="magic_pill">
-                            <span class="magic_score">${this.parent.magic.SPAttack}</span>
-                            <span class="magic_title">Spellattack Bonus</span>
-                        </div>
-                    </div>` : ""}
-                </div>
+                
             </div>
             </div>
             `;
@@ -573,6 +636,7 @@ const Player = (() => {
                 console.log("Render updated!");
                 this.update();
             });
+            this.update();
         }
     };
     class Inventory {

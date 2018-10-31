@@ -211,22 +211,28 @@ h3 {
     overflow: auto;
     height: -webkit-fill-available;
 }
-.spellwindow span, h2{
+
+.spellwindow span,
+h2 {
     margin-left: 10px;
 }
-.spellwindow h2{
+
+.spellwindow h2 {
     font-weight: bold;
     margin-top: 10px;
     font-size: 36px;
 }
-.spellscription{
+
+.spellscription {
     font-style: italic;
     margin-bottom: 7px;
 }
-.spellrow{
+
+.spellrow {
     margin: 3px;
 }
-.spellwindow iframe{
+
+.spellwindow iframe {
     margin-top: 40px;
     width: calc(100% - 10px);
     margin-right: 5px;
@@ -248,7 +254,8 @@ h3 {
     display: inline-block;
     height: -webkit-fill-available;
 }
-.spell-list span{
+
+.spell-list span {
     display: inline-block;
 }
 
@@ -285,7 +292,7 @@ div::-webkit-scrollbar-thumb {
     font-weight: bold;
 }
 
-.lvl{
+.lvl {
     width: 15px;
     font-size: 16px;
     background: #000000db;
@@ -296,4 +303,75 @@ div::-webkit-scrollbar-thumb {
     margin-bottom: 3px;
     padding: 7px;
     transition: 0.1s;
+}
+
+.richDice {
+    position: absolute;
+    box-shadow: black 0px 0px 10px;
+    border-radius: 3px;
+    min-width: 200px;
+    background: #ffffff9c;
+    background-size: cover;
+    overflow: hidden;
+}
+
+.richDice:hover {
+    box-shadow: black 0px 0px 15px;
+}
+
+.richContent h3,
+h4,
+p,
+span {
+    margin: 0px;
+    display: block;
+}
+
+.richDice p {
+    margin-bottom: 10px;
+}
+
+.richDice h3 {
+    font-weight: bold;
+    font-size: 29px;
+}
+
+.richDice h4 {
+    margin-top: 5px;
+    font-size: 18px;
+}
+
+.richContent {
+    text-align: left;
+    padding: 10px;
+    background: #ffffff9c;
+    transition: 0.2s;
+    -webkit-transition: 0.2s;
+}
+
+.richDice img {
+    margin-top: 15px;
+    border-radius: 5px;
+    box-shadow: #1a1a1a 0px 0px 3px;
+    max-width: 500px;
+}
+.richBar{
+    background: #1a1a1aeb;
+    padding-top: 4px;
+    padding-bottom: 4px;
+    text-align: right;
+    padding: 4px;
+}
+.richClose{
+    display: inline-block;
+    background: #a51010;
+    border-radius: 50%;
+    height: 10px;
+    width: 10px;
+    transition: 0.2s;
+    -webkit-transition: 0.2s;
+}
+.richClose:hover{
+    background: red;
+    cursor: pointer;
 }

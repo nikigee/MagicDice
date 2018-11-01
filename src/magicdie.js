@@ -132,14 +132,12 @@ const richDice = (() => {
             });
 
             /* The richDice Container */
-            let container = `
-            <div class="richDice ${this.ID}" style="left: ${this.x}px; top: ${this.y}px; ${this.background}">
+            const container = `<div class="richDice ${this.ID}" style="left: ${this.x}px; top: ${this.y}px; ${this.background}">
             <div class="richBar"><span class="richClose"></span></div>
             <div class="richContent" style="text-align: ${this.alignment}; ${this.css}">
                 ${content}
             </div>
-            </div>
-            `;
+            </div>`;
             document.getElementById("main").insertAdjacentHTML('beforeend', container);
             this.dom.firstElementChild.getElementsByClassName("richClose")[0].addEventListener("click", () => {
                 this.dom.remove();

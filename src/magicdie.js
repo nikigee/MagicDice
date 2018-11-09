@@ -835,7 +835,6 @@ const Player = (() => {
                     marks = [],
                     ability = genABS(27),
                     inspiration = "",
-                    passive_perception = 10 + serAbility(ability.wis),
                     misc_prof = {
                         lang: ["Common"],
                         wpn: parent.player_class.start_prof.wpn,
@@ -848,7 +847,6 @@ const Player = (() => {
             this.marks = marks;
             this.ability = ability;
             this.inspiration = inspiration;
-            this.passive_perception = passive_perception;
             this.misc_prof = misc_prof;
             this.ability_mod = {
                 str: serAbility(this.ability.str),
@@ -878,6 +876,7 @@ const Player = (() => {
                 stealth: this.ability_mod.dex,
                 survival: this.ability_mod.wis
             };
+            this.passive_perception = 10 + this.skills.perception;
             // check if skills have been marked for proficency and update to match
             for (var property in this.skills) {
                 if (this.skills.hasOwnProperty(property)) {

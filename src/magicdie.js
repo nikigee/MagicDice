@@ -49,6 +49,7 @@ const die = (() => {
             const dice = new richDice(x, y);
             dice.setTitle(`Roll ${arg}`);
             dice.setDescription(`The result of rolling ${arg}...`);
+            dice.setSize(300, 600);
             dice.setLeftAlign(true);
             let roll;
             let total = 0;
@@ -92,9 +93,14 @@ const richDice = (() => {
             this.title = title;
         }
         setSize(width, height) {
-            this.width = width;
-            this.height = height;
-            this.css += `max-width: ${width}px; max-height: ${height}px;`
+            if (width) {
+                this.css += `max-width: ${width}px;`;
+                this.width = width;
+            }
+            if (height) {
+                this.height = height;
+                this.css += `max-height: ${height}px;`
+            }
         }
         setBackground(url) {
             this.background = `background: url('${url}') center center;`;

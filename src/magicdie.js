@@ -47,9 +47,9 @@ const die = (() => {
         gfx_dice: function (arg, x, y) {
             const rollObj = this.cvt(arg);
             const dice = new richDice(x, y);
-            dice.setTitle(`Roll ${arg}`);
-            dice.setDescription(`The result of rolling ${arg}...`);
-            dice.setSize(300, 600);
+            dice.setTitle(`Dice Roll (${arg})`);
+            dice.setDescription(`You raise your hand and throw the dice across the table.`);
+            dice.setSize(250, 750);
             dice.setLeftAlign(true);
             let roll;
             let total = 0;

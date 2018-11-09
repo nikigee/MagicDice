@@ -169,6 +169,7 @@ const richDice = (() => {
             });
             this.dom.addEventListener("mouseup", () => {
                 this.dom.style.userSelect = "";
+                this.clicks = "";
                 window.removeEventListener("mousemove", mouseMove);
             });
         }

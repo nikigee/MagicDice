@@ -64,6 +64,9 @@ const die = (() => {
             } else {
                 total = Math.floor(Math.random() * rollObj.face) + 1;
             }
+            if (rollObj.iterator == 0) {
+                total = 0;
+            }
             dice.addField(`Total: `, total);
             dice.render();
             return dice;

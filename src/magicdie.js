@@ -116,6 +116,7 @@ const richDice = (() => {
             return document.getElementsByClassName(this.ID)[0];
         }
         render() {
+            this.clicks = "";
             if (this.dom) {
                 this.dom.remove();
             }
@@ -141,7 +142,32 @@ const richDice = (() => {
             document.getElementById("main").insertAdjacentHTML('beforeend', container);
             this.dom.firstElementChild.getElementsByClassName("richClose")[0].addEventListener("click", () => {
                 this.dom.remove();
-            })
+            });
+
+            /* you know javascript is the best language when this ugly mess is the only way of getting this to work. kill me.*/
+            var obj = this;
+
+            function mouseMove(e) {
+                if (!obj.clicks) {
+                    obj.clicks = {
+                        x: e.clientX,
+                        y: e.clientY
+                    }
+                }
+                obj.dom.style.left = obj.x += (e.clientX - obj.clicks.x);
+                obj.dom.style.top = obj.y += (e.clientY - obj.clicks.y);
+
+                obj.clicks.x = e.clientX;
+                obj.clicks.y = e.clientY;
+            }
+            this.dom.firstElementChild.addEventListener("mousedown", () => {
+                this.dom.style.userSelect = "none";
+                window.addEventListener("mousemove", mouseMove);
+            });
+            this.dom.addEventListener("mouseup", () => {
+                this.dom.style.userSelect = "";
+                window.removeEventListener("mousemove", mouseMove);
+            });
         }
     }
     return richDice;

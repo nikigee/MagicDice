@@ -876,7 +876,6 @@ const Player = (() => {
                 stealth: this.ability_mod.dex,
                 survival: this.ability_mod.wis
             };
-            this.passive_perception = 10 + this.skills.perception;
             // check if skills have been marked for proficency and update to match
             for (var property in this.skills) {
                 if (this.skills.hasOwnProperty(property)) {
@@ -886,7 +885,8 @@ const Player = (() => {
                         }
                     }
                 }
-            }
+            };
+            this.passive_perception = 10 + this.skills.perception;
         }
         get initiative() {
             return this.ability_mod.dex;

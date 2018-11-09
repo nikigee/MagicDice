@@ -360,7 +360,7 @@ div::-webkit-scrollbar-thumb {
 .richDice img {
     box-shadow: #1a1a1a 0px 0px 3px;
     max-width: 600px;
-    max-height: 600px;
+    max-height: 800px;
     margin-bottom: 5px;
 }
 

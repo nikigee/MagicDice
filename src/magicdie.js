@@ -577,6 +577,7 @@ const Player = (() => {
                     <div class="fill-bar"><span class="fill" style="width: ${percent}%; background: ${getColor(percent)}">${this.parent.health.currentHP}/${this.parent.health.maxHP}</span></div>
                 </div>
                 <p><strong>AC: </strong>${this.parent.health.currentAC}</p>
+                <p><strong>Proficiency Bonus: </strong>${this.parent.stats.prof}</p>
                 <p><strong>Gold: </strong>${this.parent.inv.gold} GP</p>
                 <p><strong>Inventory: </strong>${invCount} Items</p>
                 <div class="ability_scores">

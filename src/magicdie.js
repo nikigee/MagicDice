@@ -85,6 +85,7 @@ const richDice = (() => {
                 this.alignment = "center",
                 this.title = "Untitled Window",
                 this.fields = new Map(),
+                this.prompts = new Map(),
                 this.image = "",
                 this.background = "",
                 this.ID = Math.floor(Math.random() * 100000);
@@ -120,6 +121,9 @@ const richDice = (() => {
         }
         addField(title, content) {
             this.fields.set(title, content);
+        }
+        addPrompt(title, placeholder) {
+
         }
         get dom() {
             return document.getElementsByClassName(this.ID)[0];
@@ -834,6 +838,7 @@ const Player = (() => {
                 parent = undefined,
                     save_throws = parent.player_class.save_throws,
                     marks = [],
+                    expert = [],
                     ability = genABS(27),
                     inspiration = "",
                     misc_prof = {
@@ -846,6 +851,7 @@ const Player = (() => {
             this.prof = serProf(parent.lvl);
             this.save_throws = save_throws;
             this.marks = marks;
+            this.expert = expert;
             this.ability = ability;
             this.inspiration = inspiration;
             this.misc_prof = misc_prof;
@@ -882,6 +888,11 @@ const Player = (() => {
                 if (this.skills.hasOwnProperty(property)) {
                     for (var i = 0; i < this.marks.length; i++) {
                         if (property == this.marks[i]) {
+                            this.skills[property] += this.prof;
+                        }
+                    }
+                    for (var i = 0; i < this.expert.length; i++) {
+                        if (property == this.expert[i]) {
                             this.skills[property] += this.prof;
                         }
                     }
@@ -932,6 +943,16 @@ const Player = (() => {
             if (this.skills[skill.toLowerCase()] && !this.marks.includes(skill)) {
                 this.skills[skill.toLowerCase()] += this.prof;
                 this.marks.push(skill.toLowerCase());
+                return this.skills[skill.toLowerCase()];
+            } else {
+                console.log("You didn't input a valid skill! Either skill not found or already proficent.");
+                return;
+            }
+        }
+        expertCheck(skill) {
+            if (this.skills[skill.toLowerCase()] && !this.expert.includes(skill)) {
+                this.skills[skill.toLowerCase()] += this.prof;
+                this.expert.push(skill.toLowerCase());
                 return this.skills[skill.toLowerCase()];
             } else {
                 console.log("You didn't input a valid skill! Either skill not found or already proficent.");

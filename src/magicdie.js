@@ -85,7 +85,6 @@ const richDice = (() => {
                 this.alignment = "center",
                 this.title = "Untitled Window",
                 this.fields = new Map(),
-                this.prompts = new Map(),
                 this.image = "",
                 this.background = "",
                 this.ID = Math.floor(Math.random() * 100000);
@@ -119,16 +118,22 @@ const richDice = (() => {
                 this.alignment = "center"
             }
         }
-        addField(title, content) {
-            this.fields.set(title, content);
+        addField(title, text) {
+            this.fields.set(title, {
+                type: 0,
+                content: text
+            });
         }
         addPrompt(title, placeholder) {
-
+            this.fields.set(title, {
+                type: 1,
+                content: placeholder
+            });
         }
         get dom() {
             return document.getElementsByClassName(this.ID)[0];
         }
-        render() {
+        render(callback) {
             this.clicks = "";
             if (this.dom) {
                 this.dom.remove();
@@ -140,9 +145,15 @@ const richDice = (() => {
             }
             content += this.image;
             this.fields.forEach((v, k) => {
-                content += `
-                <h4>${k}</h4>
-                <span>${v}</span>`;
+                if (v.type == 1) {
+                    content += `
+                    <label for="${this.ID+k}">${k}</label>
+                    <input type="text" placeholder="${v.content}" class="${this.ID+k}">`;
+                } else {
+                    content += `
+                    <h4>${k}</h4>
+                    <span>${v.content}</span>`;
+                }
             });
 
             /* The richDice Container */
@@ -182,6 +193,7 @@ const richDice = (() => {
                 this.clicks = "";
                 window.removeEventListener("mousemove", mouseMove);
             });
+            if (callback) callback(this.dom);
         }
     }
     return richDice;
@@ -578,7 +590,7 @@ const Player = (() => {
                 <span class="lvl-class">Level ${this.parent.lvl} ${this.parent.player_class.name}</span>
                 <div class="row">
                     <span class="label">HP</span>
-                    <div class="fill-bar"><span class="fill" style="width: ${percent}%; background: ${getColor(percent)}">${this.parent.health.currentHP}/${this.parent.health.maxHP}</span></div>
+                    <div class="fill-bar health-bar"><span class="fill" style="width: ${percent}%; background: ${getColor(percent)}">${this.parent.health.currentHP}/${this.parent.health.maxHP}</span></div>
                 </div>
                 <p><strong>AC: </strong>${this.parent.health.currentAC}</p>
                 <p><strong>Proficiency Bonus: </strong>${this.parent.stats.prof}</p>
@@ -632,7 +644,29 @@ const Player = (() => {
                     </div>` : ""}
                 </div>
             `;
-            const list_of_skills = document.getElementsByClassName(`${this.ID}`)[0].parentElement.getElementsByClassName("mod_pill");
+            document.getElementsByClassName(`${this.ID}`)[0].getElementsByClassName("health-bar")[0].addEventListener("mousedown", (e) => {
+                const health_window = new richDice(e.clientX, e.clientY);
+                health_window.setSize(300);
+                health_window.setTitle("Add/Remove Health");
+                health_window.setDescription("Enter a number to add/remove health from this character.");
+                health_window.addPrompt("Amount to add", "-12");
+                health_window.setLeftAlign(true);
+                health_window.render((d) => {
+                    d.getElementsByClassName(health_window.ID + "Amount to add")[0].addEventListener("keydown", (e) => {
+                        if (e.keyCode == 13) {
+                            let num = e.target.value;
+                            if (isFinite(Number(num))) {
+                                this.parent.health.add(Number(num));
+                            } else if (new RegExp(/^[0-9]{0,9}d[0-9]{1,9}/).test(num)) {
+                                this.parent.health.add(die.r(String(num)));
+                            }
+                            this.update();
+                            d.remove();
+                        }
+                    });
+                });
+            });
+            const list_of_skills = document.getElementsByClassName(`${this.ID}`)[0].getElementsByClassName("mod_pill");
             for (let i = 0; i < list_of_skills.length; i++) {
                 list_of_skills[i].addEventListener("mousedown", (e) => {
                     let rd = new richDice(e.clientX, e.clientY);
@@ -672,7 +706,6 @@ const Player = (() => {
             list.insertAdjacentHTML('beforeend', newHTML);
             console.log("Rendered!");
             document.getElementsByClassName(`${this.ID}`)[0].parentElement.addEventListener("mousedown", () => {
-                console.log("Render updated!");
                 this.update();
             });
             this.update();

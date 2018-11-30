@@ -339,11 +339,36 @@ div::-webkit-scrollbar-thumb {
     font-size: 29px;
 }
 
+.richDice label {
+    margin: 0px;
+    font-weight: bold;
+}
+
+.richDice label,
+.richDice input {
+    display: block;
+    text-align: left;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+.richDice input {
+    border-radius: 2px;
+    padding: 5px;
+    border: solid 1px grey;
+    width: calc(100% - 20px);
+    max-width: 350px;
+    background: white;
+    color: black;
+}
+
 .richDice h4 {
     margin-top: 5px;
     font-size: 18px;
 }
-.richDice h4, .richDice span{
+
+.richDice h4,
+.richDice span {
     text-align: left;
 }
 

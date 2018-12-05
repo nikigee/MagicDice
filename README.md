@@ -19,5 +19,6 @@ In particular it's also useful for level ups as it handles the majority of the t
 1. Open magicdie.html in your web browser of choice. (I'd recommend chromeium for this one)
 1. Open the dev console.
 1. Create a new Player `let James = new Player({name:"James", lvl: 5})`
-1. Edit as nessecery (Use `James.enableShortcuts()` and then the relevent keys `x - x self; c - list stats/save throws; i - inventory; m - spell list` to examine relevent information)
-1. Render the character `James.render.generate()` click this element to refresh.
+1. Edit as nessecery (Use `James.enableShortcuts()` and then the relevent keys `x - x self; X - render GUI character display; c - list stats/save throws; i - inventory; m - spell list; M - GUI Spellbook` to examine relevent information)
+1. Render character display (`James.render.generate()`).
+1. Save your character! (`James.save()` or `James.saveToFile()` for a .json copy)

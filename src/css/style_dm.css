@@ -1,0 +1,125 @@
+#init-ladder {
+    background: #0e0e0ed0;
+    box-shadow: #1a1a1a 0px 0px 5px;
+    display: inline-block;
+    width: calc(30% - 32px);
+    max-width: 400px;
+    min-width: 300px;
+    padding: 5px;
+    vertical-align: top;
+    height: 666px;
+    padding: 10px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    overflow-y: auto;
+    margin-bottom: 20px;
+    position: relative;
+}
+
+#init-options {
+    margin: auto;
+    left: 0px;
+    right: 0px;
+    margin-top: 10px;
+    margin-bottom: 5px;
+}
+
+#battle-table {
+    position: relative;
+    display: inline-block;
+    width: calc(70% - 23px);
+    min-width: 450px;
+    max-width: 900px;
+    text-align: left;
+}
+
+#battle-list {
+    background: #0e0e0ed0;
+    box-shadow: #1a1a1a 0px 0px 5px;
+    height: 600px;
+    padding: 10px;
+    overflow-y: auto;
+}
+
+#battle-options {
+    padding: 10px;
+    margin-top: 5px;
+    background: #0e0e0ed0;
+    box-shadow: #1a1a1a 0px 0px 5px;
+    text-align: right;
+}
+
+.monster-pill {
+    width: 200px;
+    color: white;
+    box-shadow: #989898 0px 0px 3px;
+    background: white;
+    background-size: cover;
+    border-radius: 5px;
+    border: 2px solid #32cd32;
+    display: inline-block;
+    overflow: hidden;
+    margin: 2px;
+}
+
+.monster-info {
+    background: rgba(15, 15, 15, 0.747);
+    padding: 5px;
+    min-height: 250px;
+}
+
+.init-block {
+    border-radius: 2px;
+    background: #ffffff9c;
+    height: 41px;
+    font-family: "Timeless", Georgia, 'Times New Roman', Times, serif;
+    box-shadow: #1a1a1a 0px 0px 2px;
+    overflow: hidden;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+.init-block input {
+    border-radius: 1px;
+    border: none;
+}
+
+#init-list {
+    min-height: calc(100% - 51px);
+    margin-top: 5px;
+}
+
+.init-name {
+    padding: 10px;
+    width: calc(100% - 55px);
+    float: left;
+    background: none;
+    color: black;
+    font-size: 20px;
+    font-family: Georgia, serif;
+}
+
+.init-roll {
+    padding-left: 10px;
+    padding-top: 9px;
+    padding-bottom: 10px;
+    width: 55px;
+    float: right;
+    font-size: 20px;
+    font-family: Georgia, serif;
+}
+.btn-close{
+    display: inline-block;
+    background: #9e0000;
+    color: white;
+    border: none;
+    padding: 5px;
+    font-size: 18px;
+    width: 31px;
+    height: 31px;
+    margin: 0px;
+    vertical-align: top;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    border-radius: 3px;
+}

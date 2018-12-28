@@ -178,6 +178,12 @@ const richDice = (() => {
                         y: e.clientY
                     }
                 }
+                // if box is removed but mousemove event is still ongoing
+                if (!obj.dom) {
+                    this.clicks = "";
+                    window.removeEventListener("mousemove", mouseMove);
+                    return false;
+                }
                 obj.dom.style.left = obj.x += (e.clientX - obj.clicks.x);
                 obj.dom.style.top = obj.y += (e.clientY - obj.clicks.y);
 
@@ -1125,7 +1131,8 @@ const Player = (() => {
                     skills = "c",
                     inv = "i",
                     magic = "m",
-                    gfx_magic = "M"
+                    gfx_magic = "M",
+                    roll = "R"
             } = keybinds;
             console.log("Shortcuts enabled!");
             document.addEventListener("keypress", (e) => {
@@ -1142,6 +1149,8 @@ const Player = (() => {
                     this.magic.list();
                 } else if (e.key == gfx_magic) {
                     this.render.spellbook();
+                } else if (e.key == roll) {
+                    die.gfx_dice("d20", 20, 20);
                 }
             });
         }

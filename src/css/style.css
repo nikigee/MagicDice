@@ -330,8 +330,9 @@ div::-webkit-scrollbar-thumb {
     margin-right: 10px;
 }
 
-.richDice p {
-    margin-bottom: 10px;
+.richContent ul,
+.richContent ol {
+    margin: 0px;
 }
 
 .richDice h3 {
@@ -387,6 +388,7 @@ div::-webkit-scrollbar-thumb {
     max-width: 600px;
     max-height: 800px;
     margin-bottom: 5px;
+    margin-top: 10px;
 }
 
 .richBar {
@@ -427,7 +429,8 @@ div::-webkit-scrollbar-thumb {
     transition: 0.1s;
     cursor: pointer;
 }
-.btn-main:hover{
+
+.btn-main:hover {
     background: black;
     color: white;
     border: solid 1px white;

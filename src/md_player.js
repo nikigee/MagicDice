@@ -363,7 +363,7 @@ const Player = (() => {
                 health_window.setTitle("Add/Remove Health");
                 health_window.setDescription("Enter a number to add/remove health from this character.");
                 health_window.addPrompt("Amount to add", "-12");
-                health_window.setLeftAlign(true);
+                health_window.css.alignment = "left";
                 health_window.render((d) => {
                     d.getElementsByClassName(health_window.ID + "Amount to add")[0].addEventListener("keydown", (e) => {
                         if (e.keyCode == 13) {
@@ -385,7 +385,7 @@ const Player = (() => {
                     let rd = new richDice(e.clientX, e.clientY);
                     const roll = die.r("d20", true);
                     rd.setTitle(`${list_of_skills[i].getElementsByClassName("mod_title")[0].textContent} Check`);
-                    rd.setLeftAlign(true);
+                    rd.css.alignment = "left";
                     rd.setSize(280);
                     rd.setBackground("./src/img/tavern.png");
                     rd.setDescription(`With a raw roll of <strong>${roll}</strong> and a ${list_of_skills[i].getElementsByClassName("mod_title")[0].textContent} bonus of <strong>${list_of_skills[i].getElementsByClassName("mod_score")[0].textContent}</strong>, it looks like your overall result is...`);

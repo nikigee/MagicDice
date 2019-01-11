@@ -50,7 +50,7 @@ const die = (() => {
             dice.setTitle(`Dice Roll (${arg})`);
             dice.setDescription(`You raise your hand and throw the dice across the table.`);
             dice.setSize(250, 750);
-            dice.setLeftAlign(true);
+            dice.css.alignment = "left";
             let roll;
             let total = 0;
             if (rollObj.iterator > 1) {
@@ -81,12 +81,14 @@ const richDice = (() => {
         constructor(x = 0, y = 0) {
             this.x = x,
                 this.y = y,
-                this.css = "",
-                this.alignment = "center",
+                this.css = {
+                    size: "",
+                    alignment: "center",
+                    background: "",
+                },
                 this.title = "Untitled Window",
                 this.fields = new Map(),
                 this.image = "",
-                this.background = "",
                 this.ID = Math.floor(Math.random() * 100000);
         }
         setTitle(title) {
@@ -94,29 +96,22 @@ const richDice = (() => {
         }
         setSize(width, height) {
             if (width) {
-                this.css += `max-width: ${width}px;`;
+                this.css.size += `max-width: ${width}px;`;
                 this.width = width;
             }
             if (height) {
                 this.height = height;
-                this.css += `max-height: ${height}px;`
+                this.css.size += `max-height: ${height}px;`
             }
         }
         setBackground(url) {
-            this.background = `background: url('${url}') center center;`;
+            this.css.background = `background: url('${url}') center center;`;
         }
         setDescription(desc) {
             this.desc = desc;
         }
         setImage(url) {
             this.image = `<img src="${url}" alt="Image">`;
-        }
-        setLeftAlign(boolean) {
-            if (boolean === true) {
-                this.alignment = "left"
-            } else {
-                this.alignment = "center"
-            }
         }
         addField(title, text) {
             this.fields.set(title, {
@@ -128,6 +123,12 @@ const richDice = (() => {
             this.fields.set(title, {
                 type: 1,
                 content: placeholder
+            });
+        }
+        addCustomHTML(title, text) {
+            this.fields.set(title, {
+                type: 2,
+                content: text
             });
         }
         get dom() {
@@ -145,21 +146,25 @@ const richDice = (() => {
             }
             content += this.image;
             this.fields.forEach((v, k) => {
-                if (v.type == 1) {
-                    content += `
-                    <label for="${this.ID+k}">${k}</label>
-                    <input type="text" placeholder="${v.content}" class="${this.ID+k}">`;
-                } else {
+                if (v.type == 0) {
                     content += `
                     <h4>${k}</h4>
                     <span>${v.content}</span>`;
+                } else if (v.type == 1) {
+                    content += `
+                    <label for="${this.ID+k}">${k}</label>
+                    <input type="text" placeholder="${v.content}" class="${this.ID+k}">`;
+                } else if (v.type == 2) {
+                    content += `
+                        <h4>${k}</h4>
+                        ${v.content}`;
                 }
             });
 
             /* The richDice Container */
-            const container = `<div class="richDice ${this.ID}" style="left: ${this.x}px; top: ${this.y}px; ${this.background}">
+            const container = `<div class="richDice ${this.ID}" style="left: ${this.x}px; top: ${this.y}px; ${this.css.background}">
             <div class="richBar"><span class="richClose"></span></div>
-            <div class="richContent" style="text-align: ${this.alignment}; ${this.css}">
+            <div class="richContent" style="text-align: ${this.css.alignment}; ${this.css.size}">
                 ${content}
             </div>
             </div>`;

@@ -1,21 +1,21 @@
 const DM = (() => {
     const DM_obj = {};
+    function getColor(PP) {
+        if (PP >= 80) {
+            return "limegreen";
+        } else if (PP >= 65) {
+            return "green";
+        } else if (PP > 45) {
+            return "orange";
+        } else if (PP > 15) {
+            return "orangered"
+        } else {
+            return "red";
+        }
+    }
 
     // Combat and initative tracker
     DM_obj.battleBoard = (() => {
-        function getColor(PP) {
-            if (PP >= 80) {
-                return "limegreen";
-            } else if (PP >= 65) {
-                return "green";
-            } else if (PP > 45) {
-                return "orange";
-            } else if (PP > 15) {
-                return "orangered"
-            } else {
-                return "red";
-            }
-        }
         class battleBoard {
             constructor(props = {}) {
                 const {

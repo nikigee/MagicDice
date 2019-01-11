@@ -39,6 +39,9 @@ const battleBoard = (() => {
         }
         updateInit() {
             const initHTML = document.getElementById("init-list");
+            if(!initHTML){
+                return false;
+            }
             initHTML.innerHTML = "";
             for (let i = 0; i < this.initList.length; i++) {
                 initHTML.insertAdjacentHTML("beforeend", `<div class="init-block">
@@ -76,6 +79,9 @@ const battleBoard = (() => {
         }
         updateBattle() {
             const battleHTML = document.getElementById("battle-list");
+            if(!battleHTML){
+                return false
+            }
             battleHTML.innerHTML = "";
             this.monsterList.forEach((mnstr) => {
                 battleHTML.insertAdjacentHTML("beforeend", `<div class="monster-pill" style="background:url("${mnstr.image}") center center; border: 2px solid ${mnstr.isBlooded() ? "red" : "#32cd32"};">
@@ -87,17 +93,21 @@ const battleBoard = (() => {
                 </div>`);
             });
         }
-        create() {
+        create(args = {}) {
+            const {
+                init = true,
+                btl = true
+            } = args;
             let html = `<div id="monster-board">
-            <div id="init-ladder">
+            ${init ? `<div id="init-ladder">
                 <div id="init-list">
                 </div>
                 <div id="init-options">
                     <button class="btn-main" id="add-init">Add</button>
                     <button class="btn-main" id="sort-init">Sort</button>
                 </div>
-            </div>
-            <div id="battle-table">
+            </div>` : ""}
+            ${btl ? `<div id="battle-table">
                 <div id="battle-list">
                 </div>
                 <div id="battle-options">
@@ -105,17 +115,21 @@ const battleBoard = (() => {
                     <button class="btn-main" id="add-battle">Remove All</button>
                     <button class="btn-main" id="spoiler-button">Hide OFF</button>
                 </div>
-            </div>
+            </div>` : ""}
             </div>`;
             document.getElementById("main").innerHTML = html;
-            this.updateInit();
-            this.updateBattle();
-            document.getElementById("sort-init").addEventListener("click", () => {
-                this.sortInit();
-            });
-            document.getElementById("add-init").addEventListener("click", () => {
-                this.addInit();
-            });
+            if(btl){
+                this.updateBattle();
+            }
+            if(init){
+                this.updateInit();
+                document.getElementById("sort-init").addEventListener("click", () => {
+                    this.sortInit();
+                });
+                document.getElementById("add-init").addEventListener("click", () => {
+                    this.addInit();
+                });
+            }
         }
     };
     return new battleBoard();

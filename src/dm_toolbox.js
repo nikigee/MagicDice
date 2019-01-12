@@ -1,5 +1,6 @@
 const DM = (() => {
     const DM_obj = {};
+
     function getColor(PP) {
         if (PP >= 80) {
             return "limegreen";
@@ -14,13 +15,76 @@ const DM = (() => {
         }
     }
 
+    function returnFromAPI(category, name, callback) {
+        name = name.replace(" ", "+");
+        const request = new XMLHttpRequest();
+        request.open("GET", `http://dnd5eapi.co/api/${category}/?name=${name}`);
+        request.onload = () => {
+            const data = JSON.parse(this.response);
+            if (request.status >= 200 && request.status < 400) {
+                if (data.count != 0) {
+                    // if found
+                    const new_request = new XMLHttpRequest();
+                    new_request.open("GET", data.url);
+                    new_request.onload = () => {
+                        const new_data = JSON.parse(this.response);
+                        if (new_request.status >= 200 && new_request.status < 400) {
+                            callback(new_data); // finally found what we're looking for.
+                        } else {
+                            console.log(`Error returned code: ${new_request.status}`);
+                        }
+                    };
+                    new_request.send();
+                } else {
+                    console.log("No results found!");
+                }
+            } else {
+                console.log(`Error returned code: ${request.status}`);
+            }
+        }
+
+        request.send();
+    }
     // Combat and initative tracker
     DM_obj.battleBoard = (() => {
+        function genID() {
+            const colours = ["blue", "red", "black", "green", "white", "yellow", "pink", "orange"];
+            return {
+                color: colours[Math.floor(Math.random() * colours.length)],
+                number: Math.floor(Math.random() * 20) + 1
+            }
+        }
+        class Monster {
+            constructor(props = {}) {
+                const {
+                    maxHP = 11,
+                        currentHP = maxHP,
+                        AC = 12,
+                        attack = 3,
+                        name = "Bandit",
+                        image = "https://i.pinimg.com/736x/a8/f1/b1/a8f1b1a353b92c3e8e166c9eb088f0ba.jpg",
+                        full_data = {},
+                        id = genID()
+                } = props;
+                this.maxHP = maxHP,
+                    this.currentHP = currentHP,
+                    this.AC = AC,
+                    this.attack = attack,
+                    this.name = name,
+                    this.full_data = full_data,
+                    this.image = image,
+                    this.id = id
+            }
+            get pp() {
+                return Math.round((this.currentHP / this.maxHP) * 100)
+            }
+        };
+
         class battleBoard {
             constructor(props = {}) {
                 const {
                     initList = localStorage.dm_initlist ? JSON.parse(localStorage.getItem("dm_initlist")) : [],
-                    monsterList = [],
+                        monsterList = [],
                 } = props;
                 this.initList = initList;
                 this.monsterList = monsterList;
@@ -83,6 +147,13 @@ const DM = (() => {
                     this.updateInit();
                 });
             }
+
+            // battleList
+            addMnstFromAPI(name) {
+                returnFromAPI("monster", name, (data) => {
+                    console.log(data);
+                });
+            }
             updateBattle() {
                 const battleHTML = document.getElementById("battle-list");
                 if (!battleHTML) {
@@ -94,7 +165,7 @@ const DM = (() => {
                     <div class="monster-info spoiler">
                         <h3>${mnstr.name}</h3>
                         <span class="ac-shield">AC: ${mnstr.AC}</span>
-                        <div class="health-bar"><span class="fill" style="width: 100%; background: ${getColor(mnstr.health.pp)}">${mnstr.health.currentHP}/${mnstr.health.maxHP}</span></div>
+                        <div class="health-bar"><span class="fill" style="width: 100%; background: ${getColor(mnstr.pp)}">${mnstr.currentHP}/${mnstr.maxHP}</span></div>
                     </div>
                     </div>`);
                 });

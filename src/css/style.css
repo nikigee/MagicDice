@@ -313,7 +313,6 @@ div::-webkit-scrollbar-thumb {
     background: #ffffff9c;
     background-size: cover;
     overflow: hidden;
-    max-width: 600px;
 }
 
 .richDice:hover {
@@ -364,7 +363,7 @@ div::-webkit-scrollbar-thumb {
 }
 
 .richDice h4 {
-    margin-top: 5px;
+    margin-top: 10px;
     font-size: 18px;
 }
 
@@ -381,13 +380,13 @@ div::-webkit-scrollbar-thumb {
     -webkit-transition: 0.2s;
     padding-bottom: 20px;
     overflow: overlay;
+    max-width: 600px;
 }
 
 .richDice img {
     box-shadow: #1a1a1a 0px 0px 3px;
     max-width: 600px;
     max-height: 800px;
-    margin-bottom: 5px;
     margin-top: 10px;
 }
 

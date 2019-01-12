@@ -84,6 +84,7 @@ const richDice = (() => {
                 this.css = {
                     size: "",
                     alignment: "center",
+                    footer_padding: 20,
                     background: "",
                 },
                 this.title = "Untitled Window",
@@ -164,7 +165,7 @@ const richDice = (() => {
             /* The richDice Container */
             const container = `<div class="richDice ${this.ID}" style="left: ${this.x}px; top: ${this.y}px; ${this.css.background}">
             <div class="richBar"><span class="richClose"></span></div>
-            <div class="richContent" style="text-align: ${this.css.alignment}; ${this.css.size}">
+            <div class="richContent" style="text-align: ${this.css.alignment}; padding-bottom: ${this.css.footer_padding}px; ${this.css.size}">
                 ${content}
             </div>
             </div>`;

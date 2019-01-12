@@ -42,7 +42,7 @@ const DM = (() => {
                     this.attack = attack,
                     this.name = name,
                     this.full_data = full_data,
-                    this.image = image,
+                    this.image = (image == "") ? "https://i.pinimg.com/736x/a8/f1/b1/a8f1b1a353b92c3e8e166c9eb088f0ba.jpg" : image,
                     this.id = id
             }
             get pp() {
@@ -212,7 +212,7 @@ const DM = (() => {
                 if (btl) {
                     this.updateBattle();
                     document.getElementById("add-battle").addEventListener("click", (e) => {
-                        const form = new richDice(e.clientX - 150, e.clientY - 200);
+                        const form = new richDice(e.clientX - 150, e.clientY - 300);
                         form.setTitle("Monster Creator");
                         form.setDescription("Fill out this form to add a monster to the board.");
                         form.setBackground("./src/img/monsters.jpg");
@@ -230,7 +230,7 @@ const DM = (() => {
                                     if (e.key == "Enter") {
                                         const color_string = dom.getElementsByClassName(`${form.ID}Color Grouping`)[0].value.length ? dom.getElementsByClassName(`${form.ID}Color Grouping`)[0].value.toLowerCase() : genID().color;
                                         let j = isNaN(dom.getElementsByClassName(`${form.ID}Quantity`)[0].value) ? 1 : Number(dom.getElementsByClassName(`${form.ID}Quantity`)[0].value);
-                                        if(j == 0)
+                                        if (j == 0)
                                             j = 1;
                                         for (let i = 0; i < j; i++) {
                                             this.addMonster({

@@ -22,22 +22,27 @@ h3 {
     margin: 0px;
 }
 
-#banner{
+#banner {
     padding: 10px;
     color: white;
-    text-align: left;
+    text-align: center;
 }
-#banner h1, h2{
+
+#banner h1,
+#banner h2 {
     text-shadow: 1px 1px black;
 }
-#banner h1{
+
+#banner h1 {
     color: #e00202;
     font-size: 40px;
 }
-#banner h2{
+
+#banner h2 {
     font-style: italic;
     font-size: 20px;
 }
+
 #main {
     margin: 15px;
     text-align: center;

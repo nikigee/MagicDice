@@ -304,7 +304,7 @@ console.log("%cA character manager built for Dungeons & Dragons 5e", "font-size:
 // first time message for people new to the app.
 window.addEventListener("load", () => {
     if (!localStorage.getItem("md_firstrun")) {
-        const window = new richDice((document.body.clientWidth / 2) - 200, 150);
+        const window = new richDice((document.body.clientWidth / 2) - 260, 150);
         window.setTitle("Welcome to Magic Dice!");
         window.setSize(520, 700);
         window.addField("Where is everything?", `So, you might have noticed there seems to be a lack of anything on the screen besides this box... and that's by design! Let me explain; This program was and still is designed around the JavaScript REPL present in most modern web browsers (I recommend Chrome or Chromium for Magic Dice). To perform more advanced functions, you may need to be familiar with said console.`)

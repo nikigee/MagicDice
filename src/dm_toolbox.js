@@ -34,7 +34,6 @@ const DM = (() => {
                             console.log(`Error returned code: ${new_request.status}`);
                         }
                     };
-                    new_request.setRequestHeader('content-type', 'application/json');
                     new_request.send();
                 } else {
                     console.log("No results found!");
@@ -43,7 +42,6 @@ const DM = (() => {
                 console.log(`Error returned code: ${request.status}`);
             }
         }
-        request.setRequestHeader('content-type', 'application/json');
         request.send();
     }
     // Combat and initative tracker
@@ -151,7 +149,7 @@ const DM = (() => {
 
             // battleList
             addMnstFromAPI(name) {
-                returnFromAPI("monster", name, (data) => {
+                returnFromAPI("monsters", name, (data) => {
                     console.log(data);
                 });
             }

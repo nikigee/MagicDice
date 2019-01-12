@@ -163,7 +163,7 @@ const richDice = (() => {
             });
 
             /* The richDice Container */
-            const container = `<div class="richDice ${this.ID}" style="left: ${this.x}px; top: ${this.y}px; ${this.css.background}">
+            const container = `<div class="richDice ${this.ID}" style="left: ${this.x}; top: ${this.y}; ${this.css.background}">
             <div class="richBar"><span class="richClose"></span></div>
             <div class="richContent" style="text-align: ${this.css.alignment}; padding-bottom: ${this.css.footer_padding}px; ${this.css.size}">
                 ${content}
@@ -300,3 +300,18 @@ class Item {
 // start up banner
 console.log("%cMagic Dice", "font-size: 30px; color: #c51b1b; text-shadow: 1px 1px black; font-family: Georgia, serif;");
 console.log("%cA character manager built for Dungeons & Dragons 5e", "font-size: 14px; font-style: italic; font-weight: bold; font-family: 'Trebuchet MS', Helvetica, sans-serif;padding: 5px;");
+
+// first time message for people new to the app.
+window.addEventListener("load", () => {
+    if (!localStorage.getItem("md_firstrun")) {
+        const window = new richDice((document.body.clientWidth / 2) - 200, 150);
+        window.setTitle("Welcome to Magic Dice!");
+        window.setSize(520, 700);
+        window.addField("Where is everything?", `So, you might have noticed there seems to be a lack of anything on the screen besides this box... and that's by design! Let me explain; This program was and still is designed around the JavaScript REPL present in most modern web browsers (I recommend Chrome or Chromium for Magic Dice). To perform more advanced functions, you may need to be familiar with said console.`)
+        window.addField("How do I get started?", `To begin, first open your Dev Console; F12 on Google Chrome. Then the world is yours!`);
+        window.addCustomHTML("Some Sample Commands", `<ul><li><strong>die.r("d20"):</strong> This command rolls a d20! Substitute d20 for any dice combination like 6d8.</li><li><strong>Player Generation:</strong> A series of commands to create a default PC!<ol><li>let John = new Player({lvl: 3})</li><li>John.name = "John Smith"</li><li><i>Edit the object to your hearts content.</i> (Not a command)</li><li>John.enableShortcuts()</li><li><i>Click outside of the console and press shift X on your keyboard and watch.</i> (Not a command)</li></ol></li></ul>`);
+        window.render();
+
+        localStorage.setItem("md_firstrun", "true");
+    }
+});

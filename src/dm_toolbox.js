@@ -15,39 +15,10 @@ const DM = (() => {
         }
     }
 
-    function returnFromAPI(category, name, callback) {
-        name = name.replace(" ", "+");
-        const request = new XMLHttpRequest();
-        request.open("GET", `http://dnd5eapi.co/api/${category}/?name=${name}`);
-        request.onload = () => {
-            const data = JSON.parse(this.response);
-            if (request.status >= 200 && request.status < 400) {
-                if (data.count != 0) {
-                    // if found
-                    const new_request = new XMLHttpRequest();
-                    new_request.open("GET", data.url);
-                    new_request.onload = () => {
-                        const new_data = JSON.parse(this.response);
-                        if (new_request.status >= 200 && new_request.status < 400) {
-                            callback(new_data); // finally found what we're looking for.
-                        } else {
-                            console.log(`Error returned code: ${new_request.status}`);
-                        }
-                    };
-                    new_request.send();
-                } else {
-                    console.log("No results found!");
-                }
-            } else {
-                console.log(`Error returned code: ${request.status}`);
-            }
-        }
-        request.send();
-    }
     // Combat and initative tracker
     DM_obj.battleBoard = (() => {
         function genID() {
-            const colours = ["blue", "red", "black", "green", "white", "yellow", "pink", "orange"];
+            const colours = ["blue", "red", "purple", "green", "white", "yellow", "pink", "orange"];
             return {
                 color: colours[Math.floor(Math.random() * colours.length)],
                 number: Math.floor(Math.random() * 20) + 1
@@ -61,7 +32,7 @@ const DM = (() => {
                         AC = 12,
                         attack = 3,
                         name = "Bandit",
-                        image = "https://i.pinimg.com/736x/a8/f1/b1/a8f1b1a353b92c3e8e166c9eb088f0ba.jpg",
+                        image = `https://i.pinimg.com/736x/a8/f1/b1/a8f1b1a353b92c3e8e166c9eb088f0ba.jpg`,
                         full_data = {},
                         id = genID()
                 } = props;
@@ -77,13 +48,32 @@ const DM = (() => {
             get pp() {
                 return Math.round((this.currentHP / this.maxHP) * 100)
             }
+            get strID() {
+                return this.id.color + this.id.number
+            }
+            get isBlooded() {
+                if (this.pp < 50) {
+                    return true
+                } else {
+                    return false
+                }
+            }
+            add(amt) {
+                this.currentHP += amt; // the modding itself
+                if (this.currentHP > this.maxHP) {
+                    this.currentHP = this.maxHP;
+                }
+                var status = (amt < 0) ? "Damaged" : "Healed"; // did it heal or damage?
+                console.log(status + " by " + amt + " points! %c(HP: " + this.currentHP + " / " + this.maxHP + ")", "color:" + getColor(this.currentHP / this.maxHP * 100));
+                return this.currentHP;
+            }
         };
 
         class battleBoard {
             constructor(props = {}) {
                 const {
                     initList = localStorage.dm_initlist ? JSON.parse(localStorage.getItem("dm_initlist")) : [],
-                        monsterList = [],
+                        monsterList = new Map()
                 } = props;
                 this.initList = initList;
                 this.monsterList = monsterList;
@@ -91,8 +81,6 @@ const DM = (() => {
             collectInfo(callback) {
                 // clear previous info
                 this.initList = [];
-                this.monsterList = [];
-
                 // initiative section
                 const initBlocks = document.getElementsByClassName("init-block");
                 for (let i = 0; i < initBlocks.length; i++) {
@@ -146,12 +134,14 @@ const DM = (() => {
                     this.updateInit();
                 });
             }
-
-            // battleList
-            addMnstFromAPI(name) {
-                returnFromAPI("monsters", name, (data) => {
-                    console.log(data);
-                });
+            addMonster(monsterData) {
+                const mnstr = new Monster(monsterData);
+                // make sure it's unique
+                while (this.monsterList.get(mnstr.strID)) {
+                    mnstr.id = genID();
+                }
+                this.monsterList.set(mnstr.strID, mnstr);
+                this.updateBattle();
             }
             updateBattle() {
                 const battleHTML = document.getElementById("battle-list");
@@ -160,13 +150,38 @@ const DM = (() => {
                 }
                 battleHTML.innerHTML = "";
                 this.monsterList.forEach((mnstr) => {
-                    battleHTML.insertAdjacentHTML("beforeend", `<div class="monster-pill" style="background:url("${mnstr.image}") center center; border: 2px solid ${mnstr.isBlooded() ? "red" : "#32cd32"};">
+                    battleHTML.insertAdjacentHTML("beforeend", `<div class="monster-pill" style="background:url('${mnstr.image}') center center; border: 2px solid ${mnstr.isBlooded ? "red" : "#32cd32"};background-size: cover;">
                     <div class="monster-info spoiler">
                         <h3>${mnstr.name}</h3>
                         <span class="ac-shield">AC: ${mnstr.AC}</span>
-                        <div class="health-bar"><span class="fill" style="width: 100%; background: ${getColor(mnstr.pp)}">${mnstr.currentHP}/${mnstr.maxHP}</span></div>
+                        <span>Attack Roll: ${mnstr.attack < 0 ? mnstr.attack : `+${mnstr.attack}`}</span>
+                        <span style="color:${mnstr.id.color}">ID: ${mnstr.strID}</span>
+                        <div class="fill-bar health-bar"><span class="fill" style="width: ${mnstr.pp}%; background: ${getColor(mnstr.pp)}">${mnstr.currentHP}/${mnstr.maxHP}</span></div>
                     </div>
                     </div>`);
+                    const health_bar = document.getElementsByClassName("health-bar");
+                    health_bar[health_bar.length - 1].addEventListener("click", (e) => {
+                        const health_window = new richDice(e.clientX, e.clientY);
+                        health_window.setSize(300);
+                        health_window.setTitle("Add/Remove Health");
+                        health_window.setDescription("Enter a number to add/remove health from this character.");
+                        health_window.addPrompt("Amount to add", "-12");
+                        health_window.css.alignment = "left";
+                        health_window.render((d) => {
+                            d.getElementsByClassName(health_window.ID + "Amount to add")[0].addEventListener("keydown", (e) => {
+                                if (e.keyCode == 13) {
+                                    let num = e.target.value;
+                                    if (isFinite(Number(num))) {
+                                        mnstr.add(Number(num));
+                                    } else if (new RegExp(/^[0-9]{0,9}d[0-9]{1,9}/).test(num)) {
+                                        mnstr.add(die.r(String(num)));
+                                    }
+                                    this.updateBattle();
+                                    d.remove();
+                                }
+                            });
+                        });
+                    });
                 });
             }
             create(args = {}) {
@@ -188,7 +203,7 @@ const DM = (() => {
                     </div>
                     <div id="battle-options">
                         <button class="btn-main" id="add-battle">Add</button>
-                        <button class="btn-main" id="add-battle">Remove All</button>
+                        <button class="btn-main" id="remove-battle">Remove All</button>
                         <button class="btn-main" id="spoiler-button">Hide OFF</button>
                     </div>
                 </div>` : ""}
@@ -196,6 +211,58 @@ const DM = (() => {
                 document.getElementById("main").innerHTML = html;
                 if (btl) {
                     this.updateBattle();
+                    document.getElementById("add-battle").addEventListener("click", (e) => {
+                        const form = new richDice(e.clientX - 150, e.clientY - 200);
+                        form.setTitle("Monster Creator");
+                        form.setDescription("Fill out this form to add a monster to the board.");
+                        form.setBackground("./src/img/monsters.jpg");
+                        form.addPrompt("Name", "Bandit");
+                        form.addPrompt("Max HP", "11");
+                        form.addPrompt("AC", "12");
+                        form.addPrompt("Attack Roll", "3");
+                        form.addPrompt("Image URL", "https://i.pinimg.com/736x/a8/f1/b1/a8f1b1a353b92c3e8e166c9eb088f0ba.jpg");
+                        form.addPrompt("Color Grouping", "orange");
+                        form.addPrompt("Quantity", "1");
+                        form.render((dom) => {
+                            const inputs = dom.getElementsByTagName("input");
+                            for (let i = 0; i < inputs.length; i++) {
+                                inputs[i].addEventListener("keydown", (e) => {
+                                    if (e.key == "Enter") {
+                                        const color_string = dom.getElementsByClassName(`${form.ID}Color Grouping`)[0].value.length ? dom.getElementsByClassName(`${form.ID}Color Grouping`)[0].value.toLowerCase() : genID().color;
+                                        let j = isNaN(dom.getElementsByClassName(`${form.ID}Quantity`)[0].value) ? 1 : Number(dom.getElementsByClassName(`${form.ID}Quantity`)[0].value);
+                                        if(j == 0)
+                                            j = 1;
+                                        for (let i = 0; i < j; i++) {
+                                            this.addMonster({
+                                                name: dom.getElementsByClassName(`${form.ID}Name`)[0].value,
+                                                maxHP: Number(dom.getElementsByClassName(`${form.ID}Max HP`)[0].value),
+                                                AC: Number(dom.getElementsByClassName(`${form.ID}AC`)[0].value),
+                                                attack: Number(dom.getElementsByClassName(`${form.ID}Attack Roll`)[0].value),
+                                                image: dom.getElementsByClassName(`${form.ID}Image URL`)[0].value,
+                                                id: {
+                                                    color: color_string,
+                                                    number: i + 1
+                                                }
+                                            });
+                                            dom.remove();
+                                        }
+                                    }
+                                });
+                            }
+                        });
+                    });
+                    document.getElementById("remove-battle").addEventListener("click", () => {
+                        this.monsterList = new Map();
+                        this.updateBattle();
+                    });
+                    document.getElementById("spoiler-button").addEventListener("click", (e) => {
+                        const spoilers = document.getElementsByClassName("spoiler");
+                        const visibility = spoilers[0].style.visibility == "hidden" ? "visible" : "hidden";
+                        for (let i = 0; i < spoilers.length; i++) {
+                            spoilers[i].style.visibility = visibility;
+                        }
+                        e.target.innerHTML = `Hide ${visibility == "hidden" ? "ON" : "OFF"}`;
+                    });
                 }
                 if (init) {
                     this.updateInit();

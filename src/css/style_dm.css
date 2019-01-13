@@ -50,7 +50,7 @@
 }
 
 .monster-pill {
-    width: 200px;
+    width: 165px;
     color: white;
     box-shadow: #989898 0px 0px 3px;
     background: white;
@@ -69,7 +69,7 @@
 .monster-info {
     background: rgba(15, 15, 15, 0.747);
     padding: 5px;
-    min-height: 250px;
+    min-height: 225px;
 }
 
 .init-block {

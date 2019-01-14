@@ -221,6 +221,7 @@ const Spell = (() => {
                     school = "Spell",
                     components = "V S",
                     ctime = "1 Action",
+                    description = "No description exists for this spell.",
                     duration = 0,
                     range = 10,
                     roll = "0d4",
@@ -230,6 +231,7 @@ const Spell = (() => {
             this.level = level;
             this.ctime = ctime;
             this.school = school;
+            this.description = description;
             this.components = (typeof (components) != "string") ? components.join(" ") : components;
             this.duration = duration;
             this.range = range;
@@ -262,6 +264,7 @@ const Spell = (() => {
             console.log("Components: " + this.components);
             console.log("Duration: " + ((this.duration !== 0) ? this.duration + " minutes" : "Instantaneous"));
             console.log(`Roll: ${this.roll}`);
+            console.log(`${this.description}`);
         }
     };
     return Spell;

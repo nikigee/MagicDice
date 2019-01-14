@@ -60,6 +60,7 @@
     display: inline-block;
     overflow: hidden;
     margin: 2px;
+    position: relative;
 }
 .monster-pill span{
     display: block;
@@ -140,4 +141,26 @@
     margin: auto;
     border-radius: 5px;
     box-shadow: 0px 0px 7px black;
+}
+.monster-buttons{
+    font-size: 19px;
+    padding-top: 5px;
+    text-align: right;
+    padding-bottom: 5px;
+    position: absolute;
+    bottom: 0;
+    margin: auto;
+    right: 0;
+    left: 0;
+    padding-right: 5px;
+    padding-left: 5px;
+}
+.monster-buttons i{
+    margin-left: 2.5px;
+    margin-right: 2.5px;
+    transition: 0.1s;
+    cursor: pointer;
+}
+.monster-buttons i:hover{
+    color: gold;   
 }

@@ -157,6 +157,7 @@ const DM = (() => {
                         <span>Attack Roll: ${mnstr.attack < 0 ? mnstr.attack : `+${mnstr.attack}`}</span>
                         <span style="color:${mnstr.id.color}">ID: ${mnstr.strID}</span>
                         <div class="fill-bar health-bar"><span class="fill" style="width: ${mnstr.pp}%; background: ${getColor(mnstr.pp)}">${mnstr.currentHP}/${mnstr.maxHP}</span></div>
+                        <div class="monster-buttons"><i class="fa fa-info-circle"></i><i class="fa fa-remove"></i></div>
                     </div>
                     </div>`);
                     const health_bar = document.getElementsByClassName("health-bar");
@@ -181,6 +182,20 @@ const DM = (() => {
                                 }
                             });
                         });
+                    });
+                    const remove_button = document.getElementsByClassName("fa-remove");
+                    remove_button[remove_button.length - 1].addEventListener("click", () => {
+                        console.log(`Deleting ${mnstr.name} from list...`);
+                        this.monsterList.delete(mnstr.strID);
+                        this.updateBattle();
+                    });
+                    const info_button = document.getElementsByClassName("fa-info-circle");
+                    info_button[info_button.length - 1].addEventListener("click", (e) => {
+                        const popup = new richDice(e.clientX - 250, e.clientY - 250);
+                        popup.setTitle(`${mnstr.name}`);
+                        popup.addCustomHTML("", `<iframe width=500 height=700 src="http://www.orcpub.com/dungeons-and-dragons/5th-edition/monsters/${mnstr.name.toLowerCase().replace(" ", "-")}"></iframe>`);
+                        popup.css.footer_padding = 0;
+                        popup.render();
                     });
                 });
             }

@@ -1,5 +1,13 @@
 const DM = (() => {
     const DM_obj = {};
+    DM_obj.config = localStorage.getItem("md_dmconfig") ? JSON.parse(localStorage.getItem("md_dmconfig")) : {
+        img_folder: "./src/img"
+    };
+    DM_obj.saveConfig = () => {
+        console.log("Saving config...");
+        localStorage.setItem("md_dmconfig", JSON.stringify(DM_obj.config));
+        return console.log(JSON.parse(localStorage.getItem("md_dmconfig")));
+    };
 
     function getColor(PP) {
         if (PP >= 80) {
@@ -42,7 +50,7 @@ const DM = (() => {
                     this.attack = attack,
                     this.name = name,
                     this.full_data = full_data,
-                    this.image = (image == "") ? "https://i.pinimg.com/736x/a8/f1/b1/a8f1b1a353b92c3e8e166c9eb088f0ba.jpg" : image,
+                    this.image = (image == "") ? `${DM_obj.config.img_folder}/monsters/${name.toLowerCase().replace(/ /g, "-")}.jpg` : image,
                     this.id = id
             }
             get pp() {
@@ -193,7 +201,8 @@ const DM = (() => {
                     info_button[info_button.length - 1].addEventListener("click", (e) => {
                         const popup = new richDice(e.clientX - 250, e.clientY - 250);
                         popup.setTitle(`${mnstr.name}`);
-                        popup.addCustomHTML("", `<iframe width=500 height=700 src="http://www.orcpub.com/dungeons-and-dragons/5th-edition/monsters/${mnstr.name.toLowerCase().replace(" ", "-")}"></iframe>`);
+                        popup.setDescription("Opening a portal to the ethereal plane...");
+                        popup.addCustomHTML("", `<iframe width=500 height=700 src="https://chisaipete.github.io/bestiary/creatures/${mnstr.name.toLowerCase().replace(/ /g, "-")}"></iframe>`);
                         popup.css.footer_padding = 0;
                         popup.render();
                     });

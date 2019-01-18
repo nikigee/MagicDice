@@ -207,6 +207,26 @@ const richDice = (() => {
             });
             if (callback) callback(this.dom);
         }
+        genPrompt(title, desc, prompt = {}, callback){
+            const {
+                p_title = p_title,
+                p_placeholder = p_placeholder
+            } = prompt;
+            this.setTitle(title);
+            this.setDescription(desc);
+            this.setSize("300");
+            this.css.alignment = "left";
+            this.addPrompt(prompt.p_title, prompt.p_placeholder);
+            this.render((dom)=>{
+                dom.addEventListener("keypress", (e)=>{
+                    if(e.key == "Enter"){
+                        const data = document.getElementsByClassName(this.ID+prompt.p_title)[0].value;
+                        callback(data);
+                        this.dom.remove();
+                    }
+                });
+            });
+        }
     }
     return richDice;
 })();

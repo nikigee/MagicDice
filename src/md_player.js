@@ -177,11 +177,19 @@ const Player = (() => {
         get Mod() {
             return this.parent.stats.ability_mod[this.spcMod];
         }
-        add() {
+        addFromPrompt() {
             const objSpell = new Spell(JSON.parse(prompt("Please enter the object string.")));
             this.spells.set(objSpell.name, objSpell);
             this.sort();
             objSpell.x;
+            return console.log("%cNew Spell Added!", "color: limegreen");
+        }
+        add(spell) {
+            if (typeof (spell) != "object")
+                return false
+            this.spells.set(spell.name, spell);
+            this.sort();
+            spell.x;
             return console.log("%cNew Spell Added!", "color: limegreen");
         }
         sort() {

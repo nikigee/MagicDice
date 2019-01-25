@@ -3,6 +3,9 @@ This is a personal project of mine I embarked on to create an extensive and flex
 
 In particular it's also useful for level ups as it handles the majority of the tedious updating of a character sheet.
 
+## Website
+You can now run this tool in your browser at https://nikgo.me/MagicDice
+
 ## Features
 - HP tracking (character.health.add(x))
 - Simulated Dice (die.r("2d10"))

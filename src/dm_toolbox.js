@@ -40,7 +40,7 @@ const DM = (() => {
                         AC = 12,
                         attack = 3,
                         name = "Bandit",
-                        image = `https://i.pinimg.com/736x/a8/f1/b1/a8f1b1a353b92c3e8e166c9eb088f0ba.jpg`,
+                        image = `./src/img/monster.jpg`,
                         full_data = {},
                         id = genID()
                 } = props;
@@ -262,7 +262,7 @@ const DM = (() => {
                                                 maxHP: Number(dom.getElementsByClassName(`${form.ID}Max HP`)[0].value),
                                                 AC: Number(dom.getElementsByClassName(`${form.ID}AC`)[0].value),
                                                 attack: Number(dom.getElementsByClassName(`${form.ID}Attack Roll`)[0].value),
-                                                image: dom.getElementsByClassName(`${form.ID}Image URL`)[0].value,
+                                                image: (dom.getElementsByClassName(`${form.ID}Image URL`)[0].value) ? dom.getElementsByClassName(`${form.ID}Image URL`)[0].value : undefined,
                                                 id: {
                                                     color: color_string,
                                                     number: i + 1

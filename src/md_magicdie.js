@@ -233,28 +233,49 @@ const richDice = (() => {
 
 
 const Spell = (() => {
+    function getGetOrdinal(n) {
+        var s = ["th", "st", "nd", "rd"],
+            v = n % 100;
+        return (n != 0) ? n + (s[(v - 20) % 10] || s[v] || s[0]) : "Cantrip";
+    }
     class Spell {
         constructor(props = {}) {
             const {
                 name = "Unkown Spell",
-                    level = 1,
+                    level = "1st",
                     school = "Spell",
                     components = "V S",
                     ctime = "1 Action",
+                    ritual = "no",
+                    concentration = "no",
                     description = "No description exists for this spell.",
-                    duration = 0,
-                    range = 10,
+                    duration = "Instantaneous",
+                    range = "10 feet",
                     roll = "0d4",
-                    url = ""
+                    url = "",
             } = props;
             this.name = name;
-            this.level = level;
+            if(!isNaN(level)){
+                this.level = getGetOrdinal(level);
+            }else{
+                this.level = level;
+            }
             this.ctime = ctime;
+            this.ritual = ritual;
+            this.concentration = concentration;
             this.school = school;
             this.description = description;
             this.components = (typeof (components) != "string") ? components.join(" ") : components;
-            this.duration = duration;
-            this.range = range;
+            if(!isNaN(duration)){
+                this.duration = (duration !== 0) ? duration + " minutes" : "Instantaneous";
+            }else{
+                this.duration = duration;
+            }
+            if(!isNaN(range)){
+                this.range = range+" feet";
+            }else{
+                this.range = range;
+            }
             this.roll = roll;
             this.url = url;
         }
@@ -272,17 +293,12 @@ const Spell = (() => {
             window.open(this.url);
         };
         get x() {
-            var getGetOrdinal = function (n) {
-                var s = ["th", "st", "nd", "rd"],
-                    v = n % 100;
-                return (n != 0) ? n + (s[(v - 20) % 10] || s[v] || s[0]) : "Cantrip";
-            }
             console.log("\n" + this.name.toUpperCase());
-            console.log(getGetOrdinal(this.level) + "-level " + this.school);
+            console.log(this.level + "-level " + this.school);
             console.log("Casting Time: " + this.ctime);
-            console.log("Range: " + this.range + " feet");
+            console.log("Range: " + this.range);
             console.log("Components: " + this.components);
-            console.log("Duration: " + ((this.duration !== 0) ? this.duration + " minutes" : "Instantaneous"));
+            console.log("Duration: " + this.duration);
             console.log(`Roll: ${this.roll}`);
             console.log(`${this.description}`);
         }

@@ -256,19 +256,14 @@ const Player = (() => {
             this.parent = parent;
         }
         display_spell(spell) {
-            const getGetOrdinal = function (n) {
-                const s = ["th", "st", "nd", "rd"],
-                    v = n % 100;
-                return (n != 0) ? n + (s[(v - 20) % 10] || s[v] || s[0]) : "Cantrip";
-            }
             const window = document.getElementsByClassName("spellwindow")[0];
             window.innerHTML = `
             <h2>${spell.name}</h2>
-            <span class="spellscription">${getGetOrdinal(spell.level) + "-level " + spell.school}</span>
+            <span class="spellscription">${spell.level + "-level " + spell.school}</span>
             <span class="spellrow"><strong>Casting Time:</strong> ${spell.ctime}</span>
-            <span class="spellrow"><strong>Range:</strong> ${spell.range} feet</span>
+            <span class="spellrow"><strong>Range:</strong> ${spell.range}</span>
             <span class="spellrow"><strong>Components:</strong> ${spell.components}</span>
-            <span class="spellrow"><strong>Duration:</strong> ${(spell.duration !== 0) ? spell.duration + " minutes" : "Instantaneous"}</span>
+            <span class="spellrow"><strong>Duration:</strong> ${spell.duration}</span>
             <span class="spellrow"><strong>Damage:</strong> ${spell.roll}</span>
             <iframe src="https://roll20.net/compendium/dnd5e/${encodeURIComponent(spell.name)}#toc_1"></iframe>
             `;

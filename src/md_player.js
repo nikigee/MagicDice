@@ -284,7 +284,7 @@ const Player = (() => {
             `;
             const list = document.getElementsByClassName("spell-list")[0];
             this.parent.magic.spells.forEach((x) => {
-                list.insertAdjacentHTML('beforeend', `<span class="lvl">${x.level}</span><span class="spell" ${(this.parent.magic.preparedSpells.indexOf(x.name) != -1) ? `style=color:${"#e658ff"}` : ""}>${x.name}</span>`);
+                list.insertAdjacentHTML('beforeend', `<span class="lvl">${(isNaN(Number(x.level[0]))) ? 0 : Number(x.level[0])}</span><span class="spell" ${(this.parent.magic.preparedSpells.indexOf(x.name) != -1) ? `style=color:${"#e658ff"}` : ""}>${x.name}</span>`);
                 list.lastChild.addEventListener("click", () => {
                     this.display_spell(x);
                 });

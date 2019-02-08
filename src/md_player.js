@@ -195,7 +195,7 @@ const Player = (() => {
         sort() {
             const spellArray = Array.from(this.spells);
             spellArray.sort((a, b) => {
-                return a[1].level - b[1].level;
+                return a[1].intLvl - b[1].intLvl;
             });
             this.spells = new Map(spellArray);
         }
@@ -234,13 +234,13 @@ const Player = (() => {
             console.log("\nSPELL RESULTS: ");
             this.spells.forEach((v) => {
                 const spellName = v.name.toLowerCase();
-                if ((args.lvl == undefined || args.lvl == v.level) && (spellName.includes(args.name) || !args.name)) {
+                if ((args.lvl == undefined || args.lvl == v.intLvl) && (spellName.includes(args.name) || !args.name)) {
                     // if spell is prepared, change color
                     let prep_clr = "auto";
                     if (this.preparedSpells.indexOf(v.name) != -1) {
                         prep_clr = "#c451d8";
                     }
-                    console.log("- %c" + v.name + " %c(Level " + v.level + ")", "color: " + prep_clr, "color: #03a9f4");
+                    console.log("- %c" + v.name + " %c(" + v.level + " Level)", "color: " + prep_clr, "color: #03a9f4");
                 }
             })
         }

@@ -289,6 +289,9 @@ const Spell = (() => {
             console.log("Rolling (" + attck + ")");
             return die.r(attck);
         };
+        get intLvl(){
+            return (isNaN(Number(this.level[0]))) ? 0 : Number(this.level[0]);
+        }
         get wiki() {
             window.open(this.url);
         };

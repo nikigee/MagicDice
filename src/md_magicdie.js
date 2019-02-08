@@ -252,7 +252,7 @@ const Spell = (() => {
                     duration = "Instantaneous",
                     range = "10 feet",
                     roll = "0d4",
-                    url = "",
+                    url = "https://dnd5e.fandom.com/wiki/"+name.replace(/ /g, "_"),
             } = props;
             this.name = name;
             if(!isNaN(level)){

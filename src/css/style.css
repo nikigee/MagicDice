@@ -212,7 +212,6 @@ h3 {
     background: #ffffff80;
     padding: 5px;
     box-shadow: black 0px 0px 10px;
-    user-select: none;
     width: 50%;
     transition: 0.3s;
     -webkit-transition: 0.3s;
@@ -221,7 +220,14 @@ h3 {
     overflow: auto;
     height: -webkit-fill-available;
 }
-
+.descwrap{
+    margin: 5px;
+    background: #f1f1f1;
+    border-radius: 3px;
+    box-shadow: 0px 0px 3px black;
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
 .spellwindow span,
 h2 {
     margin-left: 10px;
@@ -231,6 +237,20 @@ h2 {
     font-weight: bold;
     margin-top: 10px;
     font-size: 36px;
+}
+
+.spellwindow a{
+    text-decoration: none;
+    color: inherit;
+    transition: 0.2s;
+}
+
+.spellwindow a:visited{
+    color: inherit;
+}
+
+.spellwindow a:hover{
+    color: #a51010;
 }
 
 .spellscription {
@@ -443,4 +463,11 @@ div::-webkit-scrollbar-thumb {
 .btn-main:hover {
     background: black;
     color: white;
+}
+
+.spelldesc{
+    margin: 0px;
+    padding: 10px;
+    padding-top: 5px;
+    padding-bottom: 5px;
 }

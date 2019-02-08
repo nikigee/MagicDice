@@ -258,14 +258,14 @@ const Player = (() => {
         display_spell(spell) {
             const window = document.getElementsByClassName("spellwindow")[0];
             window.innerHTML = `
-            <h2>${spell.name}</h2>
+            <h2><a href="${spell.url}" target="_blank">${spell.name}</a></h2>
             <span class="spellscription">${spell.level + "-level " + spell.school}</span>
             <span class="spellrow"><strong>Casting Time:</strong> ${spell.ctime}</span>
             <span class="spellrow"><strong>Range:</strong> ${spell.range}</span>
             <span class="spellrow"><strong>Components:</strong> ${spell.components}</span>
             <span class="spellrow"><strong>Duration:</strong> ${spell.duration}</span>
             <span class="spellrow"><strong>Damage:</strong> ${spell.roll}</span>
-            <iframe src="https://roll20.net/compendium/dnd5e/${encodeURIComponent(spell.name)}#toc_1"></iframe>
+            <div class="descwrap"><p class="spelldesc">${spell.description.replace(/\n\n/g, "</p><p class='spelldesc'>")}</p></div>
             `;
             document.getElementsByClassName("spellrow")[4].addEventListener("mousedown", (e) => {
                 die.gfx_dice(spell.roll, e.clientX, e.clientY);

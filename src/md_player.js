@@ -207,6 +207,14 @@ const Player = (() => {
                 return this.spells.get(spell).cast();
             }
         }
+        prepare_remove(spell){
+            if (!spell && this.preparedSpells.indexOf(spell.name) == -1) {
+                console.log("You didn't specify a valid spell");
+                return;
+            }
+            const index = this.preparedSpells.indexOf(spell.name);
+            return this.preparedSpells.splice(index, 1);
+        }
         prepare(spell) {
             if (!spell) {
                 console.log("You didn't specify a valid spell");
@@ -689,20 +697,22 @@ const Player = (() => {
         }
         // manual marking of skills for proficency
         manMark(skill) {
-            if (this.skills[skill.toLowerCase()] && !this.marks.includes(skill)) {
-                this.skills[skill.toLowerCase()] += this.prof;
-                this.marks.push(skill.toLowerCase());
-                return this.skills[skill.toLowerCase()];
+            skill = skill.toLowerCase();
+            if (this.skills[skill] && !this.marks.includes(skill)) {
+                this.skills[skill] += this.prof;
+                this.marks.push(skill);
+                return this.skills[skill];
             } else {
                 console.log("You didn't input a valid skill! Either skill not found or already proficent.");
                 return;
             }
         }
         expertCheck(skill) {
-            if (this.skills[skill.toLowerCase()] && !this.expert.includes(skill)) {
-                this.skills[skill.toLowerCase()] += this.prof;
-                this.expert.push(skill.toLowerCase());
-                return this.skills[skill.toLowerCase()];
+            skill = skill.toLowerCase();
+            if (this.skills[skill] && !this.expert.includes(skill)) {
+                this.skills[skill] += this.prof;
+                this.expert.push(skill);
+                return this.skills[skill];
             } else {
                 console.log("You didn't input a valid skill! Either skill not found or already proficent.");
                 return;

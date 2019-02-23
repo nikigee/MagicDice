@@ -44,8 +44,8 @@ const DM = (() => {
                         full_data = {},
                         id = genID()
                 } = props;
-                this.maxHP = maxHP,
-                    this.currentHP = currentHP,
+                this.maxHP = Number(maxHP),
+                    this.currentHP = Number(currentHP),
                     this.AC = AC,
                     this.attack = Number(attack),
                     this.name = name,

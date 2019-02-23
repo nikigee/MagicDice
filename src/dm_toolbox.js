@@ -47,7 +47,7 @@ const DM = (() => {
                 this.maxHP = maxHP,
                     this.currentHP = currentHP,
                     this.AC = AC,
-                    this.attack = attack,
+                    this.attack = Number(attack),
                     this.name = name,
                     this.full_data = full_data,
                     this.image = (image == "") ? `${DM_obj.config.img_folder}/monsters/${name.toLowerCase().replace(/ /g, "-")}.jpg` : image,
@@ -227,6 +227,7 @@ const DM = (() => {
                     </div>
                     <div id="battle-options">
                         <button class="btn-main" id="add-battle">Add</button>
+                        <button class="btn-main" id="library-add">Library Add</button>
                         <button class="btn-main" id="remove-battle">Remove All</button>
                         <button class="btn-main" id="spoiler-button">Hide OFF</button>
                     </div>
@@ -278,6 +279,40 @@ const DM = (() => {
                     document.getElementById("remove-battle").addEventListener("click", () => {
                         this.monsterList = new Map();
                         this.updateBattle();
+                    });
+                    document.getElementById("library-add").addEventListener("click", (e) => {
+                        const library = new richDice(e.clientX - 100, e.clientY - 150);
+                        library.setTitle("Add From Library");
+                        library.setDescription("Add a monster from Falius' archives");
+                        let list = "";
+                        Library.monsters.forEach((v)=>{
+                            list += `<option>${v.name}</option>`
+                        });
+                        library.addCustomHTML("Monster Name", `<input type=text list=monsters class="monster_name_input">
+                        <datalist id=monsters >
+                            ${list}
+                        </datalist>`);
+                        library.addPrompt("Quantity", "1");
+                        // handle callback
+                        library.render((dom)=>{
+                            const inputs = dom.getElementsByTagName("input");
+                            for (let i = 0; i < inputs.length; i++) {
+                                inputs[i].addEventListener("keydown", (e) => {
+                                    if (e.key == "Enter") {
+                                        if(!Library.monsters.get(dom.getElementsByClassName(`monster_name_input`)[0].value)){
+                                            return false;
+                                        }
+                                        let j = isNaN(dom.getElementsByClassName(`${library.ID}Quantity`)[0].value) ? 1 : Number(dom.getElementsByClassName(`${library.ID}Quantity`)[0].value);
+                                        if (j == 0)
+                                            j = 1;
+                                        for (let i = 0; i < j; i++) {
+                                            this.addMonster(Library.monsters.get(dom.getElementsByClassName(`monster_name_input`)[0].value));
+                                            dom.remove();
+                                        }
+                                    }
+                                });
+                            }
+                        });
                     });
                     document.getElementById("spoiler-button").addEventListener("click", (e) => {
                         const spoilers = document.getElementsByClassName("spoiler");

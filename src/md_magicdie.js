@@ -6,8 +6,11 @@ const die = (() => {
                 diceRoll = diceRoll.replace("-", "");
                 diceObj.negative = true;
             }
-            if (diceRoll.includes("+")) {
-                diceObj.foreach_modifier = parseInt(diceRoll.split("+")[1]);
+            if (diceRoll.includes("*")) {
+                diceObj.foreach_modifier = parseInt(diceRoll.split("*")[1]);
+            }
+            if(diceRoll.includes("+")){
+                diceObj.bonus = parseInt(diceRoll.split("+")[1]);
             }
             diceRoll = diceRoll.split("d");
             diceObj.iterator = (diceRoll[0] != "") ? parseInt(diceRoll[0]) : 1;
@@ -34,6 +37,11 @@ const die = (() => {
                     console.log("Roll " + i + ": " + roll);
                 total += roll;
             }
+            if(rCvrt.bonus){
+                if(!mute)
+                    console.log(`Bonus Applied (+${rCvrt.bonus})`);
+                total = total + rCvrt.bonus;
+            }
             if(rCvrt.negative)
                 total = total * -1;
             if (!mute) {
@@ -42,11 +50,7 @@ const die = (() => {
             return total;
         },
         s: function (diceObj) {
-            let roll = `${diceObj.iterator}d${diceObj.face}`;
-            if (diceObj.foreach_modifier) {
-                roll += `+${diceObj.foreach_modifier}`
-            }
-            return roll;
+            return `${(diceObj.negative) ? "-" : ""}${diceObj.iterator}d${diceObj.face}${(diceObj.foreach_modifier) ? "*" : ""}${(diceObj.bonus) ? "+"+diceObj.bonus : ""}`;
         },
         gfx_dice: function (arg, x, y) {
             const rollObj = this.cvt(arg);
@@ -68,12 +72,16 @@ const die = (() => {
                 }
             } else {
                 total = Math.floor(Math.random() * rollObj.face) + 1;
-                if (rollObj.negative)
-                    total = total * -1
             }
             if (rollObj.iterator == 0) {
                 total = 0;
             }
+            if(rollObj.bonus){
+                dice.addField("Bonus:", `${rollObj.bonus}`);
+                total = total + rollObj.bonus;
+            }
+            if (rollObj.negative)
+                total = total * -1
             dice.addField(`Total: `, total);
             dice.render();
             return dice;

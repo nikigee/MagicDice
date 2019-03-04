@@ -431,7 +431,7 @@ const Player = (() => {
                             let num = e.target.value;
                             if (isFinite(Number(num))) {
                                 this.parent.health.add(Number(num));
-                            } else if (new RegExp(/^[0-9]{0,9}d[0-9]{1,9}/).test(num)) {
+                            } else if (new RegExp(/[0-9]{0,9}d[0-9]{1,9}/).test(num)) {
                                 this.parent.health.add(die.r(String(num)));
                             }
                             this.update();

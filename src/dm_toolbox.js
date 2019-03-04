@@ -182,7 +182,7 @@ const DM = (() => {
                                     let num = e.target.value;
                                     if (isFinite(Number(num))) {
                                         mnstr.add(Number(num));
-                                    } else if (new RegExp(/^[0-9]{0,9}d[0-9]{1,9}/).test(num)) {
+                                    } else if (new RegExp(/[0-9]{0,9}d[0-9]{1,9}/).test(num)) {
                                         mnstr.add(die.r(String(num)));
                                     }
                                     this.updateBattle();

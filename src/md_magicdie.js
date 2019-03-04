@@ -2,6 +2,10 @@ const die = (() => {
     const dief = {
         cvt: function (diceRoll) {
             let diceObj = {};
+            if(diceRoll[0] == "-"){
+                diceRoll = diceRoll.replace("-", "");
+                diceObj.negative = true;
+            }
             if (diceRoll.includes("+")) {
                 diceObj.foreach_modifier = parseInt(diceRoll.split("+")[1]);
             }
@@ -24,14 +28,14 @@ const die = (() => {
             let roll;
             for (let i = 1; i <= rCvrt.iterator; i++) {
                 roll = Math.floor(Math.random() * rCvrt.face) + 1;
-                if (rCvrt.foreach_modifier) {
+                if (rCvrt.foreach_modifier)
                     roll += rCvrt.foreach_modifier;
-                }
-                if (!mute) {
+                if (!mute)
                     console.log("Roll " + i + ": " + roll);
-                }
                 total += roll;
             }
+            if(rCvrt.negative)
+                total = total * -1;
             if (!mute) {
                 console.log("Total roll: " + total);
             }
@@ -64,6 +68,8 @@ const die = (() => {
                 }
             } else {
                 total = Math.floor(Math.random() * rollObj.face) + 1;
+                if (rollObj.negative)
+                    total = total * -1
             }
             if (rollObj.iterator == 0) {
                 total = 0;

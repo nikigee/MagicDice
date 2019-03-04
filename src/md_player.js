@@ -84,6 +84,7 @@ const Load = (() => {
                         console.log("File has been processed!");
                         dom.remove();
                         magicHandler.last.render.generate();
+                        console.log("You can now access this character by simply typing 'ply' into this console.");
                     }
                 });
             })

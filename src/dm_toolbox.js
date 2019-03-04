@@ -162,12 +162,15 @@ const DM = (() => {
                     <div class="monster-info spoiler">
                         <h3>${mnstr.name}</h3>
                         <span class="ac-shield">AC: ${mnstr.AC}</span>
-                        <span>Attack Roll: ${mnstr.attack < 0 ? mnstr.attack : `+${mnstr.attack}`}</span>
+                        <span id="attack${mnstr.strID}">Attack Roll: ${mnstr.attack < 0 ? mnstr.attack : `+${mnstr.attack}`}</span>
                         <span style="color:${mnstr.id.color}">ID: ${mnstr.strID}</span>
                         <div class="fill-bar health-bar"><span class="fill" style="width: ${mnstr.pp}%; background: ${getColor(mnstr.pp)}">${mnstr.currentHP}/${mnstr.maxHP}</span></div>
                         <div class="monster-buttons"><i class="fa fa-info-circle"></i><i class="fa fa-remove"></i></div>
                     </div>
                     </div>`);
+                    document.getElementById(`attack${mnstr.strID}`).addEventListener("click", (e)=>{
+                        die.gfx_dice(`d20+${mnstr.attack}`, e.clientX-100, e.clientY-50);
+                    });
                     const health_bar = document.getElementsByClassName("health-bar");
                     health_bar[health_bar.length - 1].addEventListener("click", (e) => {
                         const health_window = new richDice(e.clientX, e.clientY);

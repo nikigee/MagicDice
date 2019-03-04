@@ -77,7 +77,8 @@ const die = (() => {
                 total = 0;
             }
             if(rollObj.bonus){
-                dice.addField("Bonus:", `${rollObj.bonus}`);
+                if (rollObj.iterator > 1)
+                    dice.addField("Bonus:", `${rollObj.bonus}`);
                 total = total + rollObj.bonus;
             }
             if (rollObj.negative)

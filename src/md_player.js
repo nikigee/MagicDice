@@ -1,3 +1,32 @@
+// Player character handler to make things easier, rather than forcing the user to assign their characters to variables.
+magicHandler = (() => {
+    class magicHandler {
+        constructor() {
+            this.managed_players = [];
+        }
+        get last() {
+            if (this.managed_players.length > 0) {
+                return this.managed_players[this.managed_players.length - 1];
+            }
+        }
+        get ply() {
+            if(this.managed_players.length == 0){
+                return console.log("Currently no characters are loaded! You can load from a save file using the command 'Load.restoreFromFile()'");
+            }
+            else if (this.managed_players.length == 1) {
+                return this.managed_players[0];
+            } else {
+                return this.managed_players;
+            }
+        }
+    }
+    return new magicHandler();
+})();
+Object.defineProperty(self, 'ply', {
+    get: function () {
+        return magicHandler.ply;
+    }
+});
 const Load = (() => {
     const Loadf = {
         deSer: function (objData) {
@@ -19,25 +48,45 @@ const Load = (() => {
         },
         // restore from local storage
         restore: function (character) {
-            if (!character || !localStorage.getItem(character)) {
+            const characters = JSON.parse(localStorage.getItem("charList"));
+            if (!character || !characters[character]) {
                 console.log("Invalid identifier specified!");
-                return;
+                return false;
             }
-            return this.deSer(JSON.parse(localStorage.getItem(character)));
+            magicHandler.managed_players.push(this.deSer(characters[character]));
+            console.log(magicHandler.last);
+            magicHandler.last.render.generate();
         },
         ls: function () {
             console.log("---LIST OF CHARACTERS---");
             if (localStorage.getItem("charList")) {
                 var charArray = JSON.parse(localStorage.getItem("charList"));
-                for (var i = 0; i < charArray.length; i++) {
-                    console.log("[" + (i + 1) + "] " + charArray[i]);
+                let i = 0;
+                for (property in charArray) {
+                    console.log("[" + (i++) + "] " + property);
                 }
             } else {
                 console.log("No characters saved!");
             }
         },
-        restoreFromPrompt: function () {
-            return this.deSer(JSON.parse(prompt("Please copy paste the contents of your character's JSON file.")));
+        restoreFromFile: function () {
+            const window = new richDice(50, 50);
+            window.setTitle("Upload a Savefile");
+            window.setDescription("Upload your character's .json file here.");
+            window.addCustomHTML("", `<input type="file" class="upload" name="file">`);
+            window.render((dom) => {
+                dom.getElementsByClassName("upload")[0].addEventListener("change", (e) => {
+                    const file = e.target.files[0];
+                    const reader = new FileReader();
+                    reader.readAsText(file, "UTF-8");
+                    reader.onload = (e) => {
+                        magicHandler.managed_players.push(this.deSer(JSON.parse(e.target.result)));
+                        console.log("File has been processed!");
+                        dom.remove();
+                        magicHandler.last.render.generate();
+                    }
+                });
+            })
         }
     }
     return Loadf
@@ -207,7 +256,7 @@ const Player = (() => {
                 return this.spells.get(spell).cast();
             }
         }
-        prepare_remove(spell){
+        prepare_remove(spell) {
             if (!spell && this.preparedSpells.indexOf(spell.name) == -1) {
                 console.log("You didn't specify a valid spell");
                 return;
@@ -807,20 +856,13 @@ const Player = (() => {
                 if (!id || id == "charList") {
                     id = this.name;
                 }
-                // add to list of character ids
-                if (localStorage["charList"]) {
+                if (localStorage["charList"])
                     var charArray = JSON.parse(localStorage["charList"]);
-                    if (!charArray.includes(id)) {
-                        charArray.push(id);
-                        localStorage["charList"] = JSON.stringify(charArray);
-                    }
-                } else {
-                    localStorage["charList"] = '["' + id + '"]';
-                }
-
+                else
+                    var charArray = {};
                 // the actual saving
-                const savefile = JSON.stringify(new Save(this));
-                localStorage[id] = savefile;
+                charArray[id] = new Save(this);
+                localStorage["charList"] = JSON.stringify(charArray);
                 console.log("Saved as '" + id + "'");
                 return Load.restore(id);
             }

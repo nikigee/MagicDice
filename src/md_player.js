@@ -865,7 +865,7 @@ const Player = (() => {
                 charArray[id] = new Save(this);
                 localStorage["charList"] = JSON.stringify(charArray);
                 console.log("Saved as '" + id + "'");
-                return Load.restore(id);
+                return true
             }
         }
         reload() {

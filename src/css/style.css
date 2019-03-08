@@ -15,6 +15,12 @@ body {
     color: black;
 }
 
+#out-wrap {
+    height: 100%;
+    width: 100%;
+    outline: none;
+}
+
 h1,
 h2,
 h3 {
@@ -220,7 +226,8 @@ h3 {
     overflow: auto;
     height: -webkit-fill-available;
 }
-.descwrap{
+
+.descwrap {
     margin: 5px;
     background: #f1f1f1;
     border-radius: 3px;
@@ -229,6 +236,7 @@ h3 {
     padding-bottom: 5px;
     margin-top: 10px;
 }
+
 .spellwindow span,
 h2 {
     margin-left: 10px;
@@ -240,17 +248,17 @@ h2 {
     font-size: 36px;
 }
 
-.spellwindow a{
+.spellwindow a {
     text-decoration: none;
     color: inherit;
     transition: 0.2s;
 }
 
-.spellwindow a:visited{
+.spellwindow a:visited {
     color: inherit;
 }
 
-.spellwindow a:hover{
+.spellwindow a:hover {
     color: #a51010;
 }
 
@@ -364,6 +372,7 @@ div::-webkit-scrollbar-thumb {
 .richContent ol {
     margin: 0px;
     text-align: left;
+    padding-right: 20px;
 }
 
 .richDice h3 {
@@ -466,7 +475,7 @@ div::-webkit-scrollbar-thumb {
     color: white;
 }
 
-.spelldesc{
+.spelldesc {
     margin: 0px;
     padding: 10px;
     padding-top: 5px;

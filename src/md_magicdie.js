@@ -2,14 +2,14 @@ const die = (() => {
     const dief = {
         cvt: function (diceRoll) {
             let diceObj = {};
-            if(diceRoll[0] == "-"){
+            if (diceRoll[0] == "-") {
                 diceRoll = diceRoll.replace("-", "");
                 diceObj.negative = true;
             }
             if (diceRoll.includes("*")) {
                 diceObj.foreach_modifier = parseInt(diceRoll.split("*")[1]);
             }
-            if(diceRoll.includes("+")){
+            if (diceRoll.includes("+")) {
                 diceObj.bonus = parseInt(diceRoll.split("+")[1]);
             }
             diceRoll = diceRoll.split("d");
@@ -37,12 +37,12 @@ const die = (() => {
                     console.log("Roll " + i + ": " + roll);
                 total += roll;
             }
-            if(rCvrt.bonus){
-                if(!mute)
+            if (rCvrt.bonus) {
+                if (!mute)
                     console.log(`Bonus Applied (+${rCvrt.bonus})`);
                 total = total + rCvrt.bonus;
             }
-            if(rCvrt.negative)
+            if (rCvrt.negative)
                 total = total * -1;
             if (!mute) {
                 console.log("Total roll: " + total);
@@ -76,7 +76,7 @@ const die = (() => {
             if (rollObj.iterator == 0) {
                 total = 0;
             }
-            if(rollObj.bonus){
+            if (rollObj.bonus) {
                 if (rollObj.iterator > 1)
                     dice.addField("Bonus:", `${rollObj.bonus}`);
                 total = total + rollObj.bonus;
@@ -90,6 +90,20 @@ const die = (() => {
     }
     return dief
 })();
+
+// to clear event handlers
+function resetDOM(callback) {
+    document.body.innerHTML = `<div id="out-wrap" tabindex="0">
+    <div id="banner">
+        <h1>Magic Dice</h1>
+        <h2>A character manager built for Dungeons & Dragons 5e</h2>
+    </div>
+    <div id="main">
+    </div>
+</div>`;
+    if(callback)
+        callback();
+}
 
 const richDice = (() => {
     class richDice {
@@ -222,20 +236,20 @@ const richDice = (() => {
             });
             if (callback) callback(this.dom);
         }
-        genPrompt(title, desc, prompt = {}, callback){
+        genPrompt(title, desc, prompt = {}, callback) {
             const {
                 p_title = p_title,
-                p_placeholder = p_placeholder
+                    p_placeholder = p_placeholder
             } = prompt;
             this.setTitle(title);
             this.setDescription(desc);
             this.setSize("300");
             this.css.alignment = "left";
             this.addPrompt(prompt.p_title, prompt.p_placeholder);
-            this.render((dom)=>{
-                dom.addEventListener("keypress", (e)=>{
-                    if(e.key == "Enter"){
-                        const data = document.getElementsByClassName(this.ID+prompt.p_title)[0].value;
+            this.render((dom) => {
+                dom.addEventListener("keypress", (e) => {
+                    if (e.key == "Enter") {
+                        const data = document.getElementsByClassName(this.ID + prompt.p_title)[0].value;
                         callback(data);
                         this.dom.remove();
                     }
@@ -267,12 +281,12 @@ const Spell = (() => {
                     duration = "Instantaneous",
                     range = "10 feet",
                     roll = "0d4",
-                    url = "https://dnd5e.fandom.com/wiki/"+name.replace(/ /g, "_"),
+                    url = "https://dnd5e.fandom.com/wiki/" + name.replace(/ /g, "_"),
             } = props;
             this.name = name;
-            if(!isNaN(level)){
+            if (!isNaN(level)) {
                 this.level = getGetOrdinal(level);
-            }else{
+            } else {
                 this.level = level;
             }
             this.ctime = ctime;
@@ -281,14 +295,14 @@ const Spell = (() => {
             this.school = school;
             this.description = description;
             this.components = (typeof (components) != "string") ? components.join(" ") : components;
-            if(!isNaN(duration)){
+            if (!isNaN(duration)) {
                 this.duration = (duration !== 0) ? duration + " minutes" : "Instantaneous";
-            }else{
+            } else {
                 this.duration = duration;
             }
-            if(!isNaN(range)){
-                this.range = range+" feet";
-            }else{
+            if (!isNaN(range)) {
+                this.range = range + " feet";
+            } else {
                 this.range = range;
             }
             this.roll = roll;
@@ -304,7 +318,7 @@ const Spell = (() => {
             console.log("Rolling (" + attck + ")");
             return die.r(attck);
         };
-        get intLvl(){
+        get intLvl() {
             return (isNaN(Number(this.level[0]))) ? 0 : Number(this.level[0]);
         }
         get wiki() {
@@ -361,12 +375,12 @@ console.log("%cA character manager built for Dungeons & Dragons 5e", "font-size:
 // first time message for people new to the app.
 window.addEventListener("load", () => {
     if (!localStorage.getItem("md_firstrun")) {
-        const window = new richDice((document.body.clientWidth / 2) - 260, 150);
+        const window = new richDice((document.body.clientWidth / 2) - 260, 100);
         window.setTitle("Welcome to Magic Dice!");
         window.setSize(520, 700);
         window.addField("Where is everything?", `So, you might have noticed there seems to be a lack of anything on the screen besides this box... and that's by design! Let me explain; This program was and still is designed around the JavaScript REPL present in most modern web browsers (I recommend Chrome or Chromium for Magic Dice). To perform more advanced functions, you may need to be familiar with said console.`)
-        window.addField("How do I get started?", `To begin, first open your Dev Console; F12 on Google Chrome. Then the world is yours! (Hint: type ply to access the currently loaded players!)`);
-        window.addCustomHTML("Some Sample Commands", `<ul><li><strong>Load.restoreFromFile():</strong> You can restore a character from a save file (.json), There's some sample characters located in MagicDice itself, in the examples directory!</li><li><strong>die.r("d20"):</strong> This command rolls a d20! Substitute d20 for any dice combination like 6d8.</li><li><strong>Player Generation:</strong> A series of commands to create a default PC!<ol><li>let John = new Player({lvl: 3})</li><li>John.name = "John Smith"</li><li><i>Edit the object to your hearts content.</i> (Not a command)</li><li>John.enableShortcuts()</li><li><i>Click outside of the console and press shift X on your keyboard and watch.</i> (Not a command)</li></ol></li></ul>`);
+        window.addField("How do I get started?", `To begin, first open your Dev Console; F12 on Google Chrome. Then the world is yours! (Hint: type ply to access the currently loaded players)`);
+        window.addCustomHTML("Some Sample Commands", `<ul><li><strong>Load.restoreFromFile():</strong> You can restore a character from a save file (.json), there's some sample characters located in Magic Dice itself, in the examples directory.</li><li><strong>ply.enableShortcuts():</strong> Enables shortcuts for a character.</li><li><strong>die.r("d20"):</strong> This command rolls a d20! Substitute d20 for any dice combination like 6d8.</li><li><strong>Player Generation:</strong> A series of commands to create a default PC!<ol><li>let John = new Player({lvl: 3})</li><li>John.name = "John Smith"</li><li><i>Edit the object to your hearts content.</i> (Not a command)</li><li>John.enableShortcuts()</li><li><i>Click outside of the console and press shift X on your keyboard and watch.</i> (Not a command)</li></ol></li></ul>`);
         window.render();
 
         localStorage.setItem("md_firstrun", "true");

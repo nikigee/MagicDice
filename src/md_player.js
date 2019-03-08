@@ -897,25 +897,45 @@ const Player = (() => {
                     gfx_magic = "M",
                     roll = "R"
             } = keybinds;
-            console.log("Shortcuts enabled!");
-            document.addEventListener("keypress", (e) => {
-                if (e.key == self) {
-                    this.self;
-                } else if (e.key == gfx_self) {
-                    this.render.generate();
-                } else if (e.key == skills) {
-                    this.stats.list_sthrows();
-                    this.stats.list_skills();
-                } else if (e.key == inv) {
-                    this.inv.list();
-                } else if (e.key == magic) {
-                    this.magic.list();
-                } else if (e.key == gfx_magic) {
-                    this.render.spellbook();
-                } else if (e.key == roll) {
-                    die.gfx_dice("d20", 20, 20);
-                }
+            // clear event listeners
+            resetDOM(()=>{
+                console.log("Cleared previous shortcuts...");
+                document.getElementById("out-wrap").addEventListener("keypress", (e) => {
+                    if (e.key == self) {
+                        this.self;
+                    } else if (e.key == gfx_self) {
+                        this.render.generate();
+                    } else if (e.key == skills) {
+                        this.stats.list_sthrows();
+                        this.stats.list_skills();
+                    } else if (e.key == inv) {
+                        this.inv.list();
+                    } else if (e.key == magic) {
+                        this.magic.list();
+                    } else if (e.key == gfx_magic) {
+                        this.render.spellbook();
+                    } else if (e.key == roll) {
+                        die.gfx_dice("d20", 20, 20);
+                    }
+                });
             });
+            console.log("Shortcuts enabled!");
+            // print commands
+            const window = new richDice((document.body.clientWidth / 2) - 170, 150);
+            window.setSize(340);
+            window.setTitle("Magic Dice Shortcuts");
+            window.setDescription("A complete list of keyboard shortcuts.");
+            window.css.alignment = "left";
+            window.addCustomHTML("", `<ul>
+                <li><strong>${self} -</strong> Lists all character information.</li>
+                <li><strong>${gfx_self} -</strong> Generates character information in GUI format.</li>
+                <li><strong>${skills} -</strong> Lists all character skills plus saving throws.</li>
+                <li><strong>${inv} -</strong> Lists a character's inventory.</li>
+                <li><strong>${magic} -</strong> Lists character spells.</li>
+                <li><strong>${gfx_magic} -</strong> Generates character GUI spellbook.</li>
+                <li><strong>${roll} -</strong> Rolls a d20 quickly.</li>
+            </ul>`);
+            window.render();
         }
     }
     return Player;

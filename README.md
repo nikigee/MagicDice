@@ -7,7 +7,7 @@ In particular it's also useful for level ups as it handles the majority of the t
 You can now run this tool in your browser at https://nikgo.me/MagicDice
 
 ## Features
-- HP tracking `character.health.add(x)`
+- HP tracking `ply.health.add(x)` or through GUI.
 - Complete battle tracker for DM's. `DM.battleboard.create()`
 - Simulated Dice `die.r("2d10")`
 - Defaults (Automatically set arguments when creating new objects for maximum ease)

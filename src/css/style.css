@@ -489,6 +489,7 @@ footer{
     font-family: "Timeless", Georgia, 'Times New Roman', Times, serif;
     padding: 20px;
     text-align: left;
+    margin-top: 60px;
 }
 footer span{
     font-style: italic;

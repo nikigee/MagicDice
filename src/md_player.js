@@ -70,7 +70,7 @@ const Load = (() => {
             }
         },
         restoreFromFile: function () {
-            const window = new richDice(50, 50);
+            const window = new richDice((document.body.clientWidth / 2) - 142.5, 150);
             window.setTitle("Upload a Savefile");
             window.setDescription("Upload your character's .json file here.");
             window.addCustomHTML("", `<input type="file" class="upload" name="file">`);
@@ -80,11 +80,16 @@ const Load = (() => {
                     const reader = new FileReader();
                     reader.readAsText(file, "UTF-8");
                     reader.onload = (e) => {
+                        // load the character once loaded.
                         magicHandler.managed_players.push(this.deSer(JSON.parse(e.target.result)));
                         console.log("File has been processed!");
-                        dom.remove();
-                        magicHandler.last.render.generate();
+                        dom.remove(); // remove the box
+                        magicHandler.last.render.generate(); // generate GUI display
                         console.log("You can now access this character by simply typing 'ply' into this console.");
+
+                        // emit event for other parts of Magic Dice to use.
+                        const loaded = new CustomEvent("char-loaded", {detail: magicHandler.last});
+                        document.getElementById("out-wrap").dispatchEvent(loaded);
                     }
                 });
             })
@@ -898,7 +903,7 @@ const Player = (() => {
                     roll = "R"
             } = keybinds;
             // clear event listeners
-            resetDOM(()=>{
+            MagicUI.resetDOM(()=>{
                 console.log("Cleared previous shortcuts...");
                 document.getElementById("out-wrap").addEventListener("keypress", (e) => {
                     if (e.key == self) {

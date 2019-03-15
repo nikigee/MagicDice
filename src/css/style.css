@@ -52,8 +52,10 @@ h3 {
 }
 
 #main {
-    margin: 15px;
+    margin-left: 15px;
     text-align: center;
+    padding-bottom: 60px;
+    margin-right: 15px;
 }
 
 .playerBox {
@@ -490,7 +492,6 @@ footer {
     font-family: "Timeless", Georgia, 'Times New Roman', Times, serif;
     padding: 20px;
     text-align: left;
-    margin-top: 60px;
 }
 
 footer span {

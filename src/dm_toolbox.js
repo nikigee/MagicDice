@@ -26,7 +26,7 @@ const DM = (() => {
     // Combat and initative tracker
     DM_obj.battleBoard = (() => {
         function genID() {
-            const colours = ["blue", "red", "purple", "green", "white", "yellow", "pink", "orange"];
+            const colours = ["blue", "red", "purple", "green", "white", "yellow", "pink", "orange", "crimson", "gold", "darkgreen", "cyan", "magenta"];
             return {
                 color: colours[Math.floor(Math.random() * colours.length)],
                 number: Math.floor(Math.random() * 20) + 1
@@ -149,7 +149,6 @@ const DM = (() => {
                     mnstr.id = genID();
                 }
                 this.monsterList.set(mnstr.strID, mnstr);
-                this.updateBattle();
             }
             updateBattle() {
                 const battleHTML = document.getElementById("battle-list");
@@ -272,8 +271,9 @@ const DM = (() => {
                                                     number: i + 1
                                                 }
                                             });
-                                            dom.remove();
-                                        }
+                                        };
+                                        this.updateBattle();
+                                        dom.remove();
                                     }
                                 });
                             }
@@ -308,10 +308,14 @@ const DM = (() => {
                                         let j = isNaN(dom.getElementsByClassName(`${library.ID}Quantity`)[0].value) ? 1 : Number(dom.getElementsByClassName(`${library.ID}Quantity`)[0].value);
                                         if (j == 0)
                                             j = 1;
+                                        const monster = Library.monsters.get(dom.getElementsByClassName(`monster_name_input`)[0].value);
+                                        const id_color = genID().color;
                                         for (let i = 0; i < j; i++) {
-                                            this.addMonster(Library.monsters.get(dom.getElementsByClassName(`monster_name_input`)[0].value));
+                                            monster.id = {color: id_color, number: i+1};
+                                            this.addMonster(monster);
                                             dom.remove();
                                         }
+                                        this.updateBattle();
                                     }
                                 });
                             }

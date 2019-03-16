@@ -363,6 +363,7 @@ const MagicUI = (() => {
     UI.mainMenu = () => {
         UI.resetDOM(() => {
             document.getElementById("main").innerHTML = `<div id="main-menu">
+            <span class="menu-option" id="menu-rolldice">Roll Dice</span>
             <span class="menu-option">Load</span>
             <span class="menu-option" id="menu-loadfile">External Load</span>
             <span class="menu-option" onclick="DM.battleBoard.create()">Battle Tracker</span>
@@ -383,6 +384,12 @@ const MagicUI = (() => {
                 Load.restoreFromFile();
                 document.getElementById("out-wrap").addEventListener("char-loaded", (e)=>{
                     e.detail.enableShortcuts();
+                });
+            });
+            document.getElementById("menu-rolldice").addEventListener("click", (e)=>{
+                const window = new richDice(e.clientX-50, e.clientY-20);
+                window.genPrompt("Roll Dice", "Enter the dice combination of the roll.", {p_title: "Dice", p_placeholder:"8d6"}, (data)=>{
+                    die.gfx_dice(data, e.clientX-50, e.clientY-20);
                 });
             });
         });

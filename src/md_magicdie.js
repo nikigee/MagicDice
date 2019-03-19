@@ -1,6 +1,7 @@
 const die = (() => {
     const dief = {
         cvt: function (diceRoll) {
+            diceRoll = diceRoll.toLowerCase();
             let diceObj = {};
             if (diceRoll[0] == "-") {
                 diceRoll = diceRoll.replace("-", "");

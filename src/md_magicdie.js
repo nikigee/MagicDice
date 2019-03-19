@@ -294,19 +294,19 @@ const Spell = (() => {
             this.roll = roll;
             this.url = url;
         }
+        get intLvl() {
+            return (isNaN(Number(this.level[0]))) ? 0 : Number(this.level[0]);
+        }
         cast(lvl) {
             let attck = this.roll;
-            if (lvl > this.level) {
+            if (lvl > this.intLvl) {
                 attck = die.cvt(attck);
-                attck.iterator += (lvl - this.level); // add x dice per level
-                attck = attck.iterator + "d" + attck.face + ((attck.modifier) ? "+" + attck.modifier : ""); // convert back to xdx+m format
+                attck.iterator += (lvl - this.intLvl); // add x dice per level
+                attck = die.s(attck); // convert back to xdx+m format
             }
             console.log("Rolling (" + attck + ")");
             return die.r(attck);
         };
-        get intLvl() {
-            return (isNaN(Number(this.level[0]))) ? 0 : Number(this.level[0]);
-        }
         get wiki() {
             window.open(this.url);
         };

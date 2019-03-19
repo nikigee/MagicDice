@@ -62,7 +62,8 @@
     margin: 2px;
     position: relative;
 }
-.monster-pill span{
+
+.monster-pill span {
     display: block;
     margin-top: 2.5px;
 }
@@ -142,7 +143,8 @@
     border-radius: 5px;
     box-shadow: 0px 0px 7px black;
 }
-.monster-buttons{
+
+.monster-buttons {
     font-size: 19px;
     padding-top: 5px;
     text-align: right;
@@ -155,12 +157,67 @@
     padding-right: 5px;
     padding-left: 5px;
 }
-.monster-buttons i{
+
+.monster-buttons i {
     margin-left: 2.5px;
     margin-right: 2.5px;
     transition: 0.1s;
     cursor: pointer;
 }
-.monster-buttons i:hover{
-    color: gold;   
+
+.monster-buttons i:hover {
+    color: gold;
+}
+
+/*
+==================
+    MOBILE CSS
+==================
+*/
+
+/* Battle Table */
+@media only screen and (max-width: 1034px) {
+    #battle-table {
+        min-width: auto;
+        width: 100%;
+        max-width: 539px;
+    }
+    #battle-list{
+        min-height: 185px;
+        height: auto;
+    }
+
+    #battle-options {
+        text-align: center;
+    }
+
+    #init-ladder {
+        width: auto;
+        display: block;
+        height: auto;
+        max-width: auto;
+        min-width: auto;
+        margin: auto;
+        margin-bottom: 20px;
+    }
+
+    #init-list {
+        min-height: auto;
+    }
+
+    .monster-info {
+        min-height: 185px;
+    }
+}
+
+@media only screen and (max-width: 414px) {
+    .btn-main {
+        margin-bottom: 5px;
+        font-size: 14px;
+    }
+
+    .monster-pill {
+        min-width: 140px;
+        width: 47%;
+    }
 }

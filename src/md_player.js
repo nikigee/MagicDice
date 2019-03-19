@@ -369,7 +369,7 @@ const Player = (() => {
                 <span class="lvl-class">Level ${this.parent.lvl} ${this.parent.player_class.name}</span>
                 <div class="row">
                     <span class="label">HP</span>
-                    <div class="fill-bar health-bar" style="width: 500px;"><span class="fill" style="width: ${percent}%; background: ${getColor(percent)}">${this.parent.health.currentHP}/${this.parent.health.maxHP}</span></div>
+                    <div class="fill-bar health-bar" style="max-width: 500px;"><span class="fill" style="width: ${percent}%; background: ${getColor(percent)}">${this.parent.health.currentHP}/${this.parent.health.maxHP}</span></div>
                 </div>
                 <p><strong>AC: </strong>${this.parent.health.currentAC}</p>
                 <p><strong>Proficiency Bonus: </strong>${this.parent.stats.prof}</p>

@@ -711,7 +711,7 @@ footer a:hover {
 }
 
 /* Player render changes */
-@media only screen and (max-width: 940px) {
+@media only screen and (max-width: 955px) {
     .playerBox img {
         position: absolute;
         z-index: -300;

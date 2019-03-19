@@ -716,7 +716,6 @@ footer a:hover {
         position: absolute;
         z-index: -300;
         max-height: fit-content;
-        height: 100%;
         min-width: 100%;
         left: 0;
         top: 0;
@@ -740,5 +739,11 @@ footer a:hover {
 
     .playerInfo {
         width: fit-content;
+    }
+}
+
+@media only screen and (max-width: 436px){
+    .playerBox img{
+        max-height: 100%;
     }
 }

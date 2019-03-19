@@ -357,9 +357,35 @@ class Item {
 const MagicUI = (() => {
     const UI = {};
     UI.resetDOM = (callback) => {
-        document.body.innerHTML = `<div id="out-wrap" tabindex="0"><div id="banner"><img src="src/img/logo.png" alt="Magic Dice" onclick="MagicUI.mainMenu()"><h2>A character manager built for Dungeons & Dragons 5e</h2></div><div id="main"></div></div><footer><h3>&#169;Magic Dice</h3><span>A tool created by <a href="https://nikgo.me" target="_blank">Nikita Golev</a></span><span>Contact me by <a href="mailto:ngolev.bus@gmail.com">Email</a></span><span>Github <a href="https://github.com/AdmiralSoviet/MagicDice" target="_blank">Source Code</a></span></footer>`
+        document.body.innerHTML = `<div id="out-wrap" tabindex="0"><div id="banner"><img src="src/img/logo.png" alt="Magic Dice" onclick="MagicUI.mainMenu()"><h2>A character manager built for Dungeons & Dragons 5e</h2></div><div id="main"></div></div><div id="toolbar-section"></div><footer><h3>&#169;Magic Dice</h3><span>A tool created by <a href="https://nikgo.me" target="_blank">Nikita Golev</a></span><span>Contact me by <a href="mailto:ngolev.bus@gmail.com">Email</a></span><span>Github <a href="https://github.com/AdmiralSoviet/MagicDice" target="_blank">Source Code</a></span></footer>`
+        UI.populateToolbar();
         if (callback)
             callback();
+    };
+    UI.populateToolbar = () => {
+        const toolbar = document.getElementById("toolbar-section");
+        for (let i = 0; i < magicHandler.managed_players.length; i++) {
+            toolbar.insertAdjacentHTML("beforeend", `<div class="toolbar-hero"><span>${magicHandler.managed_players[i].name}</span><i class="fa fa-user-circle"></i><i class="fa fa-book"></i><i class="fa fa-keyboard-o"></i><i class="fa fa-floppy-o"></i><i class="fa fa-cloud"></i><i class="fa fa-trash-o"></i></div>`);
+            document.getElementsByClassName("toolbar-hero")[i].getElementsByClassName("fa-user-circle")[0].addEventListener("click", (e) => {
+                magicHandler.managed_players[i].render.generate();
+            });
+            document.getElementsByClassName("toolbar-hero")[i].getElementsByClassName("fa-book")[0].addEventListener("click", (e) => {
+                magicHandler.managed_players[i].render.spellbook();
+            });
+            document.getElementsByClassName("toolbar-hero")[i].getElementsByClassName("fa-floppy-o")[0].addEventListener("click", (e) => {
+                magicHandler.managed_players[i].saveToFile();
+            });
+            document.getElementsByClassName("toolbar-hero")[i].getElementsByClassName("fa-cloud")[0].addEventListener("click", (e) => {
+                magicHandler.managed_players[i].save();
+            });
+            document.getElementsByClassName("toolbar-hero")[i].getElementsByClassName("fa-trash-o")[0].addEventListener("click", (e) => {
+                magicHandler.managed_players.splice(i, 1);
+                UI.mainMenu();
+            });
+            document.getElementsByClassName("toolbar-hero")[i].getElementsByClassName("fa-keyboard-o")[0].addEventListener("click", (e) => {
+                magicHandler.managed_players[i].enableShortcuts();
+            });
+        }
     };
     UI.mainMenu = () => {
         UI.resetDOM(() => {
@@ -380,17 +406,20 @@ const MagicUI = (() => {
                 window.addCustomHTML("Some Sample Commands", `<ul><li><strong>Load.restoreFromFile():</strong> You can restore a character from a save file (.json), there's some sample characters located in Magic Dice itself, in the examples directory.</li><li><strong>ply.enableShortcuts():</strong> Enables shortcuts for a character.</li><li><strong>die.r("d20"):</strong> This command rolls a d20! Substitute d20 for any dice combination like 6d8.</li><li><strong>Player Generation:</strong> A series of commands to create a default PC!<ol><li>let John = new Player({lvl: 3})</li><li>John.name = "John Smith"</li><li><i>Edit the object to your hearts content.</i> (Not a command)</li><li>John.enableShortcuts()</li><li><i>Click outside of the console and press shift X on your keyboard and watch.</i> (Not a command)</li></ol></li></ul>`);
                 window.render();
             });
-            document.getElementById("menu-loadfile").addEventListener("click", (e)=>{
+            document.getElementById("menu-loadfile").addEventListener("click", (e) => {
                 document.getElementById("main").innerHTML = "";
                 Load.restoreFromFile();
-                document.getElementById("out-wrap").addEventListener("char-loaded", (e)=>{
+                document.getElementById("out-wrap").addEventListener("char-loaded", (e) => {
                     e.detail.enableShortcuts();
                 });
             });
-            document.getElementById("menu-rolldice").addEventListener("click", (e)=>{
-                const window = new richDice(e.clientX-50, e.clientY-20);
-                window.genPrompt("Roll Dice", "Enter the dice combination of the roll.", {p_title: "Dice", p_placeholder:"8d6"}, (data)=>{
-                    die.gfx_dice(data, e.clientX-50, e.clientY-20);
+            document.getElementById("menu-rolldice").addEventListener("click", (e) => {
+                const window = new richDice(e.clientX - 50, e.clientY - 20);
+                window.genPrompt("Roll Dice", "Enter the dice combination of the roll.", {
+                    p_title: "Dice",
+                    p_placeholder: "8d6"
+                }, (data) => {
+                    die.gfx_dice(data, e.clientX - 50, e.clientY - 20);
                 });
             });
         });

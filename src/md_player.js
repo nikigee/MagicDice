@@ -10,10 +10,9 @@ magicHandler = (() => {
             }
         }
         get ply() {
-            if(this.managed_players.length == 0){
+            if (this.managed_players.length == 0) {
                 return console.log("Currently no characters are loaded! You can load from a save file using the command 'Load.restoreFromFile()'");
-            }
-            else if (this.managed_players.length == 1) {
+            } else if (this.managed_players.length == 1) {
                 return this.managed_players[0];
             } else {
                 return this.managed_players;
@@ -88,7 +87,9 @@ const Load = (() => {
                         console.log("You can now access this character by simply typing 'ply' into this console.");
 
                         // emit event for other parts of Magic Dice to use.
-                        const loaded = new CustomEvent("char-loaded", {detail: magicHandler.last});
+                        const loaded = new CustomEvent("char-loaded", {
+                            detail: magicHandler.last
+                        });
                         document.getElementById("out-wrap").dispatchEvent(loaded);
                     }
                 });
@@ -316,42 +317,78 @@ const Player = (() => {
             } = props;
             this.avatar = avatar;
             this.ID = Math.floor(Math.random() * 999999);
+            this.spellbook = {};
             this.parent = parent;
-        }
-        display_spell(spell) {
-            const window = document.getElementsByClassName("spellwindow")[0];
-            window.innerHTML = `
-            <h2><a href="${spell.url}" target="_blank">${spell.name}</a></h2>
-            <span class="spellscription">${spell.level + "-level " + spell.school}</span>
-            <span class="spellrow"><strong>Casting Time:</strong> ${spell.ctime}</span>
-            <span class="spellrow"><strong>Range:</strong> ${spell.range}</span>
-            <span class="spellrow"><strong>Components:</strong> ${spell.components}</span>
-            <span class="spellrow"><strong>Duration:</strong> ${spell.duration}</span>
-            <span class="spellrow"><strong>Damage:</strong> ${spell.roll}</span>
-            <div class="descwrap"><p class="spelldesc">${spell.description.replace(/\n\n/g, "</p><p class='spelldesc'>")}</p></div>
-            `;
-            document.getElementsByClassName("spellrow")[4].addEventListener("mousedown", (e) => {
-                die.gfx_dice(spell.roll, e.clientX, e.clientY);
-            });
-            return spell.x;
-        };
-        spellbook() {
-            const main = document.getElementById("main");
-            main.innerHTML = `
-            <div class="spellbook">
-                <div class="spellwindow">
-                </div>
-                <div class="spell-list">
-                </div>
-            </div>
-            `;
-            const list = document.getElementsByClassName("spell-list")[0];
-            this.parent.magic.spells.forEach((x) => {
-                list.insertAdjacentHTML('beforeend', `<span class="lvl">${(isNaN(Number(x.level[0]))) ? 0 : Number(x.level[0])}</span><span class="spell" ${(this.parent.magic.preparedSpells.indexOf(x.name) != -1) ? `style=color:${"#e658ff"}` : ""}>${x.name}</span>`);
-                list.lastChild.addEventListener("click", () => {
-                    this.display_spell(x);
+
+            /* Spellbook Stuff */
+            this.spellbook.display_spell = (spell) => {
+                const window = document.getElementsByClassName("spellwindow")[0];
+                window.innerHTML = `
+                <div class="spellbanner"><h2><a href="${spell.url}" target="_blank">${spell.name}</a></h2>
+                <span class="spellscription">${spell.level + "-level " + spell.school}</span></div>
+                <div class="spellbody"><span class="spellrow"><strong>Casting Time:</strong> ${spell.ctime}</span>
+                <span class="spellrow"><strong>Range:</strong> ${spell.range}</span>
+                <span class="spellrow"><strong>Components:</strong> ${spell.components}</span>
+                <span class="spellrow"><strong>Duration:</strong> ${spell.duration}</span>
+                <span class="spellrow"><strong>Damage:</strong> ${spell.roll}</span>
+                <div class="descwrap"><p class="spelldesc">${spell.description.replace(/\n\n/g, "</p><p class='spelldesc'>")}</p></div>
+                </div>`;
+                document.getElementsByClassName("spellrow")[4].addEventListener("mousedown", (e) => {
+                    die.gfx_dice(spell.roll, e.clientX, e.clientY);
                 });
-            });
+                return spell.x;
+            };
+            this.spellbook.generate = () => {
+                const main = document.getElementById("main");
+                main.innerHTML = `
+                <div class="spellbook">
+                    <div class="spellwindow">
+                    </div>
+                    <div class="spell-list">
+                        <div id="spell-toolbar"><input type="text" placeholder="Fireball" id="spell-search">        <input type="checkbox" id="library-toggle"><label for="library-toggle">Search Library</label></div>
+                        <div id="spells">
+                        </div>
+                    </div>
+                </div>
+                `;
+                this.spellbook.populate();
+                document.getElementById("spell-toolbar").addEventListener("input", (e)=>{
+                    const opts = {};
+                    opts.name = document.getElementById("spell-search").value;
+                    opts.library = document.getElementById("library-toggle").checked;
+                    this.spellbook.populate(opts); // populate with options
+                });
+            }
+            this.spellbook.populate = (opt = {}) => {
+                const {
+                    library = false,
+                        name = ""
+                } = opt;
+                if(opt.name)
+                    opt.name = opt.name.toLowerCase();
+                // for adding spells to spell list
+                const list = document.getElementById("spells");
+                list.innerHTML = ""; // clear list
+                if (!opt.library) {
+                    this.parent.magic.spells.forEach((x) => {
+                        if (x.name.toLowerCase().includes(opt.name) || !opt.name) {
+                            list.insertAdjacentHTML('beforeend', `<span class="lvl">${(isNaN(Number(x.level[0]))) ? 0 : Number(x.level[0])}</span><span class="spell" ${(this.parent.magic.preparedSpells.indexOf(x.name) != -1) ? `style=color:${"#e658ff"}` : ""}>${x.name}</span>`);
+                            list.lastChild.addEventListener("click", () => {
+                                this.spellbook.display_spell(x);
+                            });
+                        }
+                    });
+                } else {
+                    Library.spells.forEach((x) => {
+                        if (x.name.toLowerCase().includes(opt.name) || !opt.name) {
+                            list.insertAdjacentHTML('beforeend', `<span class="lvl">${(isNaN(Number(x.level[0]))) ? 0 : Number(x.level[0])}</span><span class="spell" ${(this.parent.magic.preparedSpells.indexOf(x.name) != -1) ? `style=color:${"#e658ff"}` : ""}>${x.name}</span>`);
+                            list.lastChild.addEventListener("click", () => {
+                                this.spellbook.display_spell(x);
+                            });
+                        }
+                    });
+                }
+            }
         }
         update() {
             const percent = (this.parent.health.currentHP / this.parent.health.maxHP) * 100;
@@ -903,9 +940,13 @@ const Player = (() => {
                     roll = "R"
             } = keybinds;
             // clear event listeners
-            MagicUI.resetDOM(()=>{
+            MagicUI.resetDOM(() => {
                 console.log("Cleared previous shortcuts...");
                 document.getElementById("out-wrap").addEventListener("keypress", (e) => {
+                    // don't mistake keypress while typing for a keyboard shortcut
+                    if (e.target.tagName == "INPUT") {
+                        return false;
+                    }
                     if (e.key == self) {
                         this.self;
                     } else if (e.key == gfx_self) {
@@ -918,7 +959,7 @@ const Player = (() => {
                     } else if (e.key == magic) {
                         this.magic.list();
                     } else if (e.key == gfx_magic) {
-                        this.render.spellbook();
+                        this.render.spellbook.generate();
                     } else if (e.key == roll) {
                         die.gfx_dice("d20", 20, 20);
                     }

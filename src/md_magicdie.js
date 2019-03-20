@@ -63,14 +63,18 @@ const die = (() => {
             let roll;
             let total = 0;
             if (rollObj.iterator > 1) {
+                let htmlList = "<div class='dice-table'>"; // start the custom html table
                 for (let i = 1; i <= rollObj.iterator; i++) {
                     roll = Math.floor(Math.random() * rollObj.face) + 1;
                     if (rollObj.foreach_modifier) {
                         roll += rollObj.foreach_modifier;
                     }
-                    dice.addField(`Roll ${i}: `, roll);
+                    // dice.addField(`Roll ${i}: `, roll);
+                    htmlList += `<div class="gfx_dice">${roll}</div>${(i == rollObj.iterator) ? "" : "+"}`;
                     total += roll;
                 }
+                htmlList += "</div>";
+                dice.addCustomHTML("Rolls:", htmlList);
             } else {
                 total = Math.floor(Math.random() * rollObj.face) + 1;
             }
@@ -370,7 +374,7 @@ const MagicUI = (() => {
                 magicHandler.managed_players[i].render.generate();
             });
             document.getElementsByClassName("toolbar-hero")[i].getElementsByClassName("fa-book")[0].addEventListener("click", (e) => {
-                magicHandler.managed_players[i].render.spellbook();
+                magicHandler.managed_players[i].render.spellbook.generate();
             });
             document.getElementsByClassName("toolbar-hero")[i].getElementsByClassName("fa-floppy-o")[0].addEventListener("click", (e) => {
                 magicHandler.managed_players[i].saveToFile();

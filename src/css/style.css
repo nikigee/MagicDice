@@ -2,6 +2,10 @@
     font-family: "Timeless";
     src: url("../fonts/Timeless.ttf");
 }
+@font-face {
+    font-family: "Timeless-bold";
+    src: url("../fonts/Timeless-Bold.ttf");
+}
 
 html,
 body {
@@ -172,7 +176,8 @@ h3 {
     margin-top: 5px;
     text-align: center;
 }
-.ability_scores{
+
+.ability_scores {
     margin-bottom: 20px;
 }
 
@@ -224,7 +229,6 @@ h3 {
 .spellwindow {
     display: inline-block;
     background: #ffffff80;
-    padding: 5px;
     box-shadow: black 0px 0px 10px;
     width: 50%;
     transition: 0.3s;
@@ -233,6 +237,10 @@ h3 {
     text-align: left;
     overflow: auto;
     height: -webkit-fill-available;
+}
+.spellbody{
+    padding: 5px;
+    padding-top: 0px;
 }
 
 .descwrap {
@@ -243,17 +251,29 @@ h3 {
     padding-top: 5px;
     padding-bottom: 5px;
     margin-top: 10px;
+
 }
 
-.spellwindow span,
-h2 {
+.spellwindow span{
     margin-left: 10px;
+}
+
+.spellbanner{
+    padding: 5px;
+    padding-bottom: 0px;
+}
+
+.spellscription{
+    font-style: italic;
+    margin-bottom: 7px;
+    margin-left: 0px;
 }
 
 .spellwindow h2 {
     font-weight: bold;
-    margin-top: 10px;
+    padding-top: 10px;
     font-size: 36px;
+    margin-left: 10px;
 }
 
 .spellwindow a {
@@ -268,11 +288,6 @@ h2 {
 
 .spellwindow a:hover {
     color: #a51010;
-}
-
-.spellscription {
-    font-style: italic;
-    margin-bottom: 7px;
 }
 
 .spellrow {
@@ -291,15 +306,52 @@ h2 {
 
 .spell-list {
     background: #ffffff80;
-    padding: 5px;
     box-shadow: black 0px 0px 10px;
     user-select: none;
     width: calc(50% - 25px);
     transition: 0.3s;
     -webkit-transition: 0.3s;
-    overflow: auto;
     display: inline-block;
+    overflow: auto;
     height: -webkit-fill-available;
+}
+
+#spells {
+    padding: 5px;
+}
+
+#spell-toolbar {
+    background: #1d1c27;
+    padding: 6px;
+}
+
+#spell-toolbar label {
+    color: white;
+    vertical-align: middle;
+    font-size: 14px;
+}
+
+#library-toggle {
+    transition: 0.2s;
+    -webkit-transition: 0.2s;
+    width: 15px;
+    height: 15px;
+    vertical-align: middle;
+}
+
+#spell-search {
+    border: none;
+    padding: 5px;
+    border-radius: 3px;
+    background: white;
+    font-family: inherit;
+    font-size: 14px;
+    transition: 0.3s;
+    -webkit-transition: 0.3s;
+}
+
+#spell-search:active{
+    box-shadow: 0px 0px 5px white;
 }
 
 .spell-list span {
@@ -483,6 +535,25 @@ div::-webkit-scrollbar-thumb {
     color: white;
 }
 
+.dice-table{
+    margin-left: 5px;
+}
+
+.gfx_dice{
+    display: inline-block;
+    padding: 5px;
+    min-width: 20px;
+    height: 20px;
+    margin: 5px;
+    text-align: center;
+    background: white;
+    border-radius: 9px;
+    border: solid 2px black;
+    font-size: 16px;
+    vertical-align: middle;
+    line-height: 20px;
+}
+
 .spelldesc {
     margin: 0px;
     padding: 10px;
@@ -626,7 +697,7 @@ footer a:hover {
     }
 }
 
-.toolbar-hero{
+.toolbar-hero {
     background: #111017e8;
     color: white;
     padding: 5px;
@@ -635,21 +706,22 @@ footer a:hover {
     padding-left: 3%;
 }
 
-.toolbar-hero span{
+.toolbar-hero span {
     margin-right: 10px;
 }
 
-.toolbar-hero span, .toolbar-hero i{
+.toolbar-hero span,
+.toolbar-hero i {
     font-size: 18px;
 }
 
-.toolbar-hero i{
+.toolbar-hero i {
     padding: 5px;
     transition: 0.2s;
     cursor: pointer;
 }
 
-.toolbar-hero i:hover{
+.toolbar-hero i:hover {
     color: #FFC107;
 }
 
@@ -705,7 +777,8 @@ footer a:hover {
     .richContent iframe {
         width: calc(100% - 5px) !important;
     }
-    .toolbar-hero{
+
+    .toolbar-hero {
         text-align: center;
     }
 }
@@ -723,11 +796,13 @@ footer a:hover {
         right: 0;
         margin: auto;
     }
-    .playerBox{
+
+    .playerBox {
         position: relative;
         overflow: hidden;
         margin-top: 0px;
     }
+
     .playerInfo h3,
     .lvl-class {
         text-align: center;
@@ -742,8 +817,8 @@ footer a:hover {
     }
 }
 
-@media only screen and (max-width: 436px){
-    .playerBox img{
+@media only screen and (max-width: 436px) {
+    .playerBox img {
         max-height: 100%;
     }
 }

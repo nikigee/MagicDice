@@ -631,6 +631,13 @@ footer a:hover {
     box-shadow: 0px 0px 5px #1a1a1a;
 }
 
+.window-big_box{
+    width: 100%;
+    min-height: 300px;
+    font-family: inherit;
+    font-size: 16px;
+}
+
 .loading-spin {
     font-size: 15px;
     border: solid 1px white;

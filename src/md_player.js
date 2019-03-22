@@ -26,6 +26,35 @@ Object.defineProperty(self, 'ply', {
         return magicHandler.ply;
     }
 });
+
+class playerClass {
+    constructor(props = {}) {
+        const {
+            name = "Fighter",
+                url = "https://roll20.net/compendium/dnd5e/" + name,
+                misc = {},
+                hitdie = "d10",
+                spcMod = undefined,
+                start_prof = {
+                    wpn: [],
+                    tool: [],
+                    armr: []
+                },
+                save_throws = ["str", "cnst"]
+        } = props;
+        this.name = name;
+        this.misc = misc;
+        this.url = url;
+        this.start_prof = start_prof;
+        this.spcMod = spcMod;
+        this.save_throws = save_throws;
+        this.hitdie = hitdie;
+    }
+    get wiki() {
+        window.open(this.url);
+    }
+}
+
 const Load = (() => {
     const Loadf = {
         deSer: function (objData) {
@@ -183,33 +212,6 @@ const Player = (() => {
         return map;
     }
 
-    class playerClass {
-        constructor(props = {}) {
-            const {
-                name = "Fighter",
-                    url = "https://roll20.net/compendium/dnd5e/" + name,
-                    misc = {},
-                    hitdie = "d10",
-                    spcMod = undefined,
-                    start_prof = {
-                        wpn: [],
-                        tool: [],
-                        armr: []
-                    },
-                    save_throws = ["str", "cnst"]
-            } = props;
-            this.name = name;
-            this.misc = misc;
-            this.url = url;
-            this.start_prof = start_prof;
-            this.spcMod = spcMod;
-            this.save_throws = save_throws;
-            this.hitdie = hitdie;
-        }
-        get wiki() {
-            window.open(this.url);
-        }
-    }
     class Magic {
         constructor(props = {}) {
             const {
@@ -318,8 +320,22 @@ const Player = (() => {
             this.avatar = avatar;
             this.ID = Math.floor(Math.random() * 999999);
             this.spellbook = {};
+            this.misc_notes = {};
             this.parent = parent;
 
+            this.misc_notes.generate = ()=>{
+                const window = new richDice((document.body.clientWidth / 2) - 225, 150);
+                window.setTitle("Features and Notes");
+                window.setSize(450);
+                window.setDescription("Use this to list your class features or any miscellaneous notes.");
+                window.addCustomHTML("", `<textarea class='window-big_box'>${this.parent.stats.misc_notes}</textarea>`);
+                window.css.alignment = "left";
+                window.render((dom)=>{
+                    dom.getElementsByClassName("window-big_box")[0].addEventListener("change", (e)=>{
+                        this.parent.stats.misc_notes = e.target.value;
+                    });
+                });
+            };
             /* Spellbook Stuff */
             this.spellbook.display_spell = (spell) => {
                 const window = document.getElementsByClassName("spellwindow")[0];
@@ -352,7 +368,7 @@ const Player = (() => {
                 </div>
                 `;
                 this.spellbook.populate();
-                document.getElementById("spell-toolbar").addEventListener("input", (e)=>{
+                document.getElementById("spell-toolbar").addEventListener("input", (e) => {
                     const opts = {};
                     opts.name = document.getElementById("spell-search").value;
                     opts.library = document.getElementById("library-toggle").checked;
@@ -364,7 +380,7 @@ const Player = (() => {
                     library = false,
                         name = ""
                 } = opt;
-                if(opt.name)
+                if (opt.name)
                     opt.name = opt.name.toLowerCase();
                 // for adding spells to spell list
                 const list = document.getElementById("spells");
@@ -392,14 +408,7 @@ const Player = (() => {
         }
         update() {
             const percent = (this.parent.health.currentHP / this.parent.health.maxHP) * 100;
-            let invCount = 0;
-            if (!(Object.keys(this.parent.inv.backpack).length === 0 && this.parent.inv.backpack.constructor === Object)) {
-                for (var property in this.parent.inv.backpack) {
-                    if (this.parent.inv.backpack.hasOwnProperty(property)) {
-                        invCount++;
-                    }
-                }
-            };
+            const invCount = this.parent.inv.backpack.size;
             const box = document.getElementsByClassName(`${this.ID}`)[0];
             box.innerHTML = `
                 <h3>${this.parent.name}</h3>
@@ -534,7 +543,7 @@ const Player = (() => {
                     backpack = {}
             } = props;
             this.gold = gold;
-            this.backpack = backpack;
+            this.backpack = objToMap(backpack);
         }
         add(item, sUse) {
             if (!sUse) {
@@ -546,23 +555,21 @@ const Player = (() => {
                     singleUse: sUse
                 });
             }
-            if (this.backpack[item.name]) {
-                this.backpack[item.name].qnty += item.qnty;
+            if (this.backpack.get(item.name)) {
+                this.backpack.get(item.name).qnty += item.qnty;
             } else {
-                this.backpack[item.name] = item;
+                this.backpack.get(item.name) = item;
             }
             console.log("Added " + item.qnty + " '" + item.name + "' to backpack!");
-            return this.backpack[item.name];
+            return this.backpack.get(item.name);
         }
         get total_weight() {
             var total = 0;
-            for (var property in this.backpack) {
-                if (this.backpack.hasOwnProperty(property)) {
-                    for (var i = 0; i < this.backpack[property].qnty; i++) {
-                        total += this.backpack[property].weight;
-                    }
+            this.backpack.forEach((v) => {
+                for (var i = 0; i < v.qnty; i++) {
+                    total += v.weight;
                 }
-            }
+            });
             return total;
         }
         list(term) {
@@ -571,15 +578,13 @@ const Player = (() => {
             }
             var sp_array = [];
             console.log("\nINVENTORY RESULTS: ");
-            for (var property in this.backpack) {
-                if (this.backpack.hasOwnProperty(property)) {
-                    var item = this.backpack[property].name.toLowerCase();
-                    if ((item.includes(term) || !term)) {
-                        console.log("- " + this.backpack[property].name + ((this.backpack[property].qnty != 1) ? " x" + this.backpack[property].qnty + "" : ""));
-                        sp_array.push(this.backpack[property]);
-                    }
+            this.backpack.forEach((v) => {
+                var item = v.name.toLowerCase();
+                if ((item.includes(term) || !term)) {
+                    console.log("- " + v.name + ((v.qnty != 1) ? " x" + v.qnty + "" : ""));
+                    sp_array.push(v);
                 }
-            }
+            });
             if (sp_array.length <= 5) {
                 return (sp_array.length == 1) ? sp_array[0] : sp_array;
             }
@@ -676,6 +681,8 @@ const Player = (() => {
                 preparedSpells: parent.magic.preparedSpells
             };
             this.invData = parent.inv;
+            this.invData.backpack = MapToObj(this.invData.backpack); // convert back to object for saving
+
             this.renderData = {
                 avatar: parent.render.avatar
             };
@@ -696,6 +703,7 @@ const Player = (() => {
                         tool: parent.player_class.start_prof.tool,
                         armr: parent.player_class.start_prof.armr
                     },
+                    misc_notes = ""
             } = props;
             this.prof = serProf(parent.lvl);
             this.save_throws = save_throws;
@@ -704,6 +712,7 @@ const Player = (() => {
             this.ability = ability;
             this.inspiration = inspiration;
             this.misc_prof = misc_prof;
+            this.misc_notes = misc_notes;
             this.ability_mod = {
                 str: serAbility(this.ability.str),
                 dex: serAbility(this.ability.dex),
@@ -874,14 +883,7 @@ const Player = (() => {
             console.log("HP: %c" + this.health.currentHP + "/" + this.health.maxHP + " (" + HPP + "%)", "color: " + getColor(HPP));
             console.log("AC: " + this.health.currentAC);
             console.log("Gold: " + this.inv.gold + " GP");
-            let invCount = 0;
-            if (!(Object.keys(this.inv.backpack).length === 0 && this.inv.backpack.constructor === Object)) {
-                for (var property in this.inv.backpack) {
-                    if (this.inv.backpack.hasOwnProperty(property)) {
-                        invCount++;
-                    }
-                }
-            }
+            const invCount = this.inv.backpack.size;
             console.log("Inventory: " + ((invCount) ? invCount : "No") + " Items");
 
             if (this.magic.spcMod) {
@@ -937,6 +939,7 @@ const Player = (() => {
                     inv = "i",
                     magic = "m",
                     gfx_magic = "M",
+                    notes = "J",
                     roll = "R"
             } = keybinds;
             // clear event listeners
@@ -944,7 +947,7 @@ const Player = (() => {
                 console.log("Cleared previous shortcuts...");
                 document.getElementById("out-wrap").addEventListener("keypress", (e) => {
                     // don't mistake keypress while typing for a keyboard shortcut
-                    if (e.target.tagName == "INPUT") {
+                    if (e.target.tagName == "INPUT" || e.target.tagName == "TEXTAREA") {
                         return false;
                     }
                     if (e.key == self) {
@@ -962,6 +965,8 @@ const Player = (() => {
                         this.render.spellbook.generate();
                     } else if (e.key == roll) {
                         die.gfx_dice("d20", 20, 20);
+                    } else if(e.key == notes){
+                        this.render.misc_notes.generate();
                     }
                 });
             });
@@ -980,6 +985,7 @@ const Player = (() => {
                 <li><strong>${magic} -</strong> Lists character spells.</li>
                 <li><strong>${gfx_magic} -</strong> Generates character GUI spellbook.</li>
                 <li><strong>${roll} -</strong> Rolls a d20 quickly.</li>
+                <li><strong>${notes} -</strong> Opens the notebook for tracking character notes.</li>
             </ul>`);
             window.render();
         }

@@ -11,6 +11,63 @@ const Library = (()=>{
     library.spells = new Map();
     library.monsters = new Map();
 
+    // player classes
+    if(playerClass){
+        library.player_classes = new Map();
+        library.player_classes.set("Fighter", {
+            name: "Fighter",
+            url: "https://roll20.net/compendium/dnd5e/" + name,
+            misc: {},
+            hitdie: "d10",
+            spcMod: undefined,
+            start_prof: {
+                wpn: ["Simple", "Martial"],
+                tool: [],
+                armr: ["Light", "Medium", "Heavy", "Shields"]
+            },
+            save_throws: ["str", "cnst"]
+        });
+        library.player_classes.set("Rogue", {
+            name: "Rogue",
+            url: "https://roll20.net/compendium/dnd5e/" + name,
+            misc: {},
+            hitdie: "d8",
+            spcMod: undefined,
+            start_prof: {
+                wpn: ["Simple Weapons", "hand crossbows", "longswords", "rapiers", "shortswords"],
+                tool: ["Thieves' Tools"],
+                armr: ["Light"]
+            },
+            save_throws: ["dex", "int"]
+        });
+        library.player_classes.set("Paladin", {
+            name: "Paladin",
+            url: "https://roll20.net/compendium/dnd5e/" + name,
+            misc: {},
+            hitdie: "d10",
+            spcMod: undefined,
+            start_prof: {
+                wpn: ["Simple", "Martial"],
+                tool: [],
+                armr: ["Light", "Medium", "Heavy", "Shields"]
+            },
+            save_throws: ["str", "chr"]
+        });
+        library.player_classes.set("Barbarian", {
+            name: "Barbarian",
+            url: "https://roll20.net/compendium/dnd5e/" + name,
+            misc: {},
+            hitdie: "d12",
+            spcMod: undefined,
+            start_prof: {
+                wpn: ["Simple", "Martial"],
+                tool: [],
+                armr: ["Light", "Medium", "Shields"]
+            },
+            save_throws: ["str", "cnst"]
+        });
+    }
+
     for(property in spells){
         library.spells.set(property, new Spell(spells[property]));
     }

@@ -558,7 +558,7 @@ const Player = (() => {
             if (this.backpack.get(item.name)) {
                 this.backpack.get(item.name).qnty += item.qnty;
             } else {
-                this.backpack.get(item.name) = item;
+                this.backpack.set(item.name, item);
             }
             console.log("Added " + item.qnty + " '" + item.name + "' to backpack!");
             return this.backpack.get(item.name);

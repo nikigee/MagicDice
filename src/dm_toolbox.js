@@ -1,13 +1,5 @@
 const DM = (() => {
     const DM_obj = {};
-    DM_obj.config = localStorage.getItem("md_dmconfig") ? JSON.parse(localStorage.getItem("md_dmconfig")) : {
-        img_folder: "./src/img"
-    };
-    DM_obj.saveConfig = () => {
-        console.log("Saving config...");
-        localStorage.setItem("md_dmconfig", JSON.stringify(DM_obj.config));
-        return console.log(JSON.parse(localStorage.getItem("md_dmconfig")));
-    };
 
     function getColor(PP) {
         if (PP >= 80) {
@@ -50,7 +42,7 @@ const DM = (() => {
                     this.attack = Number(attack),
                     this.name = name,
                     this.full_data = full_data,
-                    this.image = (image == "") ? `${DM_obj.config.img_folder}/monsters/${name.toLowerCase().replace(/ /g, "-")}.jpg` : image,
+                    this.image = image,
                     this.id = id
             }
             get pp() {

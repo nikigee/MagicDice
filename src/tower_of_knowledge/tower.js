@@ -13,7 +13,59 @@ const Library = (()=>{
 
     // player classes
     if(playerClass){
-        library.player_classes = new Map();
+        library.player_classes = new Map(); // init a new map
+        library.player_classes.set("Barbarian", {
+            name: "Barbarian",
+            url: "https://roll20.net/compendium/dnd5e/" + name,
+            misc: {},
+            hitdie: "d12",
+            spcMod: undefined,
+            start_prof: {
+                wpn: ["Simple", "Martial"],
+                tool: [],
+                armr: ["Light", "Medium", "Shields"]
+            },
+            save_throws: ["str", "cnst"]
+        });
+        library.player_classes.set("Bard", {
+            name: "Bard",
+            url: "https://roll20.net/compendium/dnd5e/" + name,
+            misc: {},
+            hitdie: "d8",
+            spcMod: undefined,
+            start_prof: {
+                wpn: ["Simple Weapons", "Hand Crossbows", "Longswords", "Rapiers", "Shortswords"],
+                tool: [],
+                armr: ["Light"]
+            },
+            save_throws: ["dex", "chr"]
+        });
+        library.player_classes.set("Cleric", {
+            name: "Cleric",
+            url: "https://roll20.net/compendium/dnd5e/" + name,
+            misc: {},
+            hitdie: "d8",
+            spcMod: "wis",
+            start_prof: {
+                wpn: ["Simple Weapons"],
+                tool: [],
+                armr: ["Light", "Medium", "Shields"]
+            },
+            save_throws: ["wis", "chr"]
+        });
+        library.player_classes.set("Druid", {
+            name: "Druid",
+            url: "https://roll20.net/compendium/dnd5e/" + name,
+            misc: {},
+            hitdie: "d8",
+            spcMod: "wis",
+            start_prof: {
+                wpn: ["Club", "Daggers", "Darts", "Javelins", "Maces", "Quarterstaffs", "Scimitars", "Sickles", "Slings", "Spears"],
+                tool: ["Herbism Kit"],
+                armr: ["Light", "Medium", "Shields"]
+            },
+            save_throws: ["int", "wis"]
+        });
         library.player_classes.set("Fighter", {
             name: "Fighter",
             url: "https://roll20.net/compendium/dnd5e/" + name,
@@ -26,6 +78,45 @@ const Library = (()=>{
                 armr: ["Light", "Medium", "Heavy", "Shields"]
             },
             save_throws: ["str", "cnst"]
+        });
+        library.player_classes.set("Monk", {
+            name: "Monk",
+            url: "https://roll20.net/compendium/dnd5e/" + name,
+            misc: {},
+            hitdie: "d8",
+            spcMod: undefined,
+            start_prof: {
+                wpn: ["Simple Weapons", "Shortswords"],
+                tool: [],
+                armr: []
+            },
+            save_throws: ["str", "dex"]
+        });
+        library.player_classes.set("Paladin", {
+            name: "Paladin",
+            url: "https://roll20.net/compendium/dnd5e/" + name,
+            misc: {},
+            hitdie: "d10",
+            spcMod: "chr",
+            start_prof: {
+                wpn: ["Simple", "Martial"],
+                tool: [],
+                armr: ["Light", "Medium", "Heavy", "Shields"]
+            },
+            save_throws: ["str", "chr"]
+        });
+        library.player_classes.set("Ranger", {
+            name: "Ranger",
+            url: "https://roll20.net/compendium/dnd5e/" + name,
+            misc: {},
+            hitdie: "d10",
+            spcMod: "wis",
+            start_prof: {
+                wpn: ["Simple", "Martial"],
+                tool: [],
+                armr: ["Light", "Medium", "Shields"]
+            },
+            save_throws: ["str", "dex"]
         });
         library.player_classes.set("Rogue", {
             name: "Rogue",
@@ -40,33 +131,46 @@ const Library = (()=>{
             },
             save_throws: ["dex", "int"]
         });
-        library.player_classes.set("Paladin", {
-            name: "Paladin",
+        library.player_classes.set("Sorcerer", {
+            name: "Sorcerer",
             url: "https://roll20.net/compendium/dnd5e/" + name,
             misc: {},
-            hitdie: "d10",
-            spcMod: "wis",
+            hitdie: "d6",
+            spcMod: "chr",
             start_prof: {
-                wpn: ["Simple", "Martial"],
+                wpn: ["Daggers", "Darts", "Slings", "Quarterstaffs", "Light Crossbows"],
                 tool: [],
-                armr: ["Light", "Medium", "Heavy", "Shields"]
+                armr: []
             },
-            save_throws: ["str", "chr"]
+            save_throws: ["con", "chr"]
         });
-        library.player_classes.set("Barbarian", {
-            name: "Barbarian",
+        library.player_classes.set("Warlock", {
+            name: "Warlock",
             url: "https://roll20.net/compendium/dnd5e/" + name,
             misc: {},
-            hitdie: "d12",
-            spcMod: undefined,
+            hitdie: "d8",
+            spcMod: "chr",
             start_prof: {
-                wpn: ["Simple", "Martial"],
+                wpn: ["Simple Weapons"],
                 tool: [],
-                armr: ["Light", "Medium", "Shields"]
+                armr: ["Light"]
             },
-            save_throws: ["str", "cnst"]
+            save_throws: ["wis", "chr"]
         });
-    }
+        library.player_classes.set("Wizard", {
+            name: "Wizard",
+            url: "https://roll20.net/compendium/dnd5e/" + name,
+            misc: {},
+            hitdie: "d6",
+            spcMod: "int",
+            start_prof: {
+                wpn: ["Daggers", "Darts", "Slings", "Quarterstaffs", "Light Crossbows"],
+                tool: [],
+                armr: []
+            },
+            save_throws: ["int", "wis"]
+        });
+    };
 
     for(property in spells){
         library.spells.set(property, new Spell(spells[property]));

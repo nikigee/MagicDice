@@ -237,6 +237,7 @@ h3 {
     text-align: left;
     overflow: auto;
     height: -webkit-fill-available;
+    height: -moz-available;
 }
 .spellbody{
     padding: 5px;
@@ -314,6 +315,7 @@ h3 {
     display: inline-block;
     overflow: auto;
     height: -webkit-fill-available;
+    height: -moz-available;
 }
 
 #spells {
@@ -634,6 +636,7 @@ footer a:hover {
 .window-big_box{
     width: 100%;
     height: -webkit-fill-available;
+    height: -moz-available;
     max-height: 500px;
     font-family: inherit;
     font-size: 16px;

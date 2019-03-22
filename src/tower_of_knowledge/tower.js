@@ -45,7 +45,7 @@ const Library = (()=>{
             url: "https://roll20.net/compendium/dnd5e/" + name,
             misc: {},
             hitdie: "d10",
-            spcMod: undefined,
+            spcMod: "wis",
             start_prof: {
                 wpn: ["Simple", "Martial"],
                 tool: [],

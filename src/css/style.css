@@ -12,8 +12,12 @@ body {
     margin: 0px;
 }
 
+html{
+    background-color: #0b0b13;
+}
+
 body {
-    background: url("../img/B9GzBa8.jpg") center fixed;
+    background: url("../img/bg/1.jpg") center fixed;
     background-size: cover;
     font-family: "Timeless", Georgia, 'Times New Roman', Times, serif;
     color: black;
@@ -797,6 +801,9 @@ footer a:hover {
 
 /* Player render changes */
 @media only screen and (max-width: 955px) {
+    html{
+        background-color: unset; /* fix background images */
+    }
     .playerBox img {
         position: absolute;
         z-index: -300;

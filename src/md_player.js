@@ -82,8 +82,10 @@ const Load = (() => {
                 return false;
             }
             magicHandler.managed_players.push(this.deSer(characters[character]));
-            console.log(magicHandler.last);
-            magicHandler.last.render.generate();
+            MagicUI.resetDOM(()=>{
+                magicHandler.last.render.generate();
+                console.log("You can now access this character by simply typing 'ply' into this console.");
+            });
         },
         ls: function () {
             console.log("---LIST OF CHARACTERS---");
@@ -323,15 +325,15 @@ const Player = (() => {
             this.misc_notes = {};
             this.parent = parent;
 
-            this.misc_notes.generate = ()=>{
+            this.misc_notes.generate = () => {
                 const window = new richDice((document.body.clientWidth / 2) - 225, 150);
                 window.setTitle("Features and Notes");
                 window.setSize(450);
                 window.setDescription("Use this to list your class features or any miscellaneous notes.");
                 window.addCustomHTML("", `<textarea class='window-big_box'>${this.parent.stats.misc_notes}</textarea>`);
                 window.css.alignment = "left";
-                window.render((dom)=>{
-                    dom.getElementsByClassName("window-big_box")[0].addEventListener("change", (e)=>{
+                window.render((dom) => {
+                    dom.getElementsByClassName("window-big_box")[0].addEventListener("change", (e) => {
                         this.parent.stats.misc_notes = e.target.value;
                     });
                 });
@@ -965,7 +967,7 @@ const Player = (() => {
                         this.render.spellbook.generate();
                     } else if (e.key == roll) {
                         die.gfx_dice("d20", 20, 20);
-                    } else if(e.key == notes){
+                    } else if (e.key == notes) {
                         this.render.misc_notes.generate();
                     }
                 });

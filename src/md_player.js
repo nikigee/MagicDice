@@ -683,7 +683,7 @@ const Player = (() => {
                 preparedSpells: parent.magic.preparedSpells
             };
             this.invData = parent.inv;
-            this.invData.backpack = MapToObj(parent.invData.backpack); // convert back to object for saving
+            this.invData.backpack = MapToObj(parent.inv.backpack); // convert back to object for saving
 
             this.renderData = {
                 avatar: parent.render.avatar

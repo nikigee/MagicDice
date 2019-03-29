@@ -740,6 +740,19 @@ footer a:hover {
 .toolbar-hero i:hover {
     color: #FFC107;
 }
+
+.diceClick{
+    cursor: pointer;
+    padding-left: 2px;
+    padding-right: 2px;
+    border-radius: 3px;
+    border: solid 1px black;
+    background: white;
+}
+.diceClick:hover{
+    color: #d02222 !important;
+}
+
 /*
 ==================
     MOBILE CSS

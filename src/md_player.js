@@ -361,6 +361,14 @@ const Player = (() => {
                 document.getElementsByClassName("spellrow")[4].addEventListener("mousedown", (e) => {
                     die.gfx_dice(spell.roll, e.clientX, e.clientY);
                 });
+                // Make every dice mention a clickable roll.
+                document.getElementsByClassName("descwrap")[0].innerHTML = document.getElementsByClassName("descwrap")[0].innerHTML.replace(/\d+d\d+(?:\s*\++\s*\d+)*/gi, (x)=>{return `<a class="diceClick">${x}</a>`})
+                const diceRolls = document.getElementsByClassName("diceClick");
+                for(let i = 0; i < diceRolls.length; i++){
+                    diceRolls[i].addEventListener("click", (e)=>{
+                        die.gfx_dice(e.target.innerHTML, e.clientX, e.clientY);
+                    })
+                }
                 return spell.x;
             };
             this.spellbook.generate = () => {

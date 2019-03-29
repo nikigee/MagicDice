@@ -365,10 +365,9 @@ const Player = (() => {
             };
             this.spellbook.generate = () => {
                 const main = document.getElementById("main");
+                const device_width = (window.innerWidth > 0) ? window.innerWidth : screen.width;
                 main.innerHTML = `
                 <div class="spellbook">
-                    <div class="spellwindow">
-                    </div>
                     <div class="spell-list">
                         <div id="spell-toolbar"><input type="text" placeholder="Fireball" id="spell-search">        <input type="checkbox" id="library-toggle"><label for="library-toggle">Search Library</label></div>
                         <div id="spells">
@@ -376,6 +375,11 @@ const Player = (() => {
                     </div>
                 </div>
                 `;
+                if(device_width <= 436){
+                    document.getElementsByClassName("spellbook")[0].insertAdjacentHTML("beforeend", `<div class="spellwindow"></div>`);
+                } else{
+                    document.getElementsByClassName("spellbook")[0].insertAdjacentHTML("afterbegin", `<div class="spellwindow"></div>`);
+                }
                 this.spellbook.populate();
                 document.getElementById("spell-toolbar").addEventListener("input", (e) => {
                     const opts = {};

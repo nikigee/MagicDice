@@ -1,3 +1,6 @@
+#monster-board{
+    max-height: 680px;
+}
 #init-ladder {
     background: #ffffff80;
     box-shadow: #1a1a1a 0px 0px 5px;
@@ -14,6 +17,8 @@
     overflow-y: auto;
     margin-bottom: 20px;
     position: relative;
+    max-height: 650px;
+    height: 100%;
 }
 
 #init-options {
@@ -31,12 +36,14 @@
     min-width: 450px;
     max-width: 900px;
     text-align: left;
+    height: calc(100% + 10px);
+    max-height: 660px;
 }
 
 #battle-list {
     background: #ffffff80;
     box-shadow: #1a1a1a 0px 0px 5px;
-    height: 602px;
+    height: calc(100% - 74px);
     padding: 10px;
     overflow-y: auto;
 }

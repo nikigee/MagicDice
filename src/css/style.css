@@ -24,7 +24,7 @@ body {
 }
 
 #out-wrap {
-    min-height: 100%;
+    min-height: 100vh;
     width: 100%;
     outline: none;
 }
@@ -220,7 +220,7 @@ h3 {
 .spellbook {
     display: inline-block;
     max-width: 1000px;
-    min-width: 800px;
+    min-width: 511px;
     margin: 10px;
     max-height: 800px;
     vertical-align: top;
@@ -240,8 +240,8 @@ h3 {
     vertical-align: top;
     text-align: left;
     overflow: auto;
-    height: -webkit-fill-available;
-    height: -moz-available;
+    height: 100%;
+    max-height: 800px;
 }
 .spellbody{
     padding: 5px;
@@ -318,8 +318,8 @@ h3 {
     -webkit-transition: 0.3s;
     display: inline-block;
     overflow: auto;
-    height: -webkit-fill-available;
-    height: -moz-available;
+    height: 100%;
+    max-height: 800px;
 }
 
 #spells {
@@ -740,7 +740,6 @@ footer a:hover {
 .toolbar-hero i:hover {
     color: #FFC107;
 }
-
 /*
 ==================
     MOBILE CSS
@@ -796,6 +795,21 @@ footer a:hover {
 
     .toolbar-hero {
         text-align: center;
+    }
+
+    .spellwindow{
+        width: auto;
+        height: auto;
+    }
+    .spell-list{
+        width: auto;
+        height: 200px;
+        margin-bottom: 20px;
+    }
+    .spellbook{
+        max-height: unset;
+        margin: 0px;
+        min-width: unset;
     }
 }
 

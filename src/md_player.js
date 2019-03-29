@@ -18,6 +18,13 @@ magicHandler = (() => {
                 return this.managed_players;
             }
         }
+        randomPlayer(name = `NPC ${this.managed_players.length}`, lvl = 3){
+            let ran_class = Array.from(Library.player_classes);
+            ran_class = ran_class[Math.floor(Math.random() * ran_class.length)][1]; // get a random class
+            this.managed_players.push(new Player({name:name, lvl:lvl, classData: ran_class}));
+            this.last.render.generate();
+            MagicUI.populateToolbar();
+        }
     }
     return new magicHandler();
 })();
@@ -317,7 +324,7 @@ const Player = (() => {
         constructor(props = {}) {
             const {
                 parent = undefined,
-                    avatar = "https://i.pinimg.com/originals/9c/60/e9/9c60e9f811ba8203d35f2da1746c6d04.jpg"
+                    avatar = "./src/img/render_default.jpg"
             } = props;
             this.avatar = avatar;
             this.ID = Math.floor(Math.random() * 999999);

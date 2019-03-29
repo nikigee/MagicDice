@@ -368,6 +368,7 @@ const MagicUI = (() => {
     };
     UI.populateToolbar = () => {
         const toolbar = document.getElementById("toolbar-section");
+        toolbar.innerHTML = "";
         for (let i = 0; i < magicHandler.managed_players.length; i++) {
             toolbar.insertAdjacentHTML("beforeend", `<div class="toolbar-hero"><span>${magicHandler.managed_players[i].name}</span><i class="fa fa-user-circle"></i><i class="fa fa-book"></i><i class="fa fa-keyboard-o"></i><i class="fa fa-floppy-o"></i><i class="fa fa-cloud"></i><i class="fa fa-trash-o"></i></div>`);
             document.getElementsByClassName("toolbar-hero")[i].getElementsByClassName("fa-user-circle")[0].addEventListener("click", (e) => {

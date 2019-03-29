@@ -508,19 +508,10 @@ const Player = (() => {
                 });
             }
         }
-        generate(clear) {
+        generate(clear = true) {
             const list = document.getElementById("main");
             if (clear !== false) {
                 list.innerHTML = "";
-            }
-            const percent = (this.parent.health.currentHP / this.parent.health.maxHP) * 100;
-            let invCount = 0;
-            if (!(Object.keys(this.parent.inv.backpack).length === 0 && this.parent.inv.backpack.constructor === Object)) {
-                for (var property in this.parent.inv.backpack) {
-                    if (this.parent.inv.backpack.hasOwnProperty(property)) {
-                        invCount++;
-                    }
-                }
             }
             let newHTML = `
             <div class="playerBox">
@@ -682,9 +673,16 @@ const Player = (() => {
                 spcMod: parent.magic.spcMod,
                 preparedSpells: parent.magic.preparedSpells
             };
+            /*
             this.invData = parent.inv;
             this.invData.backpack = MapToObj(parent.inv.backpack); // convert back to object for saving
-
+            */
+            // we have to do it like this because otherwise we'll change the parent object too
+            this.invData = {
+                gold: parent.inv.gold,
+                backpack: MapToObj(parent.inv.backpack)
+            };
+            
             this.renderData = {
                 avatar: parent.render.avatar
             };

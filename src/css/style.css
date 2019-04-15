@@ -2,6 +2,7 @@
     font-family: "Timeless";
     src: url("../fonts/Timeless.ttf");
 }
+
 @font-face {
     font-family: "Timeless-bold";
     src: url("../fonts/Timeless-Bold.ttf");
@@ -12,7 +13,7 @@ body {
     margin: 0px;
 }
 
-html{
+html {
     background-color: #0b0b13;
 }
 
@@ -243,7 +244,8 @@ h3 {
     height: 100%;
     max-height: 800px;
 }
-.spellbody{
+
+.spellbody {
     padding: 5px;
     padding-top: 0px;
 }
@@ -259,16 +261,16 @@ h3 {
 
 }
 
-.spellwindow span{
+.spellwindow span {
     margin-left: 10px;
 }
 
-.spellbanner{
+.spellbanner {
     padding: 5px;
     padding-bottom: 0px;
 }
 
-.spellscription{
+.spellscription {
     font-style: italic;
     margin-bottom: 7px;
     margin-left: 0px;
@@ -356,7 +358,7 @@ h3 {
     -webkit-transition: 0.3s;
 }
 
-#spell-search:active{
+#spell-search:active {
     box-shadow: 0px 0px 5px white;
 }
 
@@ -541,11 +543,23 @@ div::-webkit-scrollbar-thumb {
     color: white;
 }
 
-.dice-table{
+.dice-table {
     margin-left: 5px;
 }
 
-.gfx_dice{
+@keyframes rolling {
+    from {
+        color: white;
+        transform: rotate(0deg);
+    }
+
+    to {
+        color: black;
+        transform: rotate(720deg);
+    }
+}
+
+.gfx_dice {
     display: inline-block;
     padding: 5px;
     min-width: 20px;
@@ -558,6 +572,9 @@ div::-webkit-scrollbar-thumb {
     font-size: 16px;
     vertical-align: middle;
     line-height: 20px;
+    transition: 0.2s;
+    -webkit-transition: 0.2s;
+    animation: rolling 1s;
 }
 
 .spelldesc {
@@ -638,7 +655,7 @@ footer a:hover {
     box-shadow: 0px 0px 5px #1a1a1a;
 }
 
-.window-big_box{
+.window-big_box {
     width: 100%;
     height: -webkit-fill-available;
     height: -moz-available;
@@ -741,7 +758,7 @@ footer a:hover {
     color: #FFC107;
 }
 
-.diceClick{
+.diceClick {
     cursor: pointer;
     padding-left: 2px;
     padding-right: 2px;
@@ -749,7 +766,8 @@ footer a:hover {
     border: solid 1px black;
     background: white;
 }
-.diceClick:hover{
+
+.diceClick:hover {
     color: #d02222 !important;
 }
 
@@ -810,16 +828,18 @@ footer a:hover {
         text-align: center;
     }
 
-    .spellwindow{
+    .spellwindow {
         width: auto;
         height: auto;
     }
-    .spell-list{
+
+    .spell-list {
         width: auto;
-        height: 200px;
+        height: 400px;
         margin-bottom: 20px;
     }
-    .spellbook{
+
+    .spellbook {
         max-height: unset;
         margin: 0px;
         min-width: unset;
@@ -828,9 +848,11 @@ footer a:hover {
 
 /* Player render changes */
 @media only screen and (max-width: 955px) {
-    html{
-        background-color: unset; /* fix background images */
+    html {
+        background-color: unset;
+        /* fix background images */
     }
+
     .playerBox img {
         position: absolute;
         z-index: -300;

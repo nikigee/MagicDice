@@ -18,10 +18,14 @@ magicHandler = (() => {
                 return this.managed_players;
             }
         }
-        randomPlayer(name = `NPC ${this.managed_players.length}`, lvl = 3){
+        randomPlayer(name = `NPC ${this.managed_players.length}`, lvl = 3) {
             let ran_class = Array.from(Library.player_classes);
             ran_class = ran_class[Math.floor(Math.random() * ran_class.length)][1]; // get a random class
-            this.managed_players.push(new Player({name:name, lvl:lvl, classData: ran_class}));
+            this.managed_players.push(new Player({
+                name: name,
+                lvl: lvl,
+                classData: ran_class
+            }));
             this.last.render.generate();
             MagicUI.populateToolbar();
         }
@@ -89,7 +93,7 @@ const Load = (() => {
                 return false;
             }
             magicHandler.managed_players.push(this.deSer(characters[character]));
-            MagicUI.resetDOM(()=>{
+            MagicUI.resetDOM(() => {
                 magicHandler.last.render.generate();
                 console.log("You can now access this character by simply typing 'ply' into this console.");
             });
@@ -355,17 +359,15 @@ const Player = (() => {
                 <span class="spellrow"><strong>Range:</strong> ${spell.range}</span>
                 <span class="spellrow"><strong>Components:</strong> ${spell.components}</span>
                 <span class="spellrow"><strong>Duration:</strong> ${spell.duration}</span>
-                <span class="spellrow"><strong>Damage:</strong> ${spell.roll}</span>
                 <div class="descwrap"><p class="spelldesc">${spell.description.replace(/\n\n/g, "</p><p class='spelldesc'>")}</p></div>
                 </div>`;
-                document.getElementsByClassName("spellrow")[4].addEventListener("mousedown", (e) => {
-                    die.gfx_dice(spell.roll, e.clientX, e.clientY);
-                });
                 // Make every dice mention a clickable roll.
-                document.getElementsByClassName("descwrap")[0].innerHTML = document.getElementsByClassName("descwrap")[0].innerHTML.replace(/\d+d\d+(?:\s*\++\s*\d+)*/gi, (x)=>{return `<a class="diceClick">${x}</a>`})
+                document.getElementsByClassName("descwrap")[0].innerHTML = document.getElementsByClassName("descwrap")[0].innerHTML.replace(/\d+d\d+(?:\s*\++\s*\d+)*/gi, (x) => {
+                    return `<a class="diceClick">${x}</a>`
+                })
                 const diceRolls = document.getElementsByClassName("diceClick");
-                for(let i = 0; i < diceRolls.length; i++){
-                    diceRolls[i].addEventListener("click", (e)=>{
+                for (let i = 0; i < diceRolls.length; i++) {
+                    diceRolls[i].addEventListener("click", (e) => {
                         die.gfx_dice(e.target.innerHTML, e.clientX, e.clientY);
                     })
                 }
@@ -383,9 +385,9 @@ const Player = (() => {
                     </div>
                 </div>
                 `;
-                if(device_width <= 436){
+                if (device_width <= 436) {
                     document.getElementsByClassName("spellbook")[0].insertAdjacentHTML("beforeend", `<div class="spellwindow"></div>`);
-                } else{
+                } else {
                     document.getElementsByClassName("spellbook")[0].insertAdjacentHTML("afterbegin", `<div class="spellwindow"></div>`);
                 }
                 this.spellbook.populate();
@@ -701,7 +703,7 @@ const Player = (() => {
                 gold: parent.inv.gold,
                 backpack: MapToObj(parent.inv.backpack)
             };
-            
+
             this.renderData = {
                 avatar: parent.render.avatar
             };
@@ -983,7 +985,14 @@ const Player = (() => {
                     } else if (e.key == gfx_magic) {
                         this.render.spellbook.generate();
                     } else if (e.key == roll) {
-                        die.gfx_dice("d20", 20, 20);
+                        e.preventDefault();
+                        const window = new richDice((document.body.clientWidth / 2) - 140, 150);
+                        window.genPrompt("Roll Dice", "Enter any RPG style dice combination.", {
+                            p_title: "Dice",
+                            p_placeholder: "8d6"
+                        }, (data) => {
+                            die.gfx_dice(data, (document.body.clientWidth / 2) - 140, 150);
+                        });
                     } else if (e.key == notes) {
                         this.render.misc_notes.generate();
                     }

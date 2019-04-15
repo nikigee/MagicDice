@@ -89,7 +89,10 @@ const die = (() => {
             if (rollObj.negative)
                 total = total * -1
             dice.addField(`Total: `, total);
-            dice.render();
+            const sound = new Audio("./src/misc/diceroll.mp3");
+            dice.render(()=>{
+                sound.play(); // play sound effect
+            });
             return dice;
         }
     }
@@ -238,10 +241,12 @@ const richDice = (() => {
             this.css.alignment = "left";
             this.addPrompt(prompt.p_title, prompt.p_placeholder);
             this.render((dom) => {
+                document.getElementsByClassName(this.ID + prompt.p_title)[0].focus(); // focus user on the text field
+                // called after the user submits on the prompt
                 dom.addEventListener("keypress", (e) => {
                     if (e.key == "Enter") {
                         const data = document.getElementsByClassName(this.ID + prompt.p_title)[0].value;
-                        callback(data);
+                        callback(data); // give the data back
                         this.dom.remove();
                     }
                 });

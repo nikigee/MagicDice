@@ -491,7 +491,18 @@ const Player = (() => {
                         </div>
                     </div>` : ""}
                 </div>
+                <div class="show_more"></div>
             `;
+            const player_extra = document.getElementsByClassName(this.ID)[1];
+            player_extra.innerHTML = `
+                <div class="skl_leftside">
+                    <div class="skl_savethrows"></div>
+                    <div class="skl_inventory"></div>
+                </div>
+                <div class="skl_rightside">
+                    <div class="skl_skills"></div>
+                </div>
+            `
             document.getElementsByClassName(`${this.ID}`)[0].getElementsByClassName("health-bar")[0].addEventListener("mousedown", (e) => {
                 const health_window = new richDice(e.clientX, e.clientY);
                 health_window.setSize(300);
@@ -540,6 +551,7 @@ const Player = (() => {
             <div class="playerInfo ${this.ID}">
                 
             </div>
+            <div class="playerExtra ${this.ID}"></div>
             </div>
             `;
             list.insertAdjacentHTML('beforeend', newHTML);

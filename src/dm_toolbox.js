@@ -196,7 +196,7 @@ const DM = (() => {
                         const popup = new richDice(e.clientX - 250, e.clientY - 250);
                         popup.setTitle(`${mnstr.name}`);
                         popup.setDescription("Opening a portal to the ethereal plane...");
-                        popup.addCustomHTML("", `<iframe width=500 height=700 src="https://chisaipete.github.io/bestiary/creatures/${mnstr.name.toLowerCase().replace(/ /g, "-")}"></iframe>`);
+                        popup.addCustomHTML("", `<iframe width=500 height=700 src="https://chisaipete.github.io/bestiary/creature/${mnstr.name.toLowerCase().replace(/ /g, "-")}"></iframe>`);
                         popup.css.footer_padding = 0;
                         popup.render();
                     });

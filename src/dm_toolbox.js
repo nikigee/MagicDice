@@ -214,6 +214,7 @@ const DM = (() => {
                     <div id="init-options">
                         <button class="btn-main" id="add-init">Add</button>
                         <button class="btn-main" id="sort-init">Sort</button>
+                        <button class="btn-main" id="clear-init">Clear</button>
                     </div>
                 </div>` : ""}
                 ${btl ? `<div id="battle-table">
@@ -329,6 +330,11 @@ const DM = (() => {
                     });
                     document.getElementById("add-init").addEventListener("click", () => {
                         this.addInit();
+                    });
+                    document.getElementById("clear-init").addEventListener("click", () => {
+                        this.initList = [];
+                        this.updateInit();
+                        this.collectInfo();
                     });
                 }
             }

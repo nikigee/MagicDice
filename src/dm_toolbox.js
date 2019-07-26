@@ -73,10 +73,15 @@ const DM = (() => {
             constructor(props = {}) {
                 const {
                     initList = localStorage.dm_initlist ? JSON.parse(localStorage.getItem("dm_initlist")) : [],
-                        monsterList = new Map()
+                        monsterList = localStorage.dm_btllist ? new Map(JSON.parse(localStorage.getItem("dm_btllist"))) : new Map()
                 } = props;
                 this.initList = initList;
                 this.monsterList = monsterList;
+                this.monsterList.forEach((x, k) => {
+                    if(x.constructor.name != "Monster"){
+                        this.monsterList.set(k, new Monster(x));
+                    }
+                });
             }
             collectInfo(callback) {
                 // clear previous info
@@ -159,8 +164,8 @@ const DM = (() => {
                         <div class="monster-buttons"><i class="fa fa-info-circle"></i><i class="fa fa-remove"></i></div>
                     </div>
                     </div>`);
-                    document.getElementById(`attack${mnstr.strID}`).addEventListener("click", (e)=>{
-                        die.gfx_dice(`d20+${mnstr.attack}`, e.clientX-100, e.clientY-50);
+                    document.getElementById(`attack${mnstr.strID}`).addEventListener("click", (e) => {
+                        die.gfx_dice(`d20+${mnstr.attack}`, e.clientX - 100, e.clientY - 50);
                     });
                     const health_bar = document.getElementsByClassName("health-bar");
                     health_bar[health_bar.length - 1].addEventListener("click", (e) => {
@@ -212,19 +217,21 @@ const DM = (() => {
                     <div id="init-list">
                     </div>
                     <div id="init-options">
-                        <button class="btn-main" id="add-init">Add</button>
-                        <button class="btn-main" id="sort-init">Sort</button>
-                        <button class="btn-main" id="clear-init">Clear</button>
+                        <button class="btn-main" id="add-init"><i class="fa fa-plus" aria-hidden="true"></i> Add</button>
+                        <button class="btn-main" id="sort-init"><i class="fa fa-sort-amount-asc" aria-hidden="true"></i> Sort</button>
+                        <button class="btn-main" id="clear-init"><i class="fa fa-trash-o" aria-hidden="true"></i> Clear</button>
                     </div>
                 </div>` : ""}
                 ${btl ? `<div id="battle-table">
                     <div id="battle-list">
                     </div>
                     <div id="battle-options">
-                        <button class="btn-main" id="add-battle">Add</button>
-                        <button class="btn-main" id="library-add">Library Add</button>
-                        <button class="btn-main" id="remove-battle">Remove All</button>
-                        <button class="btn-main" id="spoiler-button">Hide OFF</button>
+                        <button class="btn-main" id="roll-dice"><i class="fa fa-random" aria-hidden="true"></i> Roll Dice</button>
+                        <button class="btn-main" id="add-battle"><i class="fa fa-plus" aria-hidden="true"></i> Add</button>
+                        <button class="btn-main" id="library-add"><i class="fa fa-book" aria-hidden="true"></i> Library Add</button>
+                        <button class="btn-main" id="remove-battle"><i class="fa fa-trash" aria-hidden="true"></i> Remove All</button>
+                        <button class="btn-main" id="spoiler-button"><i class="fa fa-eye" aria-hidden="true"></i> Hide OFF</button>
+                        <button class="btn-main" id="save-battle"><i class="fa fa-floppy-o" aria-hidden="true"></i> Save Battle</button>
                     </div>
                 </div>` : ""}
                 </div>`;
@@ -272,6 +279,26 @@ const DM = (() => {
                             }
                         });
                     });
+                    document.getElementById("roll-dice").addEventListener("click", (e) => {
+                        const window = new richDice(e.clientX - 100, e.clientY - 120);
+                        window.genPrompt("Roll Dice", "Enter any RPG style dice combination.", {
+                            p_title: "Dice",
+                            p_placeholder: "8d6"
+                        }, (data) => {
+                            die.gfx_dice(data, e.clientX - 100, e.clientY - 250);
+                        });
+                    });
+                    document.getElementById("save-battle").addEventListener("click", ()=>{
+                        if (typeof (Storage) !== "undefined") {
+                            // save to storage
+                            const monsterArray = [];
+                            this.monsterList.forEach((x, k) => {
+                                monsterArray.push([k, x]);
+                            });
+                            localStorage.setItem("dm_btllist", JSON.stringify(monsterArray));
+                            console.log("Saved Battle!");
+                        }
+                    });
                     document.getElementById("remove-battle").addEventListener("click", () => {
                         this.monsterList = new Map();
                         this.updateBattle();
@@ -281,7 +308,7 @@ const DM = (() => {
                         library.setTitle("Add From Library");
                         library.setDescription("Add a monster from Falius' archives");
                         let list = "";
-                        Library.monsters.forEach((v)=>{
+                        Library.monsters.forEach((v) => {
                             list += `<option>${v.name}</option>`
                         });
                         library.addCustomHTML("Monster Name", `<input type=text list=monsters class="monster_name_input">
@@ -290,12 +317,12 @@ const DM = (() => {
                         </datalist>`);
                         library.addPrompt("Quantity", "1");
                         // handle callback
-                        library.render((dom)=>{
+                        library.render((dom) => {
                             const inputs = dom.getElementsByTagName("input");
                             for (let i = 0; i < inputs.length; i++) {
                                 inputs[i].addEventListener("keydown", (e) => {
                                     if (e.key == "Enter") {
-                                        if(!Library.monsters.get(dom.getElementsByClassName(`monster_name_input`)[0].value)){
+                                        if (!Library.monsters.get(dom.getElementsByClassName(`monster_name_input`)[0].value)) {
                                             return false;
                                         }
                                         let j = isNaN(dom.getElementsByClassName(`${library.ID}Quantity`)[0].value) ? 1 : Number(dom.getElementsByClassName(`${library.ID}Quantity`)[0].value);
@@ -304,7 +331,10 @@ const DM = (() => {
                                         const monster = Library.monsters.get(dom.getElementsByClassName(`monster_name_input`)[0].value);
                                         const id_color = genID().color;
                                         for (let i = 0; i < j; i++) {
-                                            monster.id = {color: id_color, number: i+1};
+                                            monster.id = {
+                                                color: id_color,
+                                                number: i + 1
+                                            };
                                             this.addMonster(monster);
                                             dom.remove();
                                         }
@@ -316,11 +346,13 @@ const DM = (() => {
                     });
                     document.getElementById("spoiler-button").addEventListener("click", (e) => {
                         const spoilers = document.getElementsByClassName("spoiler");
+                        if (!spoilers[0])
+                            return false
                         const visibility = spoilers[0].style.visibility == "hidden" ? "visible" : "hidden";
                         for (let i = 0; i < spoilers.length; i++) {
                             spoilers[i].style.visibility = visibility;
                         }
-                        e.target.innerHTML = `Hide ${visibility == "hidden" ? "ON" : "OFF"}`;
+                        e.target.innerHTML = `<i class="fa fa-eye" aria-hidden="true"></i> Hide ${visibility == "hidden" ? "ON" : "OFF"}`;
                     });
                 }
                 if (init) {

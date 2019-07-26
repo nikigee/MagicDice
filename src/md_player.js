@@ -156,6 +156,34 @@ const Player = (() => {
         }
     }
 
+    function convertText(arg) {
+        var text;
+        switch (arg) {
+            case "str":
+                text = "Strength";
+                break;
+            case "dex":
+                text = "Dexterity";
+                break;
+            case "cnst":
+                text = "Constitution";
+                break;
+            case "int":
+                text = "Intelligence";
+                break;
+            case "wis":
+                text = "Wisdom";
+                break;
+            case "chr":
+                text = "Charisma";
+                break;
+            default:
+                text = arg;
+                break;
+        }
+        return text;
+    }
+
     function genABS(points) {
         var dpoints = points;
         var ability = {
@@ -493,16 +521,32 @@ const Player = (() => {
                 </div>
                 <div class="show_more"></div>
             `;
+            /*
+                We'll finish this later ;^)
+
             const player_extra = document.getElementsByClassName(this.ID)[1];
             player_extra.innerHTML = `
                 <div class="skl_leftside">
-                    <div class="skl_savethrows"></div>
+                    <div class="skl_savethrows">
+                        <div class="skl_row">  
+                            ${(()=>{
+                                let text = "";
+                                this.parent.stats.sthrows.forEach((v, k)=>{
+                                    text += `<div class="skl_caption">${convertText(k)}</div>
+                                    <div class="skl_point">${v}</div>`
+                                });
+                                return text;
+                            })()}
+                        </div>
+                    </div>
                     <div class="skl_inventory"></div>
                 </div>
                 <div class="skl_rightside">
                     <div class="skl_skills"></div>
                 </div>
-            `
+            `;
+            */
+
             document.getElementsByClassName(`${this.ID}`)[0].getElementsByClassName("health-bar")[0].addEventListener("mousedown", (e) => {
                 const health_window = new richDice(e.clientX, e.clientY);
                 health_window.setSize(300);
@@ -551,8 +595,8 @@ const Player = (() => {
             <div class="playerInfo ${this.ID}">
                 
             </div>
-            <div class="playerExtra ${this.ID}"></div>
             </div>
+            <div class="playerExtra ${this.ID}"></div>
             `;
             list.insertAdjacentHTML('beforeend', newHTML);
             console.log("Rendered!");
@@ -777,13 +821,10 @@ const Player = (() => {
             // check if skills have been marked for proficency and update to match
             for (var property in this.skills) {
                 if (this.skills.hasOwnProperty(property)) {
-                    for (var i = 0; i < this.marks.length; i++) {
-                        if (property == this.marks[i]) {
-                            this.skills[property] += this.prof;
-                        }
-                    }
-                    for (var i = 0; i < this.expert.length; i++) {
-                        if (property == this.expert[i]) {
+                    if (this.marks.includes(property)) {
+                        this.skills[property] += this.prof;
+                        // expertise
+                        if (this.expert.includes(property)) {
                             this.skills[property] += this.prof;
                         }
                     }
@@ -801,10 +842,8 @@ const Player = (() => {
                     if (this.skills.hasOwnProperty(property)) {
                         var skill = this.skills[property];
                         var clr = "auto";
-                        for (var i = 0; i < this.marks.length; i++) {
-                            if (property == this.marks[i]) {
-                                clr = "#00bcd4";
-                            }
+                        if (this.marks.includes(property)) {
+                            clr = "#00bcd4";
                         }
                         console.log("%c" + property + ": " + skill, "color:" + clr);
                     }
@@ -818,11 +857,9 @@ const Player = (() => {
                     if (this.ability_mod.hasOwnProperty(property)) {
                         var skill = this.ability_mod[property];
                         var clr = "auto";
-                        for (var i = 0; i < this.save_throws.length; i++) {
-                            if (property == this.save_throws[i]) {
-                                clr = "#00bcd4";
-                                skill += this.prof;
-                            }
+                        if (this.save_throws.includes(property)) {
+                            clr = "#00bcd4";
+                            skill += this.prof;
                         }
                         console.log("%c" + property + ": " + skill, "color:" + clr);
                     }
@@ -852,7 +889,22 @@ const Player = (() => {
                 return;
             }
         }
-        sthrows(selector) {
+        get sthrows() {
+            const sthrows = new Map();
+            if (!(Object.keys(this.ability_mod).length === 0 && this.ability_mod.constructor === Object)) {
+                for (var property in this.ability_mod) {
+                    if (this.ability_mod.hasOwnProperty(property)) {
+                        let skill = this.ability_mod[property];
+                        if (this.save_throws.includes(property)) {
+                            skill += this.prof;
+                        }
+                        sthrows.set(property, skill);
+                    }
+                }
+            }
+            return sthrows;
+        }
+        roll_sthrow(selector) {
             selector = selector.toLowerCase();
             var result = die.r("d20", true);
             var modifier = this.ability_mod[selector];
@@ -980,7 +1032,7 @@ const Player = (() => {
                 console.log("Cleared previous shortcuts...");
                 document.getElementById("out-wrap").addEventListener("keypress", (e) => {
                     // don't mistake keypress while typing for a keyboard shortcut
-                    if (e.target.tagName == "INPUT" || e.target.tagName == "TEXTAREA") {
+                    if (e.target.tagName === "INPUT" || e.target.tagName === "TEXTAREA") {
                         return false;
                     }
                     if (e.key == self) {

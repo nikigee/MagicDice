@@ -417,7 +417,6 @@ const MagicUI = (() => {
                 window.render();
             });
             document.getElementById("menu-loadfile").addEventListener("click", (e) => {
-                document.getElementById("main").innerHTML = "";
                 Load.restoreFromFile();
                 document.getElementById("out-wrap").addEventListener("char-loaded", (e) => {
                     e.detail.enableShortcuts();

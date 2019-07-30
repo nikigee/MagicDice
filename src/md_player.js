@@ -111,31 +111,34 @@ const Load = (() => {
             }
         },
         restoreFromFile: function () {
-            const window = new richDice((document.body.clientWidth / 2) - 142.5, 150);
-            window.setTitle("Upload a Savefile");
-            window.setDescription("Upload your character's .json file here.");
-            window.addCustomHTML("", `<input type="file" class="upload" name="file">`);
-            window.render((dom) => {
-                dom.getElementsByClassName("upload")[0].addEventListener("change", (e) => {
-                    const file = e.target.files[0];
-                    const reader = new FileReader();
-                    reader.readAsText(file, "UTF-8");
-                    reader.onload = (e) => {
-                        // load the character once loaded.
-                        magicHandler.managed_players.push(this.deSer(JSON.parse(e.target.result)));
-                        console.log("File has been processed!");
-                        dom.remove(); // remove the box
-                        magicHandler.last.render.generate(); // generate GUI display
-                        console.log("You can now access this character by simply typing 'ply' into this console.");
+            document.getElementById("main").innerHTML = `
+                <div class="menu-generic">
+                    <div class="upload-btn-wrapper">
+                        <div class="upload-header">Upload a File</div>
+                        <span class="upload-caption">Drag or Select a character .json file</span>
+                        <input type="file" id="upload" name="file">
+                    </div>
+                </div>
+            `;
+            // window.addCustomHTML("", ``);
+            document.getElementById("upload").addEventListener("change", (e) => {
+                const file = e.target.files[0];
+                const reader = new FileReader();
+                reader.readAsText(file, "UTF-8");
+                reader.onload = (e) => {
+                    // load the character once loaded.
+                    magicHandler.managed_players.push(this.deSer(JSON.parse(e.target.result)));
+                    console.log("File has been processed!");
+                    magicHandler.last.render.generate(); // generate GUI display
+                    console.log("You can now access this character by simply typing 'ply' into this console.");
 
-                        // emit event for other parts of Magic Dice to use.
-                        const loaded = new CustomEvent("char-loaded", {
-                            detail: magicHandler.last
-                        });
-                        document.getElementById("out-wrap").dispatchEvent(loaded);
-                    }
-                });
-            })
+                    // emit event for other parts of Magic Dice to use.
+                    const loaded = new CustomEvent("char-loaded", {
+                        detail: magicHandler.last
+                    });
+                    document.getElementById("out-wrap").dispatchEvent(loaded);
+                }
+            });
         }
     }
     return Loadf
@@ -1065,7 +1068,7 @@ const Player = (() => {
             console.log("Shortcuts enabled!");
             // print commands
             const window = new richDice((document.body.clientWidth / 2) - 170, 150);
-            window.setSize(340);
+            window.setSize();
             window.setTitle("Magic Dice Shortcuts");
             window.setDescription("A complete list of keyboard shortcuts.");
             window.css.alignment = "left";

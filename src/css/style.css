@@ -4,8 +4,19 @@
 }
 
 @font-face {
-    font-family: "Timeless-bold";
-    src: url("../fonts/Timeless-Bold.ttf");
+    font-family: "Alegreya";
+    src: url("../fonts/Alegreya/Alegreya-Regular.ttf");
+}
+
+@font-face {
+    font-family: "Alegreya";
+    font-weight: bold;
+    src: url("../fonts/Alegreya/Alegreya-Bold.ttf");
+}
+
+@font-face {
+    font-family: "Roboto";
+    src: url("../fonts/Roboto/Roboto-Regular.ttf");
 }
 
 html,
@@ -225,6 +236,7 @@ h3 {
     margin: 10px;
     max-height: 800px;
     vertical-align: top;
+    width: 100%;
 }
 
 .spellbook span {
@@ -619,6 +631,60 @@ a:visited {
 
 footer a:hover {
     color: #a51010;
+}
+
+.menu-generic {
+    background: #1d1c27;
+    margin: auto;
+    display: inline-block;
+    padding: 10px;
+    color: white;
+    font-family: "Roboto", sans-serif;
+}
+
+.menu-generic h2 {
+    font-size: 40px;
+}
+
+.caption-generic {
+    font-style: italic;
+}
+
+.menu-generic h1,
+.menu-generic h2,
+.menu-generic h3,
+.menu-generic h4 {
+    font-family: "Alegreya", sans-serif;
+    margin: 0px;
+}
+
+.upload-btn-wrapper {
+    position: relative;
+    overflow: hidden;
+    display: inline-block;
+    border: 2px dotted white;
+    padding: 20px;
+}
+
+.upload-header{
+    font-size: 35px;
+    font-weight: bold;
+    font-family: "Alegreya", sans-serif;
+}
+
+.upload-caption{
+    color: #c1cace;
+    font-style: italic;
+    font-family: "Timeless", sans-serif;
+    font-size: 14px;
+}
+
+.upload-btn-wrapper input[type=file] {
+    font-size: 100px;
+    position: absolute;
+    left: 0;
+    top: 0;
+    opacity: 0;
 }
 
 #main-menu {

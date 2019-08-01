@@ -6,7 +6,7 @@
     box-shadow: #1a1a1a 0px 0px 5px;
     display: inline-block;
     width: calc(30% - 32px);
-    max-width: 400px;
+    max-width: 350px;
     min-width: 300px;
     padding: 5px;
     vertical-align: top;
@@ -54,6 +54,10 @@
     background: #ffffff80;
     box-shadow: #1a1a1a 0px 0px 5px;
     text-align: right;
+}
+
+#history-board{
+    display: inline-block;
 }
 
 .monster-pill {

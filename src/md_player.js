@@ -365,6 +365,7 @@ const Player = (() => {
             this.ID = Math.floor(Math.random() * 999999);
             this.spellbook = {};
             this.misc_notes = {};
+            this.more_info = false;
             this.parent = parent;
 
             this.misc_notes.generate = () => {
@@ -522,33 +523,7 @@ const Player = (() => {
                         </div>
                     </div>` : ""}
                 </div>
-                <div class="show_more"></div>
             `;
-            /*
-                We'll finish this later ;^)
-
-            const player_extra = document.getElementsByClassName(this.ID)[1];
-            player_extra.innerHTML = `
-                <div class="skl_leftside">
-                    <div class="skl_savethrows">
-                        <div class="skl_row">  
-                            ${(()=>{
-                                let text = "";
-                                this.parent.stats.sthrows.forEach((v, k)=>{
-                                    text += `<div class="skl_caption">${convertText(k)}</div>
-                                    <div class="skl_point">${v}</div>`
-                                });
-                                return text;
-                            })()}
-                        </div>
-                    </div>
-                    <div class="skl_inventory"></div>
-                </div>
-                <div class="skl_rightside">
-                    <div class="skl_skills"></div>
-                </div>
-            `;
-            */
 
             document.getElementsByClassName(`${this.ID}`)[0].getElementsByClassName("health-bar")[0].addEventListener("mousedown", (e) => {
                 const health_window = new richDice(e.clientX, e.clientY);
@@ -598,15 +573,61 @@ const Player = (() => {
             <div class="playerInfo ${this.ID}">
                 
             </div>
-            </div>
             <div class="playerExtra ${this.ID}"></div>
+            <div class="show_more ${this.ID}"><i class="fa fa-caret-down" aria-hidden="true"></i></div>
+            </div>
             `;
             list.insertAdjacentHTML('beforeend', newHTML);
             console.log("Rendered!");
-            document.getElementsByClassName(`${this.ID}`)[0].parentElement.addEventListener("mousedown", () => {
-                this.update();
-            });
             this.update();
+            this.displayMoreInfo(true);
+            document.getElementsByClassName(`${this.ID}`)[2].addEventListener("mousedown", () => {
+                this.displayMoreInfo()
+            });
+        }
+        displayMoreInfo(dontToggle = false) {
+            const player_extra = document.getElementsByClassName(this.ID)[1];
+            if ((!this.more_info && !dontToggle) || this.more_info && dontToggle) {
+                player_extra.innerHTML = `
+                    <div class="ply_moreinfo">
+                        <div class="skl_savethrows skl_tab">
+                            <h4 class="moreinfo_header">Saving Throws</h4>
+                            ${(()=>{
+                                let text = "";
+                                this.parent.stats.sthrows.forEach((v, k)=>{
+                                    text += `<span class="skl_row"><span class="skl_caption">${this.parent.stats.save_throws.includes(k) ? '<i class="fa fa-star" aria-hidden="true"></i>' : '<i class="fa fa-star-o" aria-hidden="true"></i>'} ${convertText(k)}</span>
+                                    <span class="skl_point">${v}</span></span>`
+                                });
+                                return text;
+                            })()}
+                        </div>
+                        <div class="skl_skills skl_tab">
+                            <h4 class="moreinfo_header">Skills</h4>
+                            ${(()=>{
+                                let text = "";
+                                for(var property in this.parent.stats.skills)
+                                    if(this.parent.stats.skills.hasOwnProperty(property)){
+                                        const skill = this.parent.stats.skills[property];
+                                        const skill_info = this.parent.stats.skill_modifiers[property];
+                                        text += `<span class="skl_row skl_smaller"><span class="skl_caption">${skill_info.proficent ? '<i class="fa fa-star" aria-hidden="true"></i>' : '<i class="fa fa-star-o" aria-hidden="true"></i>'} ${skill_info.name}</span>
+                                        <span class="skl_point">${skill}</span></span>`
+                                    }
+                                return text;
+                            })()}
+                        </div>
+                    </div>
+                    `;
+                if (!dontToggle) {
+                    this.more_info = true;
+                }
+                document.getElementsByClassName(`${this.ID}`)[2].getElementsByTagName("i")[0].className = "fa fa-caret-up";
+            } else {
+                player_extra.innerHTML = "";
+                if (!dontToggle){
+                    this.more_info = false;
+                    document.getElementsByClassName(`${this.ID}`)[2].getElementsByTagName("i")[0].className = "fa fa-caret-down";
+                }
+            }
         }
     };
     class Inventory {
@@ -783,7 +804,117 @@ const Player = (() => {
                         tool: parent.player_class.start_prof.tool,
                         armr: parent.player_class.start_prof.armr
                     },
-                    misc_notes = ""
+                    misc_notes = "",
+                    skill_modifiers = {
+                        acrobatics: {
+                            name: "Acrobatics",
+                            raw: "dex",
+                            expert: false,
+                            proficent: false
+                        },
+                        animal_handling: {
+                            name: "Animal Handling",
+                            raw: "wis",
+                            expert: false,
+                            proficent: false
+                        },
+                        arcana: {
+                            name: "Arcana",
+                            raw: "int",
+                            expert: false,
+                            proficent: false
+                        },
+                        athletics: {
+                            name: "Athletics",
+                            raw: "str",
+                            expert: false,
+                            proficent: false
+                        },
+                        deception: {
+                            name: "Deception",
+                            raw: "chr",
+                            expert: false,
+                            proficent: false
+                        },
+                        history: {
+                            name: "History",
+                            raw: "int",
+                            expert: false,
+                            proficent: false
+                        },
+                        insight: {
+                            name: "Insight",
+                            raw: "wis",
+                            expert: false,
+                            proficent: false
+                        },
+                        intimidation: {
+                            name: "Intimidation",
+                            raw: "chr",
+                            expert: false,
+                            proficent: false
+                        },
+                        investigation: {
+                            name: "Investigation",
+                            raw: "int",
+                            expert: false,
+                            proficent: false
+                        },
+                        medicine: {
+                            name: "Medicine",
+                            raw: "wis",
+                            expert: false,
+                            proficent: false
+                        },
+                        nature: {
+                            name: "Nature",
+                            raw: "int",
+                            expert: false,
+                            proficent: false
+                        },
+                        perception: {
+                            name: "Perception",
+                            raw: "wis",
+                            expert: false,
+                            proficent: false
+                        },
+                        performance: {
+                            name: "Performance",
+                            raw: "chr",
+                            expert: false,
+                            proficent: false
+                        },
+                        persuasion: {
+                            name: "Persuasion",
+                            raw: "chr",
+                            expert: false,
+                            proficent: false
+                        },
+                        religon: {
+                            name: "Religon",
+                            raw: "int",
+                            expert: false,
+                            proficent: false
+                        },
+                        sleight_of_hand: {
+                            name: "Sleight of Hand",
+                            raw: "dex",
+                            expert: false,
+                            proficent: false
+                        },
+                        stealth: {
+                            name: "Stealth",
+                            raw: "dex",
+                            expert: false,
+                            proficent: false
+                        },
+                        survival: {
+                            name: "Survival",
+                            raw: "wis",
+                            expert: false,
+                            proficent: false
+                        }
+                    }
             } = props;
             this.prof = serProf(parent.lvl);
             this.save_throws = save_throws;
@@ -793,51 +924,63 @@ const Player = (() => {
             this.inspiration = inspiration;
             this.misc_prof = misc_prof;
             this.misc_notes = misc_notes;
-            this.ability_mod = {
+            this.passive_perception = 10 + this.skills.perception;
+            this.skill_modifiers = skill_modifiers;
+        }
+        get initiative() {
+            return this.ability_mod.dex;
+        };
+
+        get ability_mod() {
+            const obj = {
                 str: serAbility(this.ability.str),
                 dex: serAbility(this.ability.dex),
                 cnst: serAbility(this.ability.cnst),
                 int: serAbility(this.ability.int),
                 wis: serAbility(this.ability.wis),
                 chr: serAbility(this.ability.chr)
-            }
-            this.skills = {
-                acrobatics: this.ability_mod.dex,
-                animal_handling: this.ability_mod.wis,
-                arcana: this.ability_mod.int,
-                athletics: this.ability_mod.str,
-                deception: this.ability_mod.chr,
-                history: this.ability_mod.int,
-                insight: this.ability_mod.wis,
-                intimidation: this.ability_mod.chr,
-                investigation: this.ability_mod.int,
-                medicine: this.ability_mod.wis,
-                nature: this.ability_mod.int,
-                perception: this.ability_mod.wis,
-                performance: this.ability_mod.chr,
-                persuasion: this.ability_mod.chr,
-                religon: this.ability_mod.int,
-                sleight_of_hand: this.ability_mod.dex,
-                stealth: this.ability_mod.dex,
-                survival: this.ability_mod.wis
             };
+            return obj;
+        };
+
+        get skills() {
+            const skills = {};
             // check if skills have been marked for proficency and update to match
-            for (var property in this.skills) {
-                if (this.skills.hasOwnProperty(property)) {
-                    if (this.marks.includes(property)) {
-                        this.skills[property] += this.prof;
-                        // expertise
-                        if (this.expert.includes(property)) {
-                            this.skills[property] += this.prof;
+            for (var property in this.skill_modifiers) {
+                if (this.skill_modifiers.hasOwnProperty(property)) {
+                    /*
+                        this bit is for old versions, will convert to new system for managing proficency and expertise
+                    */
+                    if (this.marks.length > 0 || this.expert.length > 0) {
+                        if (this.marks.includes(property)) {
+                            this.skill_modifiers[property].proficent = true;
+                            const index = this.marks.indexOf(property);
+                            this.marks.splice(index, 1);
+                            // expertise
+                            if (this.expert.includes(property)) {
+                                this.skill_modifiers[property].expert = true;
+                                const index = this.expert.indexOf(property);
+                                this.expert.splice(index, 1);
+                            }
                         }
                     }
+                    /*
+                        New System below
+                    */
+                    // add raw amount
+                    skills[property] = this.ability_mod[this.skill_modifiers[property].raw];
+                    // if proficent, add the proficency bonus
+                    if (this.skill_modifiers[property].proficent) {
+                        skills[property] += this.prof;
+                    };
+                    // if they have expertise
+                    if (this.skill_modifiers[property].expert && this.skill_modifiers[property].proficent) {
+                        skills[property] += this.prof;
+                    };
                 }
             };
-            this.passive_perception = 10 + this.skills.perception;
+            return skills;
         }
-        get initiative() {
-            return this.ability_mod.dex;
-        };
         list_skills() {
             console.log("\nSkill Scores: ");
             if (!(Object.keys(this.skills).length === 0 && this.skills.constructor === Object)) {
@@ -845,7 +988,9 @@ const Player = (() => {
                     if (this.skills.hasOwnProperty(property)) {
                         var skill = this.skills[property];
                         var clr = "auto";
-                        if (this.marks.includes(property)) {
+                        if (this.skill_modifiers[property].expert) {
+                            clr = "#9c27b0";
+                        } else if (this.skill_modifiers[property].proficent) {
                             clr = "#00bcd4";
                         }
                         console.log("%c" + property + ": " + skill, "color:" + clr);
@@ -870,25 +1015,35 @@ const Player = (() => {
             }
         }
         // manual marking of skills for proficency
-        manMark(skill) {
+        makeProficent(skill) {
             skill = skill.toLowerCase();
-            if (this.skills[skill] && !this.marks.includes(skill)) {
-                this.skills[skill] += this.prof;
-                this.marks.push(skill);
+            if (this.skill_modifiers[skill]) {
+                if (!this.skill_modifiers[skill].proficent) {
+                    this.skill_modifiers[skill].proficent = true;
+                    console.log(`${this.skill_modifiers[skill].name} is now proficent!`);
+                } else {
+                    this.skill_modifiers[skill].proficent = false;
+                    console.log(`${this.skill_modifiers[skill].name} is now no longer proficent!`);
+                }
                 return this.skills[skill];
             } else {
-                console.log("You didn't input a valid skill! Either skill not found or already proficent.");
+                console.log("You didn't input a valid skill!");
                 return;
             }
         }
         expertCheck(skill) {
             skill = skill.toLowerCase();
-            if (this.skills[skill] && !this.expert.includes(skill)) {
-                this.skills[skill] += this.prof;
-                this.expert.push(skill);
+            if (this.skill_modifiers[skill]) {
+                if (!this.skill_modifiers[skill].expert) {
+                    this.skill_modifiers[skill].expert = true;
+                    console.log(`You are now an expert at ${this.skill_modifiers[skill].name}! (Need to be proficent for this to apply)`);
+                } else {
+                    this.skill_modifiers[skill].expert = false;
+                    console.log(`You are now no longer an expert at ${this.skill_modifiers[skill].name}!`);
+                }
                 return this.skills[skill];
             } else {
-                console.log("You didn't input a valid skill! Either skill not found or already proficent.");
+                console.log("You didn't input a valid skill!");
                 return;
             }
         }

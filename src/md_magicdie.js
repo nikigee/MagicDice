@@ -90,7 +90,7 @@ const die = (() => {
                 total = total * -1
             dice.addField(`Total: `, total);
             const sound = new Audio("./src/misc/diceroll.mp3");
-            dice.render(()=>{
+            dice.render(() => {
                 sound.play(); // play sound effect
             });
             return dice;
@@ -444,4 +444,18 @@ console.log("%cA character manager built for Dungeons & Dragons 5e", "font-size:
 // first time message for people new to the app.
 window.addEventListener("load", () => {
     MagicUI.mainMenu();
+    window.addEventListener("scroll", (e) => {
+        const el = document.querySelector("footer");
+        const rect = el.getBoundingClientRect();
+        const elemTop = rect.top;
+        const elemBottom = rect.bottom;
+
+        // Only completely visible elements return true:
+        const isVisible = elemTop < window.innerHeight && elemBottom >= 0;
+        if(!isVisible){
+            document.querySelector("#toolbar-section").classList.add("toolbar-fixed");
+        } else{
+            document.querySelector("#toolbar-section").classList.remove("toolbar-fixed");
+        }
+    });
 });

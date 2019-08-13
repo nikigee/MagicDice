@@ -1106,6 +1106,12 @@ const Player = (() => {
         get d20() {
             return die.r("d20", true);
         }
+        setLevel(lvl){
+            this.lvl = lvl;
+            this.stats.prof = serProf(lvl);
+            this.longrest();
+            this.render.generate();
+        }
         longrest() {
             this.health.currentHP = this.health.maxHP;
             console.log("[LONG REST] Reset to max HP (HP: " + this.health.maxHP + ")");

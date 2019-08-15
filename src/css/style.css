@@ -911,6 +911,64 @@ footer a:hover {
 .diceClick:hover {
     color: #d02222 !important;
 }
+
+#load-menu {
+    margin-left: 5%;
+    margin-right: 5%;
+}
+
+.load-img {
+    height: 50px;
+    width: 50px;
+    border-radius: 100%;
+    display: inline-block;
+}
+
+.tint {
+    height: 100%;
+    background: rgba(29, 28, 39, 0.44);
+}
+
+.load-file span {
+    font-style: italic;
+    color: #cccccc;
+    font-size: 14px;
+}
+
+.load-file {
+    width: 100%;
+    max-width: 220px;
+    height: 230px;
+    display: inline-block;
+    box-shadow: 0px 0px 3px black;
+    border-radius: 3px;
+    color: white;
+    vertical-align: top;
+    margin: 10px;
+}
+
+.load-file h3 {
+    font-size: 30px;
+    font-weight: bold;
+    font-family: "Alegreya", sans-serif;
+    color: white;
+    text-shadow: 0px 0px 2px black;
+    padding-top: 10px;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.select-hover {
+    transition: 0.3s;
+    -webkit-transition: 0.3s;
+}
+
+.select-hover:hover {
+    background: black;
+    cursor: pointer;
+}
+
+
 /*
 ==================
     MOBILE CSS
@@ -919,7 +977,7 @@ footer a:hover {
 
 /* banner and menu ui changes for mobile */
 @media only screen and (max-width: 414px) {
-    .toolbar-fixed{
+    .toolbar-fixed {
         position: fixed;
         width: 100%;
         z-index: 9000;
@@ -928,7 +986,16 @@ footer a:hover {
         right: 0;
         margin: auto;
     }
-    
+
+    .load-file {
+        height: auto;
+    }
+
+    .tint {
+        height: auto;
+        padding-bottom: 20px;
+    }
+
     #banner img {
         height: 50px;
     }
@@ -941,7 +1008,7 @@ footer a:hover {
         vertical-align: top;
     }
 
-    #main{
+    #main {
         padding-top: 110px;
     }
 

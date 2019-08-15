@@ -184,7 +184,6 @@ const richDice = (() => {
                         ${v.content}`;
                 }
             });
-
             /* The richDice Container */
             const container = `<div class="richDice ${this.ID}" style="left: ${this.x}; top: ${this.y}; ${this.css.background}">
             <div class="richBar"><span class="richClose"></span></div>
@@ -228,6 +227,9 @@ const richDice = (() => {
                 this.clicks = "";
                 window.removeEventListener("mousemove", mouseMove);
             });
+            if(this.dom.querySelector("input")){
+                this.dom.querySelector("input").focus();
+            };
             if (callback) callback(this.dom);
         }
         genPrompt(title, desc, prompt = {}, callback) {
@@ -366,7 +368,7 @@ class Item {
 const MagicUI = (() => {
     const UI = {};
     UI.resetDOM = (callback) => {
-        document.body.innerHTML = `<div id="out-wrap" tabindex="0"><div id="banner"><img src="src/img/logo.png" alt="Magic Dice" onclick="MagicUI.mainMenu()"><h2>A character manager built for Dungeons & Dragons 5e</h2></div><div id="main"></div></div><div id="toolbar-section"></div><footer><h3>&#169;Magic Dice 2019</h3><span>A tool created by <a href="https://nikgo.me" target="_blank">Nikita Golev</a></span><span>Contact me by <a href="mailto:ngolev.bus@gmail.com">Email</a></span><span>Github <a href="https://github.com/AdmiralSoviet/MagicDice" target="_blank">Source Code</a></span></footer>`
+        document.body.innerHTML = `<div id="out-wrap" tabindex="0"><div id="banner"><img src="src/img/logo.png" alt="Magic Dice" onclick="MagicUI.mainMenu()"><h2>A character manager built for Dungeons & Dragons 5e</h2></div><div id="main"></div></div><div id="toolbar-section" class="toolbar-fixed"></div><footer><h3>&#169;Magic Dice 2019</h3><span>A tool created by <a href="https://nikgo.me" target="_blank">Nikita Golev</a></span><span>Contact me by <a href="mailto:ngolev.bus@gmail.com">Email</a></span><span>Github <a href="https://github.com/AdmiralSoviet/MagicDice" target="_blank">Source Code</a></span></footer>`
         UI.populateToolbar();
         if (callback)
             callback();
@@ -375,7 +377,9 @@ const MagicUI = (() => {
         const toolbar = document.getElementById("toolbar-section");
         toolbar.innerHTML = "";
         for (let i = 0; i < magicHandler.managed_players.length; i++) {
-            toolbar.insertAdjacentHTML("beforeend", `<div class="toolbar-hero"><span>${magicHandler.managed_players[i].name}</span><i class="fa fa-user-circle"></i><i class="fa fa-book"></i><i class="fa fa-keyboard-o"></i><i class="fa fa-floppy-o"></i><i class="fa fa-cloud"></i><i class="fa fa-trash-o"></i></div>`);
+            let initials = magicHandler.managed_players[i].name.match(/\b\w/g) || [];
+            initials = ((initials.shift() || '') + (initials.pop() || '')).toUpperCase();
+            toolbar.insertAdjacentHTML("beforeend", `<div class="toolbar-hero"><span>${initials}</span><i class="fa fa-user-circle"></i><i class="fa fa-book"></i><i class="fa fa-sticky-note"></i><i class="fa fa-keyboard-o"></i><i class="fa fa-floppy-o"></i><i class="fa fa-cloud"></i><i class="fa fa-trash-o"></i></div>`);
             document.getElementsByClassName("toolbar-hero")[i].getElementsByClassName("fa-user-circle")[0].addEventListener("click", (e) => {
                 magicHandler.managed_players[i].render.generate();
             });
@@ -395,17 +399,46 @@ const MagicUI = (() => {
             document.getElementsByClassName("toolbar-hero")[i].getElementsByClassName("fa-keyboard-o")[0].addEventListener("click", (e) => {
                 magicHandler.managed_players[i].enableShortcuts();
             });
+            document.getElementsByClassName("toolbar-hero")[i].getElementsByClassName("fa-sticky-note")[0].addEventListener("click", (e) => {
+                magicHandler.managed_players[i].render.misc_notes.generate();
+            });
         }
     };
     UI.mainMenu = () => {
         UI.resetDOM(() => {
             document.getElementById("main").innerHTML = `<div id="main-menu">
             <span class="menu-option" id="menu-rolldice">Roll Dice</span>
-            <span class="menu-option">Load</span>
+            <span class="menu-option" id="menu-load">Load</span>
             <span class="menu-option" id="menu-loadfile">External Load</span>
             <span class="menu-option" onclick="DM.battleBoard.create()">Battle Tracker</span>
             <span class="menu-option">Settings</span>
             <span class="menu-option" id="menu-help">Help</span></div>`;
+
+            document.getElementById("menu-load").addEventListener("click", () => {
+                const characters = JSON.parse(localStorage.getItem("charList"));
+                if (!characters)
+                    return alert("No characters exist in save!");
+                document.getElementById("main").innerHTML = `<div id="load-menu"></div>`;
+                const menu = document.getElementById("load-menu");
+                for (property in characters) {
+                    menu.innerHTML += `<div class="load-file" id="${property}" style="background: url(${characters[property].renderData.avatar}) center top; background-size: cover;">
+                    <div class="tint select-hover">
+                    <h3>${characters[property].name}</h3> <span class="lvl-caption">${characters[property].classData.name} lvl.${characters[property].lvl}</span>
+                    </div>
+                    </div>`
+                };
+                const loadFiles = Array.from(document.getElementsByClassName("load-file"));
+                loadFiles.forEach((x)=>{
+                    x.addEventListener("click", (e)=>{
+                        let target = e.target;
+                        while(target.classList[0] != "load-file")
+                            target = target.parentNode;
+                        const id = target.id;
+                        Load.restore(id);
+                    });
+                });
+            });
+
             document.getElementById("menu-help").addEventListener("click", (e) => {
                 document.getElementById("main").innerHTML = "";
                 const window = new richDice((document.body.clientWidth / 2) - 260, 120);
@@ -444,6 +477,8 @@ console.log("%cA character manager built for Dungeons & Dragons 5e", "font-size:
 // first time message for people new to the app.
 window.addEventListener("load", () => {
     MagicUI.mainMenu();
+
+    // make the toolbar fixed when the footer is not visible. Mobile only.
     window.addEventListener("scroll", (e) => {
         const el = document.querySelector("footer");
         const rect = el.getBoundingClientRect();
@@ -452,9 +487,9 @@ window.addEventListener("load", () => {
 
         // Only completely visible elements return true:
         const isVisible = elemTop < window.innerHeight && elemBottom >= 0;
-        if(!isVisible){
+        if (!isVisible) {
             document.querySelector("#toolbar-section").classList.add("toolbar-fixed");
-        } else{
+        } else {
             document.querySelector("#toolbar-section").classList.remove("toolbar-fixed");
         }
     });

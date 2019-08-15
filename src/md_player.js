@@ -94,7 +94,7 @@ const Load = (() => {
             }
             magicHandler.managed_players.push(this.deSer(characters[character]));
             MagicUI.resetDOM(() => {
-                magicHandler.last.render.generate();
+                magicHandler.last.enableShortcuts();
                 console.log("You can now access this character by simply typing 'ply' into this console.");
             });
         },

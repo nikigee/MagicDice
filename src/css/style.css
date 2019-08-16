@@ -36,7 +36,7 @@ body {
 }
 
 #out-wrap {
-    min-height: 100vh;
+    min-height: calc(100vh - 38px);
     width: 100%;
     outline: none;
 }

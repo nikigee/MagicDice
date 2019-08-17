@@ -355,6 +355,7 @@ const Player = (() => {
             })
         }
     }
+    /* Be warned. This section is an absolute mess. */
     class Render {
         constructor(props = {}) {
             const {
@@ -405,23 +406,43 @@ const Player = (() => {
                 }
                 return spell.x;
             };
+            function toggleSpelllist(){
+                const spellList = document.querySelector(".spell-list");
+                if(spellList.style.display == "none"){
+                    //document.getElementById("main").classList.add("mobile-fullscreen");
+                    document.querySelector(".spellwindow").style.display = "none";
+                    spellList.style.display = "inline-block";
+                } else{
+                    spellList.style.display = "none";
+                    //document.getElementById("main").classList.remove("mobile-fullscreen");
+                    document.querySelector(".spellwindow").style.display = "inline-block";
+                }
+            };
             this.spellbook.generate = () => {
                 const main = document.getElementById("main");
                 const device_width = (window.innerWidth > 0) ? window.innerWidth : screen.width;
                 main.innerHTML = `
                 <div class="spellbook">
-                    <div class="spell-list">
+                    <div class="spell-list" style="display: ${device_width <= 436 ? "none" : "inline-block"}">
                         <div id="spell-toolbar"><input type="text" placeholder="Fireball" id="spell-search">        <input type="checkbox" id="library-toggle"><label for="library-toggle">Search Library</label></div>
                         <div id="spells">
                         </div>
                     </div>
                 </div>
                 `;
+                if(device_width <= 436){
+                    document.getElementById("main").insertAdjacentHTML("beforeend", `<div id="hamburger-icon"><i class="fa fa-bars"></i></div>`);
+                    document.getElementById("hamburger-icon").addEventListener("click", ()=>{
+                        toggleSpelllist();
+                    });
+                }
                 if (device_width <= 436) {
                     document.getElementsByClassName("spellbook")[0].insertAdjacentHTML("beforeend", `<div class="spellwindow"></div>`);
                 } else {
                     document.getElementsByClassName("spellbook")[0].insertAdjacentHTML("afterbegin", `<div class="spellwindow"></div>`);
                 }
+                if(this.parent.magic.spells.size > 0)
+                    this.spellbook.display_spell(this.parent.magic.spells.get(this.parent.magic.spells.keys().next().value));
                 this.spellbook.populate();
                 document.getElementById("spell-toolbar").addEventListener("input", (e) => {
                     const opts = {};
@@ -440,11 +461,14 @@ const Player = (() => {
                 // for adding spells to spell list
                 const list = document.getElementById("spells");
                 list.innerHTML = ""; // clear list
+                const device_width = (window.innerWidth > 0) ? window.innerWidth : screen.width;
                 if (!opt.library) {
                     this.parent.magic.spells.forEach((x) => {
                         if (x.name.toLowerCase().includes(opt.name) || !opt.name) {
-                            list.insertAdjacentHTML('beforeend', `<span class="lvl">${(isNaN(Number(x.level[0]))) ? 0 : Number(x.level[0])}</span><span class="spell" ${(this.parent.magic.preparedSpells.indexOf(x.name) != -1) ? `style=color:${"#e658ff"}` : ""}>${x.name}</span>`);
+                            list.insertAdjacentHTML('beforeend', `<span class="lvl">${(isNaN(Number(x.level[0]))) ? 0 : Number(x.level[0])}</span><span class="spell" ${(this.parent.magic.preparedSpells.indexOf(x.name) != -1) ? `style=color:${"#c12929"}` : ""}>${x.name}</span>`);
                             list.lastChild.addEventListener("click", () => {
+                                if(device_width <= 436)
+                                    toggleSpelllist();
                                 this.spellbook.display_spell(x);
                             });
                         }
@@ -454,6 +478,8 @@ const Player = (() => {
                         if (x.name.toLowerCase().includes(opt.name) || !opt.name) {
                             list.insertAdjacentHTML('beforeend', `<span class="lvl">${(isNaN(Number(x.level[0]))) ? 0 : Number(x.level[0])}</span><span class="spell" ${(this.parent.magic.preparedSpells.indexOf(x.name) != -1) ? `style=color:${"#e658ff"}` : ""}>${x.name}</span>`);
                             list.lastChild.addEventListener("click", () => {
+                                if(device_width <= 436)
+                                    toggleSpelllist();
                                 this.spellbook.display_spell(x);
                             });
                         }

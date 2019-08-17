@@ -478,6 +478,7 @@ div::-webkit-scrollbar-thumb {
     margin-bottom: 3px;
     padding: 7px;
     transition: 0.1s;
+    cursor: pointer;
 }
 
 .spell:hover {
@@ -968,6 +969,14 @@ footer a:hover {
     cursor: pointer;
 }
 
+#hamburger-icon {
+    position: fixed;
+    top: 15px;
+    z-index: 9000000;
+    left: 15;
+    color: white;
+    font-size: 38px;
+}
 
 /*
 ==================
@@ -1053,15 +1062,57 @@ footer a:hover {
         text-align: center;
     }
 
+    .spellbanner h2 {
+        font-size: 40px;
+        font-family: "Alegreya", sans-serif;
+    }
+
+    .spell {
+        background: none;
+        display: inline-block;
+        color: black;
+        box-shadow: none;
+        font-weight: bold;
+        font-variant: small-caps;
+        font-size: 18px;
+        text-align: left;
+    }
+
+    .lvl{
+        background: #1d1c27;
+        box-shadow: none;
+        border-radius: 3px;
+    }
+
     .spellwindow {
         width: auto;
         height: auto;
+        background-color: white;
+        padding-bottom: 0px;
+        max-height: unset;
+        width: auto;
+    }
+
+    .spelldesc {
+        padding: 5px;
+    }
+
+    .descwrap {
+        background: none;
+        border-radius: 0px;
+        box-shadow: unset;
+        padding-top: 0px;
+        padding-bottom: 0px;
     }
 
     .spell-list {
         width: auto;
-        height: 400px;
-        margin-bottom: 20px;
+        height: auto;
+        top: 70px;
+        left: 0;
+        right: 0;
+        background: white;
+        max-height: unset;
     }
 
     .spellbook {
@@ -1069,10 +1120,17 @@ footer a:hover {
         margin: 0px;
         min-width: unset;
     }
+
+    .mobile-fullscreen {
+        margin: 0px !important;
+        padding-top: 70px !important;
+        padding-bottom: 0px !important;
+    }
 }
 
 /* Player render changes */
 @media only screen and (max-width: 955px) {
+
     html {
         background-color: unset;
         /* fix background images */

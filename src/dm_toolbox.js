@@ -15,6 +15,34 @@ const DM = (() => {
         }
     }
 
+    const tileBoard = (() => {
+        class Token {
+            constructor(props = {}) {
+                const {
+                    icon = "https://pbs.twimg.com/profile_images/433319671430123521/LAm8cB1b.jpeg"
+                } = props;
+                this.icon = icon;
+            }
+        }
+        class tileBoard {
+            constructor(props = {}) {
+                const {
+                    dimensionX = 5,
+                        dimensionY = 5,
+                        tileData = [],
+                } = props;
+                this.tileData = tileData;
+                this.dimensionX = dimensionX;
+                this.dimensionY = dimensionY
+            }
+            render() {
+
+            }
+        }
+        return tileBoard;
+    });
+
+
     // Combat and initative tracker
     DM_obj.battleBoard = (() => {
         function genID() {
@@ -78,7 +106,7 @@ const DM = (() => {
                 this.initList = initList;
                 this.monsterList = monsterList;
                 this.monsterList.forEach((x, k) => {
-                    if(x.constructor.name != "Monster"){
+                    if (x.constructor.name != "Monster") {
                         this.monsterList.set(k, new Monster(x));
                     }
                 });
@@ -120,6 +148,13 @@ const DM = (() => {
                         };
                     });
                 }
+                document.querySelectorAll(".init-roll").forEach((x) => {
+                    x.addEventListener("keydown", (e) => {
+                        if (e.key == "r") {
+                            x.value = die.r("d20", true); // roll dice if the user enters 'r'
+                        }
+                    });
+                });
             }
             addInit() {
                 this.collectInfo(() => {
@@ -201,7 +236,7 @@ const DM = (() => {
                         const popup = new richDice(e.clientX - 250, e.clientY - 250);
                         popup.setTitle(`${mnstr.name}`);
                         popup.setDescription("Opening a portal to the ethereal plane...");
-                        popup.addCustomHTML("", `<iframe width=500 height=700 src="https://chisaipete.github.io/bestiary/creature/${mnstr.name.toLowerCase().replace(/ /g, "-")}"></iframe>`);
+                        popup.addCustomHTML("", `<iframe width=500 height=700 src="https://dnd-5e.herokuapp.com/monsters/${mnstr.name.toLowerCase().replace(/ /g, "-")}"></iframe>`);
                         popup.css.footer_padding = 0;
                         popup.render();
                     });
@@ -288,7 +323,7 @@ const DM = (() => {
                             die.gfx_dice(data, e.clientX - 100, e.clientY - 250);
                         });
                     });
-                    document.getElementById("save-battle").addEventListener("click", ()=>{
+                    document.getElementById("save-battle").addEventListener("click", () => {
                         if (typeof (Storage) !== "undefined") {
                             // save to storage
                             const monsterArray = [];

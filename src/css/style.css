@@ -81,7 +81,7 @@ h3 {
 
 .playerBox {
     display: inline-block;
-    background: #ffffff80;
+    background: rgba(255, 255, 255, 0.50);
     padding: 5px;
     box-shadow: black 0px 0px 10px;
     border-radius: 3px;
@@ -151,7 +151,7 @@ h3 {
 .skl_row {
     display: block;
     text-align: left;
-    background: #ffffffdb;
+    background: rgba(255, 255, 255, 0.859);
     box-shadow: black 0px 0px 2px;
     border-radius: 3px;
     padding: 5px;
@@ -210,7 +210,7 @@ h3 {
 }
 
 .fill-bar {
-    background: #272727d4;
+    background: rgba(39, 39, 39, 0.831);
     box-shadow: #1a1a1a 0px 0px 1px;
 }
 
@@ -230,7 +230,7 @@ h3 {
 }
 
 .mod_pill {
-    background: #ffffffdb;
+    background: rgba(255, 255, 255, 0.859);
     display: inline-block;
     width: 70px;
     padding: 5px;
@@ -273,7 +273,7 @@ h3 {
 }
 
 .magic_pill {
-    background: #ffffffdb;
+    background: rgba(255, 255, 255, 0.859);
     display: inline-block;
     width: 120px;
     margin-top: 2px;
@@ -320,7 +320,7 @@ h3 {
 
 .spellwindow {
     display: inline-block;
-    background: #ffffff80;
+    background: rgba(255, 255, 255, 0.5019607843137255);
     box-shadow: black 0px 0px 10px;
     width: 50%;
     transition: 0.3s;
@@ -399,7 +399,7 @@ h3 {
 }
 
 .spell-list {
-    background: #ffffff80;
+    background: rgba(255, 255, 255, 0.5019607843137255);
     box-shadow: black 0px 0px 10px;
     user-select: none;
     width: calc(50% - 25px);
@@ -469,7 +469,7 @@ div::-webkit-scrollbar-thumb {
 
 .spell {
     font-size: 16px;
-    background: #000000ba;
+    background: rgba(0, 0, 0, 0.729);
     display: inline-block;
     width: calc(100% - 43px);
     color: white;
@@ -482,7 +482,7 @@ div::-webkit-scrollbar-thumb {
 }
 
 .spell:hover {
-    background: #ffffffdb;
+    background: rgba(255, 255, 255, 0.859);
     color: black !important;
     font-weight: bold;
 }
@@ -490,7 +490,7 @@ div::-webkit-scrollbar-thumb {
 .lvl {
     width: 15px;
     font-size: 16px;
-    background: #000000db;
+    background: rgba(0, 0, 0, 0.859);
     display: inline-block;
     color: white;
     box-shadow: black 0px 0px 2px;
@@ -505,7 +505,7 @@ div::-webkit-scrollbar-thumb {
     box-shadow: black 0px 0px 10px;
     border-radius: 3px;
     min-width: 200px;
-    background: #ffffff9c;
+    background: rgba(255, 255, 255, 0.612);
     background-size: cover;
     overflow: hidden;
 }
@@ -573,7 +573,7 @@ div::-webkit-scrollbar-thumb {
 .richContent {
     text-align: left;
     padding-top: 10px;
-    background: #ffffff9c;
+    background: rgba(255, 255, 255, 0.612);
     transition: 0.2s;
     -webkit-transition: 0.2s;
     padding-bottom: 20px;
@@ -589,7 +589,7 @@ div::-webkit-scrollbar-thumb {
 }
 
 .richBar {
-    background: #1a1a1aeb;
+    background: rgba(26, 26, 26, 0.922);
     padding-top: 4px;
     padding-bottom: 4px;
     text-align: right;
@@ -873,7 +873,7 @@ footer a:hover {
 }
 
 .toolbar-hero {
-    background: #111017e8;
+    background: rgba(17, 16, 23, 0.91);
     color: white;
     padding: 5px;
     text-align: right;

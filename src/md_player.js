@@ -1,43 +1,3 @@
-// Player character handler to make things easier, rather than forcing the user to assign their characters to variables.
-magicHandler = (() => {
-    class magicHandler {
-        constructor() {
-            this.managed_players = [];
-        }
-        get last() {
-            if (this.managed_players.length > 0) {
-                return this.managed_players[this.managed_players.length - 1];
-            }
-        }
-        get ply() {
-            if (this.managed_players.length == 0) {
-                return console.log("Currently no characters are loaded! You can load from a save file using the command 'Load.restoreFromFile()'");
-            } else if (this.managed_players.length == 1) {
-                return this.managed_players[0];
-            } else {
-                return this.managed_players;
-            }
-        }
-        randomPlayer(name = `NPC ${this.managed_players.length}`, lvl = 3) {
-            let ran_class = Array.from(Library.player_classes);
-            ran_class = ran_class[Math.floor(Math.random() * ran_class.length)][1]; // get a random class
-            this.managed_players.push(new Player({
-                name: name,
-                lvl: lvl,
-                classData: ran_class
-            }));
-            this.last.render.generate();
-            MagicUI.populateToolbar();
-        }
-    }
-    return new magicHandler();
-})();
-Object.defineProperty(self, 'ply', {
-    get: function () {
-        return magicHandler.ply;
-    }
-});
-
 class playerClass {
     constructor(props = {}) {
         const {
@@ -406,18 +366,6 @@ const Player = (() => {
                 }
                 return spell.x;
             };
-            function toggleSpelllist(){
-                const spellList = document.querySelector(".spell-list");
-                if(spellList.style.display == "none"){
-                    //document.getElementById("main").classList.add("mobile-fullscreen");
-                    document.querySelector(".spellwindow").style.display = "none";
-                    spellList.style.display = "inline-block";
-                } else{
-                    spellList.style.display = "none";
-                    //document.getElementById("main").classList.remove("mobile-fullscreen");
-                    document.querySelector(".spellwindow").style.display = "inline-block";
-                }
-            };
             this.spellbook.generate = () => {
                 const main = document.getElementById("main");
                 const device_width = (window.innerWidth > 0) ? window.innerWidth : screen.width;
@@ -487,6 +435,18 @@ const Player = (() => {
                 }
             }
         }
+        toggleSpelllist(){
+            const spellList = document.querySelector(".spell-list");
+            if(spellList.style.display == "none"){
+                //document.getElementById("main").classList.add("mobile-fullscreen");
+                document.querySelector(".spellwindow").style.display = "none";
+                spellList.style.display = "inline-block";
+            } else{
+                spellList.style.display = "none";
+                //document.getElementById("main").classList.remove("mobile-fullscreen");
+                document.querySelector(".spellwindow").style.display = "inline-block";
+            }
+        };
         update() {
             const percent = (this.parent.health.currentHP / this.parent.health.maxHP) * 100;
             const invCount = this.parent.inv.backpack.size;
@@ -710,26 +670,33 @@ const Player = (() => {
             }
         }
         use(item_name) {
-            var result;
-            if (this.backpack[item_name].dmg) {
-                console.log("You use the " + this.backpack[item_name].name + " (Rolling " + this.backpack[item_name].dmg + ")!");
-                var result = die.r(this.backpack[item_name].dmg);
+            if(!this.backpack.get(item_name)){
+                console.log(`You don't have a ${item_name}!`);
+                return false;
             }
-            if (this.backpack[item_name].singleUse) {
-                this.backpack[item_name].qnty -= 1;
-                console.log("After you use the object, what remains becomes useless to you. (" + this.backpack[item_name].qnty + " Remaining)");
-                if (this.backpack[item_name].qnty <= 0) {
-                    delete this.backpack[item_name];
+            var result;
+            if (this.backpack.get(item_name).dmg) {
+                console.log("You use the " + this.backpack.get(item_name).name + " (Rolling " + this.backpack.get(item_name).dmg + ")!");
+                var result = die.r(this.backpack.get(item_name).dmg);
+            }
+            if (this.backpack.get(item_name).singleUse) {
+                this.backpack.get(item_name).qnty -= 1;
+                console.log("After you use the object, what remains becomes useless to you. (" + this.backpack.get(item_name).qnty + " Remaining)");
+                if (this.backpack.get(item_name).qnty <= 0) {
+                    this.backpack.delete(item_name);
                 }
             }
             return result;
         }
         drop(item_name) {
-            var item = this.backpack[item_name];
-            this.backpack[item_name].qnty -= 1;
-            console.log("You drop your '" + this.backpack[item_name].name + "' (" + this.backpack[item_name].qnty + " Remaining)");
-            if (this.backpack[item_name].qnty <= 0) {
-                delete this.backpack[item_name];
+            if(!this.backpack.get(item_name)){
+                console.log(`You don't have a ${item_name}!`);
+                return false;
+            }
+            this.backpack.get(item_name).qnty -= 1;
+            console.log("You drop your '" + this.backpack.get(item_name).name + "' (" + this.backpack.get(item_name).qnty + " Remaining)");
+            if (this.backpack.get(item_name).qnty <= 0) {
+                this.backpack.delete(item_name);
             }
         }
     }

@@ -272,24 +272,28 @@ const richDice = (() => {
             };
             if (callback) callback(this.dom);
         }
-        genPrompt(title, desc, prompt = {}, callback) {
+        static genPrompt(title, desc, opts = {p_title: "", p_placeholder: "", x: 0, y: 0}, callback) {
             const {
                 p_title = p_title,
-                    p_placeholder = p_placeholder
-            } = prompt;
-            this.setTitle(title);
-            this.setDescription(desc);
-            this.setSize("300");
-            this.css.alignment = "left";
-            this.addPrompt(prompt.p_title, prompt.p_placeholder);
-            this.render((dom) => {
-                document.getElementsByClassName(this.ID + prompt.p_title)[0].focus(); // focus user on the text field
+                    p_placeholder = p_placeholder,
+                    x = x,
+                    y = y
+            } = opts;
+            const window = new richDice(opts.x, opts.y);
+            window.setTitle(title);
+            window.setDescription(desc);
+            window.setSize("300");
+            window.css.alignment = "left";
+            window.addPrompt(opts.p_title, opts.p_placeholder);
+            window.render((dom) => {
+                document.getElementsByClassName(window.ID + opts.p_title)[0].focus(); // focus user on the text field
                 // called after the user submits on the prompt
                 dom.addEventListener("keypress", (e) => {
                     if (e.key == "Enter") {
-                        const data = document.getElementsByClassName(this.ID + prompt.p_title)[0].value;
+                        const data = window.dom.querySelector("input").value;
                         callback(data); // give the data back
-                        this.dom.remove();
+                        if(window.dom)
+                            window.dom.remove();
                     }
                 });
             });
@@ -500,10 +504,11 @@ const MagicUI = (() => {
                 });
             });
             document.getElementById("menu-rolldice").addEventListener("click", (e) => {
-                const window = new richDice(e.clientX - 50, e.clientY - 20);
-                window.genPrompt("Roll Dice", "Enter the dice combination of the roll.", {
+                richDice.genPrompt("Roll Dice", "Enter the dice combination of the roll.", {
                     p_title: "Dice",
-                    p_placeholder: "8d6"
+                    p_placeholder: "8d6",
+                    x: e.clientX - 50,
+                    y: e.clientY - 20
                 }, (data) => {
                     die.gfx_dice(data, e.clientX - 50, e.clientY - 20);
                 });

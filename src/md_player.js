@@ -316,306 +316,543 @@ const Player = (() => {
         }
     }
     /* Be warned. This section is an absolute mess. */
-    class Render {
-        constructor(props = {}) {
-            const {
-                parent = undefined,
-                    avatar = "./src/img/render_default.jpg"
-            } = props;
-            this.avatar = avatar;
-            this.ID = Math.floor(Math.random() * 999999);
-            this.spellbook = {};
-            this.misc_notes = {};
-            this.more_info = false;
-            this.parent = parent;
-
-            this.misc_notes.generate = () => {
-                const window = new richDice((document.body.clientWidth / 2) - 225, 150);
-                window.setTitle("Features and Notes");
-                window.setSize(450);
-                window.setDescription("Use this to list your class features or any miscellaneous notes.");
-                window.addCustomHTML("", `<textarea class='window-big_box'>${this.parent.stats.misc_notes}</textarea>`);
-                window.css.alignment = "left";
-                window.render((dom) => {
-                    dom.getElementsByClassName("window-big_box")[0].addEventListener("change", (e) => {
-                        this.parent.stats.misc_notes = e.target.value;
-                    });
+    const Render = (() => {
+        class statEditor {
+            constructor(parent, event) {
+                this.parent = parent;
+                this.event = event;
+            }
+            edit(dom, callback) {
+                let editID;
+                dom.classList.forEach((x) => {
+                    if (x.startsWith("ed_")) {
+                        editID = x; // get the class that starts with the 'ed_'
+                    }
                 });
-            };
-            /* Spellbook Stuff */
-            this.spellbook.display_spell = (spell) => {
-                const window = document.getElementsByClassName("spellwindow")[0];
-                window.innerHTML = `
-                <div class="spellbanner"><h2><a href="${spell.url}" target="_blank">${spell.name}</a></h2>
-                <span class="spellscription">${spell.level + "-level " + spell.school}</span></div>
-                <div class="spellbody"><span class="spellrow"><strong>Casting Time:</strong> ${spell.ctime}</span>
-                <span class="spellrow"><strong>Range:</strong> ${spell.range}</span>
-                <span class="spellrow"><strong>Components:</strong> ${spell.components}</span>
-                <span class="spellrow"><strong>Duration:</strong> ${spell.duration}</span>
-                <div class="descwrap"><p class="spelldesc">${spell.description.replace(/\n\n/g, "</p><p class='spelldesc'>")}</p></div>
-                </div>`;
-                // Make every dice mention a clickable roll.
-                document.getElementsByClassName("descwrap")[0].innerHTML = document.getElementsByClassName("descwrap")[0].innerHTML.replace(/\d+d\d+(?:\s*\++\s*\d+)*/gi, (x) => {
-                    return `<a class="diceClick">${x}</a>`
-                })
-                const diceRolls = document.getElementsByClassName("diceClick");
-                for (let i = 0; i < diceRolls.length; i++) {
-                    diceRolls[i].addEventListener("click", (e) => {
-                        die.gfx_dice(e.target.innerHTML, e.clientX, e.clientY);
-                    })
-                }
-                return spell.x;
-            };
-            this.spellbook.generate = () => {
-                const main = document.getElementById("main");
-                const device_width = (window.innerWidth > 0) ? window.innerWidth : screen.width;
-                main.innerHTML = `
-                <div class="spellbook">
-                    <div class="spell-list" style="display: ${device_width <= 436 ? "none" : "inline-block"}">
-                        <div id="spell-toolbar"><input type="text" placeholder="Fireball" id="spell-search">        <input type="checkbox" id="library-toggle"><label for="library-toggle">Search Library</label></div>
-                        <div id="spells">
-                        </div>
-                    </div>
-                </div>
-                `;
-                if(device_width <= 436){
-                    document.getElementById("main").insertAdjacentHTML("beforeend", `<div id="hamburger-icon"><i class="fa fa-bars"></i></div>`);
-                    document.getElementById("hamburger-icon").addEventListener("click", ()=>{
-                        toggleSpelllist();
-                    });
-                }
-                if (device_width <= 436) {
-                    document.getElementsByClassName("spellbook")[0].insertAdjacentHTML("beforeend", `<div class="spellwindow"></div>`);
-                } else {
-                    document.getElementsByClassName("spellbook")[0].insertAdjacentHTML("afterbegin", `<div class="spellwindow"></div>`);
-                }
-                if(this.parent.magic.spells.size > 0)
-                    this.spellbook.display_spell(this.parent.magic.spells.get(this.parent.magic.spells.keys().next().value));
-                this.spellbook.populate();
-                document.getElementById("spell-toolbar").addEventListener("input", (e) => {
-                    const opts = {};
-                    opts.name = document.getElementById("spell-search").value;
-                    opts.library = document.getElementById("library-toggle").checked;
-                    this.spellbook.populate(opts); // populate with options
-                });
-            }
-            this.spellbook.populate = (opt = {}) => {
-                const {
-                    library = false,
-                        name = ""
-                } = opt;
-                if (opt.name)
-                    opt.name = opt.name.toLowerCase();
-                // for adding spells to spell list
-                const list = document.getElementById("spells");
-                list.innerHTML = ""; // clear list
-                const device_width = (window.innerWidth > 0) ? window.innerWidth : screen.width;
-                if (!opt.library) {
-                    this.parent.magic.spells.forEach((x) => {
-                        if (x.name.toLowerCase().includes(opt.name) || !opt.name) {
-                            list.insertAdjacentHTML('beforeend', `<span class="lvl">${(isNaN(Number(x.level[0]))) ? 0 : Number(x.level[0])}</span><span class="spell" ${(this.parent.magic.preparedSpells.indexOf(x.name) != -1) ? `style=color:${"#c12929"}` : ""}>${x.name}</span>`);
-                            list.lastChild.addEventListener("click", () => {
-                                if(device_width <= 436)
-                                    toggleSpelllist();
-                                this.spellbook.display_spell(x);
-                            });
-                        }
-                    });
-                } else {
-                    Library.spells.forEach((x) => {
-                        if (x.name.toLowerCase().includes(opt.name) || !opt.name) {
-                            list.insertAdjacentHTML('beforeend', `<span class="lvl">${(isNaN(Number(x.level[0]))) ? 0 : Number(x.level[0])}</span><span class="spell" ${(this.parent.magic.preparedSpells.indexOf(x.name) != -1) ? `style=color:${"#e658ff"}` : ""}>${x.name}</span>`);
-                            list.lastChild.addEventListener("click", () => {
-                                if(device_width <= 436)
-                                    toggleSpelllist();
-                                this.spellbook.display_spell(x);
-                            });
-                        }
-                    });
-                }
-            }
-        }
-        toggleSpelllist(){
-            const spellList = document.querySelector(".spell-list");
-            if(spellList.style.display == "none"){
-                //document.getElementById("main").classList.add("mobile-fullscreen");
-                document.querySelector(".spellwindow").style.display = "none";
-                spellList.style.display = "inline-block";
-            } else{
-                spellList.style.display = "none";
-                //document.getElementById("main").classList.remove("mobile-fullscreen");
-                document.querySelector(".spellwindow").style.display = "inline-block";
-            }
-        };
-        update() {
-            const percent = (this.parent.health.currentHP / this.parent.health.maxHP) * 100;
-            const invCount = this.parent.inv.backpack.size;
-            const box = document.getElementsByClassName(`${this.ID}`)[0];
-            box.innerHTML = `
-                <h3>${this.parent.name}</h3>
-                <span class="lvl-class">Level ${this.parent.lvl} ${this.parent.player_class.name}</span>
-                <div class="row">
-                    <span class="label">HP</span>
-                    <div class="fill-bar health-bar" style="max-width: 500px;"><span class="fill" style="width: ${percent}%; background: ${getColor(percent)}">${this.parent.health.currentHP}/${this.parent.health.maxHP}</span></div>
-                </div>
-                <p><strong>AC: </strong>${this.parent.health.currentAC}</p>
-                <p><strong>Proficiency Bonus: </strong>${this.parent.stats.prof}</p>
-                <p><strong>Gold: </strong>${this.parent.inv.gold} GP</p>
-                <p><strong>Inventory: </strong>${invCount} Items</p>
-                <div class="ability_scores">
-                    <div class="mod_pill">
-                        <span class="mod_title">Strength</span>
-                        <span class="mod_score">${this.parent.stats.ability_mod.str}</span>
-                        <span class="mod_raw">${this.parent.stats.ability.str}</span>
-                    </div>
-                    <div class="mod_pill">
-                        <span class="mod_title">Dexterity</span>
-                        <span class="mod_score">${this.parent.stats.ability_mod.dex}</span>
-                        <span class="mod_raw">${this.parent.stats.ability.dex}</span>
-                    </div>
-                    <div class="mod_pill">
-                        <span class="mod_title">Constitution</span>
-                        <span class="mod_score">${this.parent.stats.ability_mod.cnst}</span>
-                        <span class="mod_raw">${this.parent.stats.ability.cnst}</span>
-                    </div>
-                    <div class="mod_pill">
-                        <span class="mod_title">Intelligence</span>
-                        <span class="mod_score">${this.parent.stats.ability_mod.int}</span>
-                        <span class="mod_raw">${this.parent.stats.ability.int}</span>
-                    </div>
-                    <div class="mod_pill">
-                        <span class="mod_title">Wisdom</span>
-                        <span class="mod_score">${this.parent.stats.ability_mod.wis}</span>
-                        <span class="mod_raw">${this.parent.stats.ability.wis}</span>
-                    </div>
-                    <div class="mod_pill">
-                        <span class="mod_title">Charisma</span>
-                        <span class="mod_score">${this.parent.stats.ability_mod.chr}</span>
-                        <span class="mod_raw">${this.parent.stats.ability.chr}</span>
-                    </div>
-                    ${(this.parent.player_class.spcMod) ? `
-                    <div class="magic_stats">
-                        <div class="magic_pill">
-                            <span class="magic_score">${this.parent.magic.Mod}</span>
-                            <span class="magic_title">Spellcasting Ability</span>
-                        </div>
-                        <div class="magic_pill">
-                            <span class="magic_score">${this.parent.magic.DC}</span>
-                            <span class="magic_title">Spellsave DC</span>
-                        </div>
-                        <div class="magic_pill">
-                            <span class="magic_score">${this.parent.magic.SPAttack}</span>
-                            <span class="magic_title">Spellattack Bonus</span>
-                        </div>
-                    </div>` : ""}
-                </div>
-            `;
-
-            document.getElementsByClassName(`${this.ID}`)[0].getElementsByClassName("health-bar")[0].addEventListener("mousedown", (e) => {
-                const health_window = new richDice(e.clientX, e.clientY);
-                health_window.setSize(300);
-                health_window.setTitle("Add/Remove Health");
-                health_window.setDescription("Enter a number to add/remove health from this character.");
-                health_window.addPrompt("Amount to add", "-12");
-                health_window.css.alignment = "left";
-                health_window.render((d) => {
-                    d.getElementsByClassName(health_window.ID + "Amount to add")[0].addEventListener("keydown", (e) => {
-                        if (e.keyCode == 13) {
-                            let num = e.target.value;
-                            if (isFinite(Number(num))) {
-                                this.parent.health.add(Number(num));
-                            } else if (new RegExp(/[0-9]{0,9}d[0-9]{1,9}/).test(num)) {
-                                this.parent.health.add(die.r(String(num)));
+                // we've got our edit id (i.e. ed_ability_dex). 
+                // now we have to find out what it means and what to do with it
+                if (editID.startsWith("ed_ability_")) {
+                    editID = editID.replace("ed_ability_", "");
+                    richDice.genPrompt(`Edit ${convertText(editID)} Score`, `Use the input below to enter a new ${convertText(editID)} score.`, {
+                        p_title: "New Score",
+                        p_placeholder: this.parent.stats.ability[editID],
+                        x: this.event.clientX,
+                        y: this.event.clientY
+                    }, (data) => {
+                        try {
+                            if (!data || !isFinite(data) || data < 0 || data > 30) {
+                                throw new Error("Invalid value entered!");
+                            } else {
+                                this.parent.stats.ability[editID] = data;
+                                if (callback)
+                                    callback();
                             }
-                            this.update();
-                            d.remove();
+                        } catch (err) {
+                            console.error(err.message);
+                            alert(err.message);
                         }
                     });
-                });
-            });
-            const list_of_skills = document.getElementsByClassName(`${this.ID}`)[0].getElementsByClassName("mod_pill");
-            for (let i = 0; i < list_of_skills.length; i++) {
-                list_of_skills[i].addEventListener("mousedown", (e) => {
-                    let rd = new richDice(e.clientX, e.clientY);
-                    const roll = die.r("d20", true);
-                    rd.setTitle(`${list_of_skills[i].getElementsByClassName("mod_title")[0].textContent} Check`);
-                    rd.css.alignment = "left";
-                    rd.setSize(280);
-                    rd.setBackground("./src/img/tavern.png");
-                    rd.setDescription(`With a raw roll of <strong>${roll}</strong> and a ${list_of_skills[i].getElementsByClassName("mod_title")[0].textContent} bonus of <strong>${list_of_skills[i].getElementsByClassName("mod_score")[0].textContent}</strong>, it looks like your overall result is...`);
-                    rd.addField("Result", roll + Number(list_of_skills[i].getElementsByClassName("mod_score")[0].textContent));
-                    rd.render();
-                });
+                } else if (editID == "ed_health_maxHP") {
+                    richDice.genPrompt(`Edit Max Health`, `Use the input below to enter a new maxHP.`, {
+                        p_title: "New Health",
+                        p_placeholder: this.parent.health.maxHP,
+                        x: this.event.clientX,
+                        y: this.event.clientY
+                    }, (data) => {
+                        try {
+                            if (!data || !isFinite(data) || data < 0) {
+                                throw new Error("Invalid value entered!");
+                            } else {
+                                this.parent.health.maxHP = data;
+                                if (callback)
+                                    callback();
+                            }
+                        } catch (err) {
+                            console.error(err.message);
+                            alert(err.message);
+                        }
+                    });
+                } else if (editID == "ed_health_currentAC") {
+                    richDice.genPrompt(`Edit Current AC`, `Use the input below to enter a new Current Armor Class.`, {
+                        p_title: "New AC",
+                        p_placeholder: this.parent.health.currentAC,
+                        x: this.event.clientX,
+                        y: this.event.clientY
+                    }, (data) => {
+                        try {
+                            if (!data || !isFinite(data) || data < 0) {
+                                throw new Error("Invalid value entered!");
+                            } else {
+                                this.parent.health.currentAC = data;
+                                if (callback)
+                                    callback();
+                            }
+                        } catch (err) {
+                            console.error(err.message);
+                            alert(err.message);
+                        }
+                    });
+                } else if (editID == "ed_inv_gold") {
+                    richDice.genPrompt(`Edit Gold`, `Use the input below to add or take away gold`, {
+                        p_title: "Gold Modifier",
+                        p_placeholder: "30",
+                        x: this.event.clientX,
+                        y: this.event.clientY
+                    }, (data) => {
+                        try {
+                            if (!data || !isFinite(data)) {
+                                throw new Error("Invalid value entered!");
+                            } else {
+                                this.parent.inv.gold += Number(data);
+                                console.log(`Gold: ${this.parent.inv.gold-Number(data)} -> ${this.parent.inv.gold}`);
+                                if (Number(this.parent.inv.gold) < 0) {
+                                    this.parent.inv.gold = 0;
+                                }
+                                if (callback)
+                                    callback();
+                            }
+                        } catch (err) {
+                            console.error(err.message);
+                            alert(err.message);
+                        }
+                    });
+                } else if (editID == "ed_avatar") {
+                    richDice.genPrompt(`Edit Avatar`, `Enter a new URL for the character's avatar.`, {
+                        p_title: "URL",
+                        p_placeholder: this.parent.render.avatar,
+                        x: this.event.clientX,
+                        y: this.event.clientY
+                    }, (data) => {
+                        try {
+                            if (!data) {
+                                throw new Error("Invalid value entered!");
+                            } else {
+                                this.parent.render.avatar = data;
+                                if (callback)
+                                    callback();
+                            }
+                        } catch (err) {
+                            console.error(err.message);
+                            alert(err.message);
+                        }
+                    });
+                } else if (editID.startsWith("ed_sthrow_")) {
+                    try {
+                        editID = editID.replace("ed_sthrow_", "");
+                        if (this.parent.stats.save_throws.includes(editID)) {
+                            const index = this.parent.stats.save_throws.indexOf(editID);
+                            if (index > -1) {
+                                this.parent.stats.save_throws.splice(index, 1);
+                                if (callback)
+                                    callback();
+                            }
+                        } else if (this.parent.stats.sthrows.get(editID) !== undefined) {
+                            this.parent.stats.save_throws.push(editID);
+                            if (callback)
+                                callback();
+                        } else {
+                            throw new Error("Something went wrong!");
+                        }
+                    } catch (err) {
+                        console.error(err.message);
+                        alert(err.message);
+                    }
+                } else if (editID.startsWith("ed_skl_")) {
+                    try {
+                        editID = editID.replace("ed_skl_", "");
+                        if (this.parent.stats.skill_modifiers[editID]) {
+                            let skill = this.parent.stats.skill_modifiers[editID];
+                            skill.proficent = (skill.proficent) ? false : true; // toggle proficency
+                            if (callback)
+                                callback();
+                        } else {
+                            throw new Error("Cannot find skill!");
+                        }
+                    } catch (err) {
+                        console.error(err.message);
+                        alert(err.message);
+                    }
+                } else if (editID == "ed_name") {
+                    richDice.genPrompt(`Edit Name`, `Enter a new name for your character`, {
+                        p_title: "Name",
+                        p_placeholder: this.parent.name,
+                        x: this.event.clientX,
+                        y: this.event.clientY
+                    }, (data) => {
+                        try {
+                            if (!data) {
+                                throw new Error("Invalid value entered!");
+                            } else {
+                                this.parent.name = data;
+                                if (callback)
+                                    callback();
+                            }
+                        } catch (err) {
+                            console.error(err.message);
+                            alert(err.message);
+                        }
+                    });
+                } else if (editID == "ed_level") {
+                    richDice.genPrompt(`Edit Level`, `Enter a new level for your character`, {
+                        p_title: "Level",
+                        p_placeholder: this.parent.lvl,
+                        x: this.event.clientX,
+                        y: this.event.clientY
+                    }, (data) => {
+                        try {
+                            data = Math.round(data);
+                            if (!data || !isFinite(data) || data < 0 || data > 20) {
+                                throw new Error("Invalid value entered!");
+                            } else {
+                                this.parent.lvl = data;
+                                if (callback)
+                                    callback();
+                            }
+                        } catch (err) {
+                            console.error(err.message);
+                            alert(err.message);
+                        }
+                    });
+                }
             }
         }
-        generate(clear = true) {
-            const list = document.getElementById("main");
-            if (clear !== false) {
-                list.innerHTML = "";
-            }
-            let newHTML = `
-            <div class="playerBox">
-            <img src="${this.avatar}" alt="Avatar">
-            <div class="playerInfo ${this.ID}">
-                
-            </div>
-            <div class="playerExtra ${this.ID}"></div>
-            <div class="show_more ${this.ID}"><i class="fa fa-caret-down" aria-hidden="true"></i></div>
-            </div>
-            `;
-            list.insertAdjacentHTML('beforeend', newHTML);
-            console.log("Rendered!");
-            this.update();
-            this.displayMoreInfo(true);
-            document.getElementsByClassName(`${this.ID}`)[2].addEventListener("mousedown", () => {
-                this.displayMoreInfo()
-            });
-        }
-        displayMoreInfo(dontToggle = false) {
-            const player_extra = document.getElementsByClassName(this.ID)[1];
-            if ((!this.more_info && !dontToggle) || this.more_info && dontToggle) {
-                player_extra.innerHTML = `
-                    <div class="ply_moreinfo">
-                        <div class="skl_savethrows skl_tab">
-                            <h4 class="moreinfo_header">Saving Throws</h4>
-                            ${(()=>{
-                                let text = "";
-                                this.parent.stats.sthrows.forEach((v, k)=>{
-                                    text += `<span class="skl_row"><span class="skl_caption">${this.parent.stats.save_throws.includes(k) ? '<i class="fa fa-star" aria-hidden="true"></i>' : '<i class="fa fa-star-o" aria-hidden="true"></i>'} ${convertText(k)}</span>
-                                    <span class="skl_point">${v}</span></span>`
-                                });
-                                return text;
-                            })()}
-                        </div>
-                        <div class="skl_skills skl_tab">
-                            <h4 class="moreinfo_header">Skills</h4>
-                            ${(()=>{
-                                let text = "";
-                                for(var property in this.parent.stats.skills)
-                                    if(this.parent.stats.skills.hasOwnProperty(property)){
-                                        const skill = this.parent.stats.skills[property];
-                                        const skill_info = this.parent.stats.skill_modifiers[property];
-                                        text += `<span class="skl_row skl_smaller"><span class="skl_caption">${skill_info.proficent ? '<i class="fa fa-star" aria-hidden="true"></i>' : '<i class="fa fa-star-o" aria-hidden="true"></i>'} ${skill_info.name}</span>
-                                        <span class="skl_point">${skill}</span></span>`
-                                    }
-                                return text;
-                            })()}
+        class Render {
+            constructor(props = {}) {
+                const {
+                    parent = undefined,
+                        avatar = "./src/img/render_default.jpg"
+                } = props;
+                this.avatar = avatar;
+                this.ID = Math.floor(Math.random() * 999999);
+                this.spellbook = {};
+                this.misc_notes = {};
+                this.more_info = false;
+                this.editMode = false;
+                this.parent = parent;
+
+                this.misc_notes.generate = () => {
+                    const window = new richDice((document.body.clientWidth / 2) - 225, 150);
+                    window.setTitle("Features and Notes");
+                    window.setSize(450);
+                    window.setDescription("Use this to list your class features or any miscellaneous notes.");
+                    window.addCustomHTML("", `<textarea class='window-big_box'>${this.parent.stats.misc_notes}</textarea>`);
+                    window.css.alignment = "left";
+                    window.render((dom) => {
+                        dom.getElementsByClassName("window-big_box")[0].addEventListener("change", (e) => {
+                            this.parent.stats.misc_notes = e.target.value;
+                        });
+                    });
+                };
+                /* Spellbook Stuff */
+                this.spellbook.display_spell = (spell) => {
+                    const window = document.getElementsByClassName("spellwindow")[0];
+                    window.innerHTML = `
+                    <div class="spellbanner"><h2><a href="${spell.url}" target="_blank">${spell.name}</a></h2>
+                    <span class="spellscription">${spell.level + "-level " + spell.school}</span></div>
+                    <div class="spellbody"><span class="spellrow"><strong>Casting Time:</strong> ${spell.ctime}</span>
+                    <span class="spellrow"><strong>Range:</strong> ${spell.range}</span>
+                    <span class="spellrow"><strong>Components:</strong> ${spell.components}</span>
+                    <span class="spellrow"><strong>Duration:</strong> ${spell.duration}</span>
+                    <div class="descwrap"><p class="spelldesc">${spell.description.replace(/\n\n/g, "</p><p class='spelldesc'>")}</p></div>
+                    </div>`;
+                    // Make every dice mention a clickable roll.
+                    document.getElementsByClassName("descwrap")[0].innerHTML = document.getElementsByClassName("descwrap")[0].innerHTML.replace(/\d+d\d+(?:\s*\++\s*\d+)*/gi, (x) => {
+                        return `<a class="diceClick">${x}</a>`
+                    })
+                    const diceRolls = document.getElementsByClassName("diceClick");
+                    for (let i = 0; i < diceRolls.length; i++) {
+                        diceRolls[i].addEventListener("click", (e) => {
+                            die.gfx_dice(e.target.innerHTML, e.clientX, e.clientY);
+                        })
+                    }
+                    return spell.x;
+                };
+                this.spellbook.generate = () => {
+                    const main = document.getElementById("main");
+                    const device_width = (window.innerWidth > 0) ? window.innerWidth : screen.width;
+                    main.innerHTML = `
+                    <div class="spellbook">
+                        <div class="spell-list" style="display: ${device_width <= 436 ? "none" : "inline-block"}">
+                            <div id="spell-toolbar"><input type="text" placeholder="Fireball" id="spell-search">        <input type="checkbox" id="library-toggle"><label for="library-toggle">Search Library</label></div>
+                            <div id="spells">
+                            </div>
                         </div>
                     </div>
                     `;
-                if (!dontToggle) {
-                    this.more_info = true;
+                    if (device_width <= 436) {
+                        document.getElementById("main").insertAdjacentHTML("beforeend", `<div id="hamburger-icon"><i class="fa fa-bars"></i></div>`);
+                        document.getElementById("hamburger-icon").addEventListener("click", () => {
+                            toggleSpelllist();
+                        });
+                    }
+                    if (device_width <= 436) {
+                        document.getElementsByClassName("spellbook")[0].insertAdjacentHTML("beforeend", `<div class="spellwindow"></div>`);
+                    } else {
+                        document.getElementsByClassName("spellbook")[0].insertAdjacentHTML("afterbegin", `<div class="spellwindow"></div>`);
+                    }
+                    if (this.parent.magic.spells.size > 0)
+                        this.spellbook.display_spell(this.parent.magic.spells.get(this.parent.magic.spells.keys().next().value));
+                    this.spellbook.populate();
+                    document.getElementById("spell-toolbar").addEventListener("input", (e) => {
+                        const opts = {};
+                        opts.name = document.getElementById("spell-search").value;
+                        opts.library = document.getElementById("library-toggle").checked;
+                        this.spellbook.populate(opts); // populate with options
+                    });
                 }
-                document.getElementsByClassName(`${this.ID}`)[2].getElementsByTagName("i")[0].className = "fa fa-caret-up";
-            } else {
-                player_extra.innerHTML = "";
-                if (!dontToggle){
-                    this.more_info = false;
-                    document.getElementsByClassName(`${this.ID}`)[2].getElementsByTagName("i")[0].className = "fa fa-caret-down";
+                this.spellbook.populate = (opt = {}) => {
+                    const {
+                        library = false,
+                            name = ""
+                    } = opt;
+                    if (opt.name)
+                        opt.name = opt.name.toLowerCase();
+                    // for adding spells to spell list
+                    const list = document.getElementById("spells");
+                    list.innerHTML = ""; // clear list
+                    const device_width = (window.innerWidth > 0) ? window.innerWidth : screen.width;
+                    if (!opt.library) {
+                        this.parent.magic.spells.forEach((x) => {
+                            if (x.name.toLowerCase().includes(opt.name) || !opt.name) {
+                                list.insertAdjacentHTML('beforeend', `<span class="lvl">${(isNaN(Number(x.level[0]))) ? 0 : Number(x.level[0])}</span><span class="spell" ${(this.parent.magic.preparedSpells.indexOf(x.name) != -1) ? `style=color:${"#c12929"}` : ""}>${x.name}</span>`);
+                                list.lastChild.addEventListener("click", () => {
+                                    if (device_width <= 436)
+                                        toggleSpelllist();
+                                    this.spellbook.display_spell(x);
+                                });
+                            }
+                        });
+                    } else {
+                        Library.spells.forEach((x) => {
+                            if (x.name.toLowerCase().includes(opt.name) || !opt.name) {
+                                list.insertAdjacentHTML('beforeend', `<span class="lvl">${(isNaN(Number(x.level[0]))) ? 0 : Number(x.level[0])}</span><span class="spell" ${(this.parent.magic.preparedSpells.indexOf(x.name) != -1) ? `style=color:${"#e658ff"}` : ""}>${x.name}</span>`);
+                                list.lastChild.addEventListener("click", () => {
+                                    if (device_width <= 436)
+                                        toggleSpelllist();
+                                    this.spellbook.display_spell(x);
+                                });
+                            }
+                        });
+                    }
                 }
             }
-        }
-    };
+            toggleSpelllist() {
+                const spellList = document.querySelector(".spell-list");
+                if (spellList.style.display == "none") {
+                    //document.getElementById("main").classList.add("mobile-fullscreen");
+                    document.querySelector(".spellwindow").style.display = "none";
+                    spellList.style.display = "inline-block";
+                } else {
+                    spellList.style.display = "none";
+                    //document.getElementById("main").classList.remove("mobile-fullscreen");
+                    document.querySelector(".spellwindow").style.display = "inline-block";
+                }
+            };
+            update() {
+                const percent = (this.parent.health.currentHP / this.parent.health.maxHP) * 100;
+                const invCount = this.parent.inv.backpack.size;
+                const box = document.getElementsByClassName(`${this.ID}`)[0];
+                box.innerHTML = `
+                    <h3 class="editable ed_name">${this.parent.name}</h3>
+                    <span class="lvl-class"><span class="editable ed_level">Level ${this.parent.lvl}</span> <span class="editable ed_class">${this.parent.player_class.name}</span></span>
+                    <div class="row editable ed_health_maxHP">
+                        <span class="label">HP</span>
+                        <div class="fill-bar health-bar" style="max-width: 500px;"><span class="fill" style="width: ${percent}%; background: ${getColor(percent)}">${this.parent.health.currentHP}/${this.parent.health.maxHP}</span></div>
+                    </div>
+                    <p class="editable ed_health_currentAC"><strong>AC: </strong>${this.parent.health.currentAC}</p>
+                    <p><strong>Proficiency Bonus: </strong>${this.parent.stats.prof}</p>
+                    <p class="editable ed_inv_gold"><strong>Gold: </strong>${this.parent.inv.gold} GP</p>
+                    <p><strong>Inventory: </strong>${invCount} Items</p>
+                    <div class="ability_scores">
+                        <div class="mod_pill editable ed_ability_str">
+                            <span class="mod_title">Strength</span>
+                            <span class="mod_score">${this.parent.stats.ability_mod.str}</span>
+                            <span class="mod_raw">${this.parent.stats.ability.str}</span>
+                        </div>
+                        <div class="mod_pill editable ed_ability_dex">
+                            <span class="mod_title">Dexterity</span>
+                            <span class="mod_score">${this.parent.stats.ability_mod.dex}</span>
+                            <span class="mod_raw">${this.parent.stats.ability.dex}</span>
+                        </div>
+                        <div class="mod_pill editable ed_ability_cnst">
+                            <span class="mod_title">Constitution</span>
+                            <span class="mod_score">${this.parent.stats.ability_mod.cnst}</span>
+                            <span class="mod_raw">${this.parent.stats.ability.cnst}</span>
+                        </div>
+                        <div class="mod_pill editable ed_ability_int">
+                            <span class="mod_title">Intelligence</span>
+                            <span class="mod_score">${this.parent.stats.ability_mod.int}</span>
+                            <span class="mod_raw">${this.parent.stats.ability.int}</span>
+                        </div>
+                        <div class="mod_pill editable ed_ability_wis">
+                            <span class="mod_title">Wisdom</span>
+                            <span class="mod_score">${this.parent.stats.ability_mod.wis}</span>
+                            <span class="mod_raw">${this.parent.stats.ability.wis}</span>
+                        </div>
+                        <div class="mod_pill editable ed_ability_chr">
+                            <span class="mod_title">Charisma</span>
+                            <span class="mod_score">${this.parent.stats.ability_mod.chr}</span>
+                            <span class="mod_raw">${this.parent.stats.ability.chr}</span>
+                        </div>
+                        ${(this.parent.player_class.spcMod) ? `
+                        <div class="magic_stats">
+                            <div class="magic_pill">
+                                <span class="magic_score">${this.parent.magic.Mod}</span>
+                                <span class="magic_title">Spellcasting Ability</span>
+                            </div>
+                            <div class="magic_pill">
+                                <span class="magic_score">${this.parent.magic.DC}</span>
+                                <span class="magic_title">Spellsave DC</span>
+                            </div>
+                            <div class="magic_pill">
+                                <span class="magic_score">${this.parent.magic.SPAttack}</span>
+                                <span class="magic_title">Spellattack Bonus</span>
+                            </div>
+                        </div>` : ""}
+                    </div>
+                `;
+
+                document.getElementsByClassName(`${this.ID}`)[0].getElementsByClassName("health-bar")[0].addEventListener("click", (e) => {
+                    if (this.editMode) {
+                        return false
+                    }
+                    const health_window = new richDice(e.clientX, e.clientY);
+                    health_window.setSize(300);
+                    health_window.setTitle("Add/Remove Health");
+                    health_window.setDescription("Enter a number to add/remove health from this character.");
+                    health_window.addPrompt("Amount to add", "-12");
+                    health_window.css.alignment = "left";
+                    health_window.render((d) => {
+                        d.getElementsByClassName(health_window.ID + "Amount to add")[0].addEventListener("keydown", (e) => {
+                            if (e.keyCode == 13) {
+                                let num = e.target.value;
+                                if (isFinite(Number(num))) {
+                                    this.parent.health.add(Number(num));
+                                } else if (new RegExp(/[0-9]{0,9}d[0-9]{1,9}/).test(num)) {
+                                    this.parent.health.add(die.r(String(num)));
+                                }
+                                this.update();
+                                d.remove();
+                            }
+                        });
+                    });
+                });
+                const list_of_skills = document.getElementsByClassName(`${this.ID}`)[0].getElementsByClassName("mod_pill");
+                for (let i = 0; i < list_of_skills.length; i++) {
+                    list_of_skills[i].addEventListener("click", (e) => {
+                        if (this.editMode) {
+                            return false
+                        }
+                        let rd = new richDice(e.clientX, e.clientY);
+                        const roll = die.r("d20", true);
+                        rd.setTitle(`${list_of_skills[i].getElementsByClassName("mod_title")[0].textContent} Check`);
+                        rd.css.alignment = "left";
+                        rd.setSize(280);
+                        rd.setBackground("./src/img/tavern.png");
+                        rd.setDescription(`With a raw roll of <strong>${roll}</strong> and a ${list_of_skills[i].getElementsByClassName("mod_title")[0].textContent} bonus of <strong>${list_of_skills[i].getElementsByClassName("mod_score")[0].textContent}</strong>, it looks like your overall result is...`);
+                        rd.addField("Result", roll + Number(list_of_skills[i].getElementsByClassName("mod_score")[0].textContent));
+                        rd.render();
+                    });
+                }
+            }
+            generate(clear = true) {
+                const list = document.getElementById("main");
+                if (clear !== false) {
+                    list.innerHTML = "";
+                }
+                let newHTML = `
+                <div class="playerBox" id="box${this.ID}">
+                <img src="${this.avatar}" class="editable ed_avatar" alt="Avatar">
+                <div class="playerInfo ${this.ID}">
+                    
+                </div>
+                <div class="playerExtra ${this.ID}"></div>
+                <div class="show_more ${this.ID}"><i class="fa fa-caret-down" aria-hidden="true"></i></div>
+                </div>
+                `;
+                list.insertAdjacentHTML('beforeend', newHTML);
+                console.log("Rendered!");
+                this.update();
+                this.displayMoreInfo(true); // loads the skills and saving throws
+
+                // Handle the edit mode stuff
+                document.querySelector(`#box${this.ID}`).addEventListener("click", (e) => {
+                    if (!this.editMode) {
+                        return;
+                    }
+                    // code below will only execute if edit mode is on
+                    let foundresult = false;
+                    let dom = e.target;
+                    while (!foundresult) {
+                        if (dom.classList.contains("playerBox")) {
+                            return false
+                        }
+                        if (dom.classList.contains("editable")) {
+                            foundresult = true;
+                        } else {
+                            dom = dom.parentNode;
+                        }
+                    }
+                    // try to edit the value, being careful not to screw up the player class
+                    try {
+                        new statEditor(this.parent, e).edit(dom, () => {
+                            this.generate();
+                        }); // edit the player class based on the thing clicked
+                    } catch (err) {
+                        console.log(err.message); // something went wrong
+                    }
+                });
+                document.getElementsByClassName(`${this.ID}`)[2].addEventListener("click", () => {
+                    this.displayMoreInfo()
+                });
+            }
+            displayMoreInfo(dontToggle = false) {
+                const player_extra = document.getElementsByClassName(this.ID)[1];
+                if ((!this.more_info && !dontToggle) || this.more_info && dontToggle) {
+                    player_extra.innerHTML = `
+                        <div class="ply_moreinfo">
+                            <div class="skl_savethrows skl_tab">
+                                <h4 class="moreinfo_header">Saving Throws</h4>
+                                ${(()=>{
+                                    let text = "";
+                                    this.parent.stats.sthrows.forEach((v, k)=>{
+                                        text += `<span class="skl_row editable ed_sthrow_${k}"><span class="skl_caption">${this.parent.stats.save_throws.includes(k) ? '<i class="fa fa-star" aria-hidden="true"></i>' : '<i class="fa fa-star-o" aria-hidden="true"></i>'} ${convertText(k)}</span>
+                                        <span class="skl_point">${v}</span></span>`
+                                    });
+                                    return text;
+                                })()}
+                            </div>
+                            <div class="skl_skills skl_tab">
+                                <h4 class="moreinfo_header">Skills</h4>
+                                ${(()=>{
+                                    let text = "";
+                                    for(var property in this.parent.stats.skills)
+                                        if(this.parent.stats.skills.hasOwnProperty(property)){
+                                            const skill = this.parent.stats.skills[property];
+                                            const skill_info = this.parent.stats.skill_modifiers[property];
+                                            text += `<span class="skl_row skl_smaller editable ed_skl_${property}"><span class="skl_caption">${skill_info.proficent ? '<i class="fa fa-star" aria-hidden="true"></i>' : '<i class="fa fa-star-o" aria-hidden="true"></i>'} ${skill_info.name}</span>
+                                            <span class="skl_point">${skill}</span></span>`
+                                        }
+                                    return text;
+                                })()}
+                            </div>
+                        </div>
+                        `;
+                    if (!dontToggle) {
+                        this.more_info = true;
+                    }
+                    document.getElementsByClassName(`${this.ID}`)[2].getElementsByTagName("i")[0].className = "fa fa-caret-up";
+                } else {
+                    player_extra.innerHTML = "";
+                    if (!dontToggle) {
+                        this.more_info = false;
+                        document.getElementsByClassName(`${this.ID}`)[2].getElementsByTagName("i")[0].className = "fa fa-caret-down";
+                    }
+                }
+            }
+        };
+        return Render;
+    })();
     class Inventory {
         constructor(props = {}) {
             const {
@@ -670,7 +907,7 @@ const Player = (() => {
             }
         }
         use(item_name) {
-            if(!this.backpack.get(item_name)){
+            if (!this.backpack.get(item_name)) {
                 console.log(`You don't have a ${item_name}!`);
                 return false;
             }
@@ -689,7 +926,7 @@ const Player = (() => {
             return result;
         }
         drop(item_name) {
-            if(!this.backpack.get(item_name)){
+            if (!this.backpack.get(item_name)) {
                 console.log(`You don't have a ${item_name}!`);
                 return false;
             }
@@ -753,7 +990,15 @@ const Player = (() => {
             this.classData = parent.player_class;
             this.lvl = parent.lvl;
             this.inspiration = parent.inspiration;
-            this.statsData = parent.stats;
+            //this.statsData = parent.stats;
+            this.statsData = {
+                save_throws: parent.stats.save_throws,
+                ability: parent.stats.ability,
+                inspiration: parent.stats.inspiration,
+                misc_prof: parent.stats.misc_prof,
+                misc_notes: parent.stats.misc_notes,
+                skill_modifiers: parent.stats.skill_modifiers
+            }
             this.healthData = {
                 maxHP: parent.health.maxHP,
                 currentHP: parent.health.currentHP,
@@ -909,7 +1154,7 @@ const Player = (() => {
                         }
                     }
             } = props;
-            this.prof = serProf(parent.lvl);
+            this.parent = parent;
             this.save_throws = save_throws;
             this.marks = marks;
             this.expert = expert;
@@ -917,12 +1162,17 @@ const Player = (() => {
             this.inspiration = inspiration;
             this.misc_prof = misc_prof;
             this.misc_notes = misc_notes;
-            this.passive_perception = 10 + this.skills.perception;
             this.skill_modifiers = skill_modifiers;
+        }
+        get prof(){
+            return serProf(this.parent.lvl);
         }
         get initiative() {
             return this.ability_mod.dex;
         };
+        get passive_perception(){
+            return 10 + this.skills.perception;
+        }
 
         get ability_mod() {
             const obj = {
@@ -1099,7 +1349,7 @@ const Player = (() => {
         get d20() {
             return die.r("d20", true);
         }
-        setLevel(lvl){
+        setLevel(lvl) {
             this.lvl = lvl;
             this.stats.prof = serProf(lvl);
             this.longrest();
@@ -1207,10 +1457,11 @@ const Player = (() => {
                         this.render.spellbook.generate();
                     } else if (e.key == roll) {
                         e.preventDefault();
-                        const window = new richDice((document.body.clientWidth / 2) - 140, 150);
-                        window.genPrompt("Roll Dice", "Enter any RPG style dice combination.", {
+                        richDice.genPrompt("Roll Dice", "Enter any RPG style dice combination.", {
                             p_title: "Dice",
-                            p_placeholder: "8d6"
+                            p_placeholder: "8d6",
+                            x: (document.body.clientWidth / 2) - 140,
+                            y: 150
                         }, (data) => {
                             die.gfx_dice(data, (document.body.clientWidth / 2) - 140, 150);
                         });

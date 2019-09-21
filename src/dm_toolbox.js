@@ -315,10 +315,11 @@ const DM = (() => {
                         });
                     });
                     document.getElementById("roll-dice").addEventListener("click", (e) => {
-                        const window = new richDice(e.clientX - 100, e.clientY - 120);
-                        window.genPrompt("Roll Dice", "Enter any RPG style dice combination.", {
+                        richDice.genPrompt("Roll Dice", "Enter any RPG style dice combination.", {
                             p_title: "Dice",
-                            p_placeholder: "8d6"
+                            p_placeholder: "8d6",
+                            x: e.clientX - 100,
+                            y: e.clientY - 120
                         }, (data) => {
                             die.gfx_dice(data, e.clientX - 100, e.clientY - 250);
                         });

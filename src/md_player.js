@@ -582,7 +582,7 @@ const Player = (() => {
                     if (device_width <= 436) {
                         document.getElementById("main").insertAdjacentHTML("beforeend", `<div id="hamburger-icon"><i class="fa fa-bars"></i></div>`);
                         document.getElementById("hamburger-icon").addEventListener("click", () => {
-                            toggleSpelllist();
+                            this.toggleSpelllist();
                         });
                     }
                     if (device_width <= 436) {
@@ -617,7 +617,7 @@ const Player = (() => {
                                 list.insertAdjacentHTML('beforeend', `<span class="lvl">${(isNaN(Number(x.level[0]))) ? 0 : Number(x.level[0])}</span><span class="spell" ${(this.parent.magic.preparedSpells.indexOf(x.name) != -1) ? `style=color:${"#c12929"}` : ""}>${x.name}</span>`);
                                 list.lastChild.addEventListener("click", () => {
                                     if (device_width <= 436)
-                                        toggleSpelllist();
+                                        this.toggleSpelllist();
                                     this.spellbook.display_spell(x);
                                 });
                             }
@@ -628,7 +628,7 @@ const Player = (() => {
                                 list.insertAdjacentHTML('beforeend', `<span class="lvl">${(isNaN(Number(x.level[0]))) ? 0 : Number(x.level[0])}</span><span class="spell" ${(this.parent.magic.preparedSpells.indexOf(x.name) != -1) ? `style=color:${"#e658ff"}` : ""}>${x.name}</span>`);
                                 list.lastChild.addEventListener("click", () => {
                                     if (device_width <= 436)
-                                        toggleSpelllist();
+                                        this.toggleSpelllist();
                                     this.spellbook.display_spell(x);
                                 });
                             }

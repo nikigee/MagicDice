@@ -977,6 +977,111 @@ footer a:hover {
     color: white;
     font-size: 38px;
 }
+.active{
+    color: #FFC107 !important;
+}
+
+#alertPopUp{
+    position: fixed;
+    top: 113px;
+    left: 0;
+    right: 0;
+    margin: auto;
+    text-align: center;
+    color: gold;
+    text-shadow: 0px 0px 3px;
+    width: 230px;
+    padding: 10px;
+    border-radius: 5px;
+    background: rgba(17, 16, 23, 0.61);
+    font-size: 21px;
+}
+
+/* 
+==================
+    Slider CSS
+==================
+*/
+/* The switch - the box around the slider */
+.playerSwitch{
+    position: absolute !important;
+    right: 5px;
+    top: 5px;
+    vertical-align: middle;
+}
+.playerCaption{
+    /* font-family: "Alegreya", sans-serif; */
+    font-variant: petite-caps;
+    font-size: 17px;
+    font-weight: bold;
+    padding-right: 5px;
+    vertical-align: middle;
+}
+.playerSwitch:hover .playerCaption{
+    visibility: visible !important;
+}
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 40px;
+    height: 24px;
+    vertical-align: middle;
+}
+
+/* Hide default HTML checkbox */
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+/* The slider */
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    -webkit-transition: .4s;
+    transition: .4s;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 16px;
+    width: 16px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    -webkit-transition: .4s;
+    transition: .4s;
+}
+
+input:checked+.slider {
+    background-color: #FFC107;
+}
+
+input:focus+.slider {
+    box-shadow: 0 0 1px #FFC107;
+}
+
+input:checked+.slider:before {
+    -webkit-transform: translateX(16px);
+    -ms-transform: translateX(16px);
+    transform: translateX(16px);
+}
+
+/* Rounded sliders */
+.slider.round {
+    border-radius: 34px;
+}
+
+.slider.round:before {
+    border-radius: 50%;
+}
 
 /*
 ==================
@@ -986,6 +1091,33 @@ footer a:hover {
 
 /* banner and menu ui changes for mobile */
 @media only screen and (max-width: 414px) {
+    .toolbar-hero i:hover{
+        color: unset;
+    }
+    #alertPopUp{
+        position: fixed;
+        top: 77px;
+        left: 0;
+        right: 0;
+        margin: auto;
+        text-align: center;
+        color: gold;
+        text-shadow: 0px 0px 3px;
+        width: 240px;
+        padding: 10px;
+        border-radius: 5px;
+        background: rgba(17, 16, 23, 0.61);
+        font-size: 16px;
+        width: 120px;
+    }
+    .playerSwitch{
+        position: unset !important;
+        text-align: right;
+    }
+    .playerCaption{
+        visibility: visible;
+        font-size: 16px;
+    }
     .toolbar-fixed {
         position: fixed;
         width: 100%;
@@ -1078,7 +1210,7 @@ footer a:hover {
         text-align: left;
     }
 
-    .lvl{
+    .lvl {
         background: #1d1c27;
         box-shadow: none;
         border-radius: 3px;
@@ -1130,7 +1262,6 @@ footer a:hover {
 
 /* Player render changes */
 @media only screen and (max-width: 955px) {
-
     html {
         background-color: unset;
         /* fix background images */

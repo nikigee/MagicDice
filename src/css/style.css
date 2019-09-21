@@ -887,6 +887,7 @@ footer a:hover {
 
 .toolbar-hero span,
 .toolbar-hero i {
+    vertical-align: middle;
     font-size: 18px;
 }
 
@@ -1091,6 +1092,9 @@ input:checked+.slider:before {
 
 /* banner and menu ui changes for mobile */
 @media only screen and (max-width: 414px) {
+    .toolbar-hero i{
+        font-size: 23px;
+    }
     .toolbar-hero i:hover{
         color: unset;
     }

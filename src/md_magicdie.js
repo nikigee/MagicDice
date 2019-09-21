@@ -427,7 +427,7 @@ const MagicUI = (() => {
         for (let i = 0; i < magicHandler.managed_players.length; i++) {
             let initials = magicHandler.managed_players[i].name.match(/\b\w/g) || [];
             initials = ((initials.shift() || '') + (initials.pop() || '')).toUpperCase();
-            toolbar.insertAdjacentHTML("beforeend", `<div class="toolbar-hero"><span>${initials}</span><i class="fa fa-pencil" aria-hidden="true"></i><i class="fa fa-user-circle"></i><i class="fa fa-book"></i><i class="fa fa-sticky-note"></i><i class="fa fa-keyboard-o"></i><i class="fa fa-floppy-o"></i><i class="fa fa-cloud"></i><i class="fa fa-trash-o"></i></div>`);
+            toolbar.insertAdjacentHTML("beforeend", `<div class="toolbar-hero"><span>${initials}</span><i class="fa fa-user-circle"></i><i class="fa fa-pencil" aria-hidden="true"></i><i class="fa fa-book"></i><i class="fa fa-sticky-note"></i><i class="fa fa-keyboard-o"></i><i class="fa fa-floppy-o"></i><i class="fa fa-cloud"></i><i class="fa fa-trash-o"></i></div>`);
             document.getElementsByClassName("toolbar-hero")[i].getElementsByClassName("fa-pencil")[0].addEventListener("click", (e) => {
                 magicHandler.managed_players[i].render.editMode = (magicHandler.managed_players[i].render.editMode) ? false : true; // change edit mode
                 if(magicHandler.managed_players[i].render.editMode == true){

@@ -955,8 +955,10 @@ const Player = (() => {
             this.parent = parent;
         }
         add(amt) {
-
-            this.currentHP += amt; // the modding itself
+            /* i love it when javascript changes my numbers to strings for no reason :) */
+            this.currentHP = Number(this.currentHP);
+            this.maxHP = Number(this.maxHP);
+            this.currentHP += Number(amt); // the modding itself
 
             if (this.currentHP > this.maxHP) {
                 this.currentHP = this.maxHP;

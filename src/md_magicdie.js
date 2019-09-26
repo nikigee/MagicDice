@@ -1,25 +1,8 @@
-const die = (() => {
-    const dief = {
-        cvt: function (diceRoll) {
-            diceRoll = diceRoll.toLowerCase();
-            let diceObj = {};
-            if (diceRoll[0] == "-") {
-                diceRoll = diceRoll.replace("-", "");
-                diceObj.negative = true;
-            }
-            if (diceRoll.includes("*")) {
-                diceObj.foreach_modifier = parseInt(diceRoll.split("*")[1]);
-            }
-            if (diceRoll.includes("+")) {
-                diceObj.bonus = parseInt(diceRoll.split("+")[1]);
-            }
-            diceRoll = diceRoll.split("d");
-            diceObj.iterator = (diceRoll[0] != "") ? parseInt(diceRoll[0]) : 1;
-            diceObj.face = parseInt(diceRoll[1]);
-            return diceObj;
-        },
-        r: function (arg, mute) {
-            const rCvrt = this.cvt(arg);
+const Dice = (() => {
+    /* legacy functions */
+    function r(arg, mute) {
+        try {
+            const rCvrt = cvt(arg);
             if (rCvrt.iterator == 0) {
                 return 0;
             }
@@ -49,55 +32,167 @@ const die = (() => {
                 console.log("Total roll: " + total);
             }
             return total;
-        },
-        s: function (diceObj) {
-            return `${(diceObj.negative) ? "-" : ""}${diceObj.iterator}d${diceObj.face}${(diceObj.foreach_modifier) ? "*" : ""}${(diceObj.bonus) ? "+"+diceObj.bonus : ""}`;
-        },
-        gfx_dice: function (arg, x, y) {
-            const rollObj = this.cvt(arg);
-            const dice = new richDice(x, y);
-            dice.setTitle(`Dice Roll (${arg})`);
+        } catch (err) {
+            return console.error(`Something went wrong while rolling the dice! (${err})`);
+        }
+    }
+
+    /* turns 8d6 into something the computer understands */
+    function cvt(diceRoll) {
+        diceRoll = diceRoll.toLowerCase();
+        let diceObj = {};
+        if (diceRoll[0] == "-") {
+            diceRoll = diceRoll.replace("-", "");
+            diceObj.negative = true;
+        }
+        if (diceRoll.includes("*")) {
+            diceObj.foreach_modifier = parseInt(diceRoll.split("*")[1]);
+        }
+        if (diceRoll.includes("+")) {
+            diceObj.bonus = parseInt(diceRoll.split("+")[1]);
+        }
+        diceRoll = diceRoll.split("d");
+        diceObj.iterator = (diceRoll[0] != "") ? parseInt(diceRoll[0]) : 1;
+        diceObj.face = parseInt(diceRoll[1]);
+        if (isNaN(diceObj.iterator) || isNaN(diceObj.face)) {
+            throw Error("Invalid dice roll!");
+        }
+        return diceObj;
+    }
+
+    class diceRoll {
+        constructor(dice = "d20", opts = {}) {
+            const {
+                x = (document.body.clientWidth / 2) - 225,
+                y = 150
+            } = opts;
+            this.renderOpts = {};
+            this.renderOpts.x = x;
+            this.renderOpts.y = y;
+            this.dice = dice;
+            this.roll();
+        }
+        get diceObj() {
+            return cvt(this.dice);
+        }
+        get max() {
+            const rCvrt = this.diceObj;
+            return ((rCvrt.face + ((rCvrt.foreach_modifier) ? rCvrt.foreach_modifier : 0)) * rCvrt.iterator) + ((rCvrt.bonus) ? rCvrt.bonus : 0);
+        }
+        get s() {
+            return this.dice;
+        }
+        get total() {
+            let total = this.list.reduce((a, b) => a + b); // get total from list
+            const bonus = this.diceObj.bonus;
+            if(bonus)
+                total += bonus;
+            return total;
+        }
+        reRoll(value) {
+            const index = this.list.indexOf(value);
+            if (index != -1) {
+                this.list[index] = Math.floor(Math.random() * this.diceObj.face)+1;
+                return this.list[index];
+            }
+            return false
+        }
+        roll() {
+            try {
+                const rCvrt = this.diceObj;
+                if (rCvrt.iterator == 0) {
+                    return 0;
+                }
+                let total = 0;
+                let list = [];
+                let roll;
+                for (let i = 1; i <= rCvrt.iterator; i++) {
+                    roll = Math.floor(Math.random() * rCvrt.face) + 1;
+                    if (rCvrt.foreach_modifier)
+                        roll += rCvrt.foreach_modifier;
+                    list.push(roll);
+                    total += roll;
+                }
+                if (rCvrt.bonus) {
+                    total = total + rCvrt.bonus;
+                }
+                if (rCvrt.negative)
+                    total = total * -1;
+                this.list = list;
+                return this.total;
+            } catch (err) {
+                return console.error(`Something went wrong while rolling the dice! (${err})`);
+            }
+        }
+        show() {
+            console.log(`Dice Roll (${this.dice})`);
+            const rCvrt = this.diceObj;
+            if (rCvrt.foreach_modifier) {
+                console.log("Modfier (+" + rCvrt.foreach_modifier + ")");
+            }
+            this.list.forEach((x, i) => {
+                console.log(`Roll ${i+1}: ${x}`);
+            });
+            if (rCvrt.bonus) {
+                console.log(`Bonus Applied (+${rCvrt.bonus})`);
+            }
+            console.log("Total roll: " + this.total);
+        }
+        render() {
+            const dice = new richDice(this.renderOpts.x, this.renderOpts.y);
+            const rollObj = this.diceObj;
+
+            dice.setTitle(`Dice Roll (${this.dice})`);
             dice.setDescription(`You raise your hand and throw the dice across the table.`);
             dice.setSize(250, 750);
             dice.css.alignment = "left";
-            let roll;
-            let total = 0;
+
+            /* List of rolls */
             if (rollObj.iterator > 1) {
                 let htmlList = "<div class='dice-table'>"; // start the custom html table
-                for (let i = 1; i <= rollObj.iterator; i++) {
-                    roll = Math.floor(Math.random() * rollObj.face) + 1;
-                    if (rollObj.foreach_modifier) {
-                        roll += rollObj.foreach_modifier;
-                    }
-                    // dice.addField(`Roll ${i}: `, roll);
-                    htmlList += `<div class="gfx_dice">${roll}</div>${(i == rollObj.iterator) ? "" : "+"}`;
-                    total += roll;
-                }
+                this.list.forEach((x, i) => {
+                    htmlList += `<div class="gfx_dice">${x}</div>${(i+1 == rollObj.iterator) ? "" : "+"}`;
+                });
                 htmlList += "</div>";
                 dice.addCustomHTML("Rolls:", htmlList);
-            } else {
-                total = Math.floor(Math.random() * rollObj.face) + 1;
             }
-            if (rollObj.iterator == 0) {
-                total = 0;
-            }
+            /* Showing the bonus or not */
             if (rollObj.bonus) {
                 if (rollObj.iterator > 1)
                     dice.addField("Bonus:", `${rollObj.bonus}`);
-                total = total + rollObj.bonus;
             }
-            if (rollObj.negative)
-                total = total * -1
-            dice.addField(`Total: `, total);
+            dice.addField(`Total: `, this.total); // display total
             const sound = new Audio("./src/misc/diceroll.mp3");
             dice.render(() => {
                 sound.play(); // play sound effect
             });
             return dice;
         }
+        static r(arg, mute) {
+            return r(arg, mute);
+        }
+        static x(arg){
+            const dice = new diceRoll(arg);
+            dice.show();
+            return dice;
+        }
+        static gfx_dice(arg, x, y) {
+            try {
+                const magicRoll = new diceRoll(arg, {x: x, y: y}); // the dice roll
+                return magicRoll.render();
+            } catch (err) {
+                return console.error(`Something went wrong while rolling the dice! (${err})`);
+            }
+        }
     }
-    return dief
+    return diceRoll;
 })();
+
+const die = {
+    r: Dice.r,
+    x: Dice.x,
+    gfx_dice: Dice.gfx_dice
+}; // alternate name for static functions
 
 // Player character handler to make things easier, rather than forcing the user to assign their characters to variables.
 magicHandler = (() => {
@@ -267,12 +362,17 @@ const richDice = (() => {
                 this.clicks = "";
                 window.removeEventListener("mousemove", mouseMove);
             });
-            if(this.dom.querySelector("input")){
+            if (this.dom.querySelector("input")) {
                 this.dom.querySelector("input").focus();
             };
             if (callback) callback(this.dom);
         }
-        static genPrompt(title, desc, opts = {p_title: "", p_placeholder: "", x: 0, y: 0}, callback) {
+        static genPrompt(title, desc, opts = {
+            p_title: "",
+            p_placeholder: "",
+            x: 0,
+            y: 0
+        }, callback) {
             const {
                 p_title = p_title,
                     p_placeholder = p_placeholder,
@@ -292,7 +392,7 @@ const richDice = (() => {
                     if (e.key == "Enter") {
                         const data = window.dom.querySelector("input").value;
                         callback(data); // give the data back
-                        if(window.dom)
+                        if (window.dom)
                             window.dom.remove();
                     }
                 });
@@ -361,7 +461,7 @@ const Spell = (() => {
                 attck = die.s(attck); // convert back to xdx+m format
             }
             console.log("Rolling (" + attck + ")");
-            return die.r(attck);
+            return Dice.r(attck);
         };
         get wiki() {
             window.open(this.url);
@@ -415,7 +515,7 @@ const MagicUI = (() => {
         document.body.innerHTML = `<div id="out-wrap" tabindex="0"><div id="banner"><img src="src/img/logo.png" alt="Magic Dice" onclick="MagicUI.mainMenu()"><h2>A character manager built for Dungeons & Dragons 5e</h2></div><div id="main"></div></div><div id="toolbar-section" class="toolbar-fixed"></div><footer><h3>&#169;Magic Dice 2019</h3><span>A tool created by <a href="https://nikgo.me" target="_blank">Nikita Golev</a></span><span>Contact me by <a href="mailto:ngolev.bus@gmail.com">Email</a></span><span>Github <a href="https://github.com/AdmiralSoviet/MagicDice" target="_blank">Source Code</a></span></footer>`
         UI.populateToolbar();
         const device_width = (window.innerWidth > 0) ? window.innerWidth : screen.width;
-        if(magicHandler.managed_players.length && device_width > 436){
+        if (magicHandler.managed_players.length && device_width > 436) {
             document.querySelector("#out-wrap").style.minHeight = "calc(100vh - 38px)";
         }
         if (callback)
@@ -430,7 +530,7 @@ const MagicUI = (() => {
             toolbar.insertAdjacentHTML("beforeend", `<div class="toolbar-hero"><span>${initials}</span><i class="fa fa-user-circle"></i><i class="fa fa-pencil" aria-hidden="true"></i><i class="fa fa-book"></i><i class="fa fa-sticky-note"></i><i class="fa fa-keyboard-o"></i><i class="fa fa-floppy-o"></i><i class="fa fa-cloud"></i><i class="fa fa-trash-o"></i></div>`);
             document.getElementsByClassName("toolbar-hero")[i].getElementsByClassName("fa-pencil")[0].addEventListener("click", (e) => {
                 magicHandler.managed_players[i].render.editMode = (magicHandler.managed_players[i].render.editMode) ? false : true; // change edit mode
-                if(magicHandler.managed_players[i].render.editMode == true){
+                if (magicHandler.managed_players[i].render.editMode == true) {
                     document.body.insertAdjacentHTML("beforeEnd", `<h2 id="alertPopUp">*EDIT MODE*</h2>`);
                     document.getElementsByClassName("toolbar-hero")[i].querySelector(".fa-pencil").classList.add("active"); // make it always gold
                 } else {
@@ -486,10 +586,10 @@ const MagicUI = (() => {
                     </div>`
                 };
                 const loadFiles = Array.from(document.getElementsByClassName("load-file"));
-                loadFiles.forEach((x)=>{
-                    x.addEventListener("click", (e)=>{
+                loadFiles.forEach((x) => {
+                    x.addEventListener("click", (e) => {
                         let target = e.target;
-                        while(target.classList[0] != "load-file")
+                        while (target.classList[0] != "load-file")
                             target = target.parentNode;
                         const id = target.id;
                         Load.restore(id);
@@ -504,7 +604,7 @@ const MagicUI = (() => {
                 window.setSize(520, 700);
                 window.addField("Where is everything?", `So, you might have noticed there seems to be a lack of anything on the screen besides this box... and that's by design! Let me explain; This program was and still is designed around the JavaScript REPL present in most modern web browsers (I recommend Chrome or Chromium for Magic Dice). To perform more advanced functions, you may need to be familiar with said console.`)
                 window.addField("How do I get started?", `To begin, first open your Dev Console; F12 on Google Chrome. Then the world is yours! (Hint: type ply to access the currently loaded players)`);
-                window.addCustomHTML("Some Sample Commands", `<ul><li><strong>Load.restoreFromFile():</strong> You can restore a character from a save file (.json), there's some sample characters located in Magic Dice itself, in the examples directory.</li><li><strong>ply.enableShortcuts():</strong> Enables shortcuts for a character.</li><li><strong>die.r("d20"):</strong> This command rolls a d20! Substitute d20 for any dice combination like 6d8.</li><li><strong>Player Generation:</strong> A series of commands to create a default PC!<ol><li>let John = new Player({lvl: 3})</li><li>John.name = "John Smith"</li><li><i>Edit the object to your hearts content.</i> (Not a command)</li><li>John.enableShortcuts()</li><li><i>Click outside of the console and press shift X on your keyboard and watch.</i> (Not a command)</li></ol></li></ul>`);
+                window.addCustomHTML("Some Sample Commands", `<ul><li><strong>Load.restoreFromFile():</strong> You can restore a character from a save file (.json), there's some sample characters located in Magic Dice itself, in the examples directory.</li><li><strong>ply.enableShortcuts():</strong> Enables shortcuts for a character.</li><li><strong>Dice.r("d20"):</strong> This command rolls a d20! Substitute d20 for any dice combination like 6d8.</li><li><strong>Player Generation:</strong> A series of commands to create a default PC!<ol><li>let John = new Player({lvl: 3})</li><li>John.name = "John Smith"</li><li><i>Edit the object to your hearts content.</i> (Not a command)</li><li>John.enableShortcuts()</li><li><i>Click outside of the console and press shift X on your keyboard and watch.</i> (Not a command)</li></ol></li></ul>`);
                 window.render();
             });
             document.getElementById("menu-loadfile").addEventListener("click", (e) => {
@@ -520,7 +620,7 @@ const MagicUI = (() => {
                     x: e.clientX - 50,
                     y: e.clientY - 20
                 }, (data) => {
-                    die.gfx_dice(data, e.clientX - 50, e.clientY - 20);
+                    Dice.gfx_dice(data, e.clientX - 50, e.clientY - 20);
                 });
             });
         });

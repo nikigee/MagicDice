@@ -151,7 +151,7 @@ const DM = (() => {
                 document.querySelectorAll(".init-roll").forEach((x) => {
                     x.addEventListener("keydown", (e) => {
                         if (e.key == "r") {
-                            x.value = die.r("d20", true); // roll dice if the user enters 'r'
+                            x.value = Dice.r("d20", true); // roll dice if the user enters 'r'
                         }
                     });
                 });
@@ -200,7 +200,7 @@ const DM = (() => {
                     </div>
                     </div>`);
                     document.getElementById(`attack${mnstr.strID}`).addEventListener("click", (e) => {
-                        die.gfx_dice(`d20+${mnstr.attack}`, e.clientX - 100, e.clientY - 50);
+                        Dice.gfx_dice(`d20+${mnstr.attack}`, e.clientX - 100, e.clientY - 50);
                     });
                     const health_bar = document.getElementsByClassName("health-bar");
                     health_bar[health_bar.length - 1].addEventListener("click", (e) => {
@@ -217,7 +217,7 @@ const DM = (() => {
                                     if (isFinite(Number(num))) {
                                         mnstr.add(Number(num));
                                     } else if (new RegExp(/[0-9]{0,9}d[0-9]{1,9}/).test(num)) {
-                                        mnstr.add(die.r(String(num)));
+                                        mnstr.add(Dice.r(String(num)));
                                     }
                                     this.updateBattle();
                                     d.remove();
@@ -321,7 +321,7 @@ const DM = (() => {
                             x: e.clientX - 100,
                             y: e.clientY - 120
                         }, (data) => {
-                            die.gfx_dice(data, e.clientX - 100, e.clientY - 250);
+                            Dice.gfx_dice(data, e.clientX - 100, e.clientY - 250);
                         });
                     });
                     document.getElementById("save-battle").addEventListener("click", () => {

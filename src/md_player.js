@@ -562,7 +562,7 @@ const Player = (() => {
                     const diceRolls = document.getElementsByClassName("diceClick");
                     for (let i = 0; i < diceRolls.length; i++) {
                         diceRolls[i].addEventListener("click", (e) => {
-                            die.gfx_dice(e.target.innerHTML, e.clientX, e.clientY);
+                            Dice.gfx_dice(e.target.innerHTML, e.clientX, e.clientY);
                         })
                     }
                     return spell.x;
@@ -729,7 +729,7 @@ const Player = (() => {
                                 if (isFinite(Number(num))) {
                                     this.parent.health.add(Number(num));
                                 } else if (new RegExp(/[0-9]{0,9}d[0-9]{1,9}/).test(num)) {
-                                    this.parent.health.add(die.r(String(num)));
+                                    this.parent.health.add(Dice.r(String(num)));
                                 }
                                 this.update();
                                 d.remove();
@@ -744,7 +744,7 @@ const Player = (() => {
                             return false
                         }
                         let rd = new richDice(e.clientX, e.clientY);
-                        const roll = die.r("d20", true);
+                        const roll = Dice.r("d20", true);
                         rd.setTitle(`${list_of_skills[i].getElementsByClassName("mod_title")[0].textContent} Check`);
                         rd.css.alignment = "left";
                         rd.setSize(280);
@@ -914,7 +914,7 @@ const Player = (() => {
             var result;
             if (this.backpack.get(item_name).dmg) {
                 console.log("You use the " + this.backpack.get(item_name).name + " (Rolling " + this.backpack.get(item_name).dmg + ")!");
-                var result = die.r(this.backpack.get(item_name).dmg);
+                var result = Dice.r(this.backpack.get(item_name).dmg);
             }
             if (this.backpack.get(item_name).singleUse) {
                 this.backpack.get(item_name).qnty -= 1;
@@ -942,7 +942,7 @@ const Player = (() => {
             const {
                 parent = undefined,
                     hitdie = parent.lvl + parent.player_class.hitdie,
-                    maxHP = die.cvt(hitdie).face + die.r([die.cvt(hitdie).iterator - 1, die.cvt(hitdie).face].join("d") + "+" + String(parent.stats.ability_mod.cnst), true),
+                    maxHP = die.cvt(hitdie).face + Dice.r([die.cvt(hitdie).iterator - 1, die.cvt(hitdie).face].join("d") + "+" + String(parent.stats.ability_mod.cnst), true),
                     currentHP = maxHP,
                     defaultAC = 10 + parent.stats.ability_mod.dex,
                     currentAC = defaultAC
@@ -978,7 +978,7 @@ const Player = (() => {
                 return;
             }
             dice.iterator -= numDice; // take from remaining hitdie
-            const pointsHealed = die.r(String(numDice + "d" + dice.face + "+" + constitution));
+            const pointsHealed = Dice.r(String(numDice + "d" + dice.face + "+" + constitution));
             this.add(pointsHealed);
             dice = `${dice.iterator}d${dice.face}`;
             this.hitdie = dice;
@@ -1309,7 +1309,7 @@ const Player = (() => {
         }
         roll_sthrow(selector) {
             selector = selector.toLowerCase();
-            var result = die.r("d20", true);
+            var result = Dice.r("d20", true);
             var modifier = this.ability_mod[selector];
             for (var i = 0; i < this.save_throws.length; i++) {
                 if (this.save_throws[i] == selector) {
@@ -1349,7 +1349,7 @@ const Player = (() => {
             this.render = new Render(renderData);
         }
         get d20() {
-            return die.r("d20", true);
+            return Dice.r("d20", true);
         }
         setLevel(lvl) {
             this.lvl = lvl;
@@ -1465,7 +1465,7 @@ const Player = (() => {
                             x: (document.body.clientWidth / 2) - 140,
                             y: 150
                         }, (data) => {
-                            die.gfx_dice(data, (document.body.clientWidth / 2) - 140, 150);
+                            Dice.gfx_dice(data, (document.body.clientWidth / 2) - 140, 150);
                         });
                     } else if (e.key == notes) {
                         this.render.misc_notes.generate();

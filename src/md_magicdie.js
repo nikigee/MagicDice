@@ -59,6 +59,10 @@ const Dice = (() => {
         }
         return diceObj;
     }
+    /* turns diceObjects into strings */
+    function serialise(diceObj) {
+        return `${(diceObj.negative) ? "-" : ""}${diceObj.iterator}d${diceObj.face}${(diceObj.foreach_modifier) ? "*" : ""}${(diceObj.bonus) ? "+"+diceObj.bonus : ""}`;
+    }
 
     class diceRoll {
         constructor(dice = "d20", opts = {}) {
@@ -80,15 +84,19 @@ const Dice = (() => {
             const rCvrt = this.diceObj;
             return ((rCvrt.face + ((rCvrt.foreach_modifier) ? rCvrt.foreach_modifier : 0)) * rCvrt.iterator) + ((rCvrt.bonus) ? rCvrt.bonus : 0);
         }
-        get s() {
-            return this.dice;
-        }
         get total() {
             let total = this.list.reduce((a, b) => a + b); // get total from list
             const bonus = this.diceObj.bonus;
             if (bonus)
                 total += bonus;
             return total;
+        }
+        addDice(number){
+            const obj = this.diceObj;
+            obj.iterator += number; // add x dice
+            this.dice = serialise(obj); // convert and set
+            this.roll(); // reset
+            return this;
         }
         reRoll(value) {
             const index = this.list.indexOf(value);
@@ -181,6 +189,9 @@ const Dice = (() => {
                 console.error(err);
             }
         }
+        static cvt(roll){
+            return cvt(roll);
+        }
         static gfx_dice(arg, x, y) {
             try {
                 const magicRoll = new diceRoll(arg, {
@@ -198,6 +209,7 @@ const Dice = (() => {
 
 const die = {
     r: Dice.r,
+    cvt: Dice.cvt,
     x: Dice.x,
     gfx_dice: Dice.gfx_dice
 }; // alternate name for static functions
@@ -463,13 +475,11 @@ const Spell = (() => {
         }
         cast(lvl) {
             let attck = this.roll;
+            const roll = new Dice(attck);
             if (lvl > this.intLvl) {
-                attck = die.cvt(attck);
-                attck.iterator += (lvl - this.intLvl); // add x dice per level
-                attck = die.s(attck); // convert back to xdx+m format
+                roll.addDice(lvl - this.intLvl); // add x dice per level
             }
-            console.log("Rolling (" + attck + ")");
-            return Dice.r(attck);
+            return roll.show();
         };
         get wiki() {
             window.open(this.url);

@@ -942,7 +942,7 @@ const Player = (() => {
             const {
                 parent = undefined,
                     hitdie = parent.lvl + parent.player_class.hitdie,
-                    maxHP = die.cvt(hitdie).face + Dice.r([die.cvt(hitdie).iterator - 1, die.cvt(hitdie).face].join("d") + "+" + String(parent.stats.ability_mod.cnst), true),
+                    maxHP = die.x(hitdie).diceObj.face + die.x(`${hitdie}+${parent.stats.ability_mod.cnst}`).addDice(-1).total,
                     currentHP = maxHP,
                     defaultAC = 10 + parent.stats.ability_mod.dex,
                     currentAC = defaultAC
@@ -969,20 +969,20 @@ const Player = (() => {
         }
         useHitDie(numDice) {
             let constitution = (!this.parent.stats) ? 0 : this.parent.stats.ability_mod.cnst;
-            let dice = die.cvt(this.hitdie);
-            if (numDice > dice.iterator) {
+            const dice = new Dice(`${this.hitdie}*${constitution}`);
+            if (numDice > dice.diceObj.iterator) {
                 console.log("You don't have enough hit die!");
                 return;
             } else if (this.maxHP == this.currentHP) {
                 console.log("You already have max health!");
                 return;
             }
-            dice.iterator -= numDice; // take from remaining hitdie
-            const pointsHealed = Dice.r(String(numDice + "d" + dice.face + "+" + constitution));
+            dice.addDice(numDice * -1); // take from remaining hitdie
+            // const pointsHealed = Dice.r(String(numDice + "d" + dice.face + "+" + constitution));
+            const pointsHealed = die.r(`${numDice}d${dice.diceObj.face}*${constitution}`);
             this.add(pointsHealed);
-            dice = `${dice.iterator}d${dice.face}`;
-            this.hitdie = dice;
-            console.log(dice + " remaining");
+            this.hitdie = `${dice.diceObj.iterator}d${dice.diceObj.face}`;
+            console.log(this.hitdie + " remaining");
             return pointsHealed;
         }
     }

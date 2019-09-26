@@ -66,9 +66,7 @@ const Dice = (() => {
                 x = (document.body.clientWidth / 2) - 225,
                 y = 150
             } = opts;
-            this.renderOpts = {};
-            this.renderOpts.x = x;
-            this.renderOpts.y = y;
+            this.pos = {x, y};
             this.dice = dice;
             this.roll();
         }
@@ -139,7 +137,7 @@ const Dice = (() => {
             console.log("Total roll: " + this.total);
         }
         render() {
-            const dice = new richDice(this.renderOpts.x, this.renderOpts.y);
+            const dice = new richDice(this.pos.x, this.pos.y);
             const rollObj = this.diceObj;
 
             dice.setTitle(`Dice Roll (${this.dice})`);

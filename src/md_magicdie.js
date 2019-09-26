@@ -64,9 +64,12 @@ const Dice = (() => {
         constructor(dice = "d20", opts = {}) {
             const {
                 x = (document.body.clientWidth / 2) - 225,
-                y = 150
+                    y = 150
             } = opts;
-            this.pos = {x, y};
+            this.pos = {
+                x,
+                y
+            };
             this.dice = dice;
             this.roll();
         }
@@ -83,14 +86,14 @@ const Dice = (() => {
         get total() {
             let total = this.list.reduce((a, b) => a + b); // get total from list
             const bonus = this.diceObj.bonus;
-            if(bonus)
+            if (bonus)
                 total += bonus;
             return total;
         }
         reRoll(value) {
             const index = this.list.indexOf(value);
             if (index != -1) {
-                this.list[index] = Math.floor(Math.random() * this.diceObj.face)+1;
+                this.list[index] = Math.floor(Math.random() * this.diceObj.face) + 1;
                 return this.list[index];
             }
             return false
@@ -169,14 +172,21 @@ const Dice = (() => {
         static r(arg, mute) {
             return r(arg, mute);
         }
-        static x(arg){
-            const dice = new diceRoll(arg);
-            dice.show();
-            return dice;
+        static x(arg) {
+            try {
+                const dice = new diceRoll(arg);
+                dice.show();
+                return dice;
+            } catch (err) {
+                console.error(err);
+            }
         }
         static gfx_dice(arg, x, y) {
             try {
-                const magicRoll = new diceRoll(arg, {x: x, y: y}); // the dice roll
+                const magicRoll = new diceRoll(arg, {
+                    x: x,
+                    y: y
+                }); // the dice roll
                 return magicRoll.render();
             } catch (err) {
                 return console.error(`Something went wrong while rolling the dice! (${err})`);

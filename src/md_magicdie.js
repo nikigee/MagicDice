@@ -89,6 +89,9 @@ const Dice = (() => {
             const bonus = this.diceObj.bonus;
             if (bonus)
                 total += bonus;
+            const negative = this.diceObj.negative;
+            if(negative)
+                total = total * -1;
             return total;
         }
         addDice(number){

@@ -343,7 +343,7 @@ const richDice = (() => {
                 }
             });
             /* The richDice Container */
-            const container = `<div class="richDice ${this.ID}" style="left: ${this.x}; top: ${this.y}; ${this.css.background}">
+            const container = `<div class="richDice ${this.ID}" id="richDice${this.ID}"style="left: ${this.x}; top: ${this.y}; ${this.css.background}">
             <div class="richBar"><span class="richClose"></span></div>
             <div class="richContent" style="text-align: ${this.css.alignment}; padding-bottom: ${this.css.footer_padding}px; ${this.css.size}">
                 ${content}
@@ -353,7 +353,7 @@ const richDice = (() => {
             this.dom.firstElementChild.getElementsByClassName("richClose")[0].addEventListener("click", () => {
                 this.dom.remove();
             });
-
+            document.querySelector(`#richDice${this.ID}`).scrollIntoView({behavior: "smooth", block: "center"}); // scroll it into view
             /* you know javascript is the best language when this ugly mess is the only way of getting this to work. kill me.*/
             var obj = this;
 

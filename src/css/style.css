@@ -138,6 +138,7 @@ h3 {
     font-size: 35px;
     color: #1a1a1a;
     text-shadow: 0px 0px 1px black;
+    font-family: "Alegreya";
 }
 
 .playerInfo p {
@@ -320,9 +321,10 @@ h3 {
 
 .spellwindow {
     display: inline-block;
-    background: rgba(255, 255, 255, 0.5019607843137255);
+    background: url("../img/simple-old-paper-2-transparent.jpg");
+    background-size: cover;
     box-shadow: black 0px 0px 10px;
-    width: 50%;
+    width: 60%;
     transition: 0.3s;
     -webkit-transition: 0.3s;
     vertical-align: top;
@@ -333,19 +335,13 @@ h3 {
 }
 
 .spellbody {
-    padding: 5px;
+    padding: 10px;
     padding-top: 0px;
+    border-left: solid #c12929 3px;
 }
 
-.descwrap {
-    margin: 5px;
-    background: #f1f1f1;
-    border-radius: 3px;
-    box-shadow: 0px 0px 3px black;
-    padding-top: 5px;
-    padding-bottom: 5px;
+.descwrap{
     margin-top: 10px;
-
 }
 
 .spellwindow span {
@@ -353,13 +349,14 @@ h3 {
 }
 
 .spellbanner {
-    padding: 5px;
+    padding: 10px;
     padding-bottom: 0px;
+    border-left: solid 3px #c12929;
 }
 
 .spellscription {
     font-style: italic;
-    margin-bottom: 7px;
+    padding-bottom: 7px;
     margin-left: 0px;
 }
 
@@ -368,6 +365,7 @@ h3 {
     padding-top: 10px;
     font-size: 36px;
     margin-left: 10px;
+    font-family: "Alegreya";
 }
 
 .spellwindow a {
@@ -384,9 +382,10 @@ h3 {
     color: #a51010;
 }
 
+/*
 .spellrow {
     margin: 3px;
-}
+} */
 
 .spellwindow iframe {
     margin-top: 40px;
@@ -399,10 +398,11 @@ h3 {
 }
 
 .spell-list {
-    background: rgba(255, 255, 255, 0.5019607843137255);
+    background: url("../img/simple-old-paper-2-transparent.jpg");
+    background-size: cover;
     box-shadow: black 0px 0px 10px;
     user-select: none;
-    width: calc(50% - 25px);
+    width: calc(40% - 25px);
     transition: 0.3s;
     -webkit-transition: 0.3s;
     display: inline-block;
@@ -416,7 +416,7 @@ h3 {
 }
 
 #spell-toolbar {
-    background: #1d1c27;
+    background: #1d1d1d;
     padding: 6px;
 }
 
@@ -469,18 +469,26 @@ div::-webkit-scrollbar-thumb {
 
 .spell {
     font-size: 16px;
-    background: rgba(0, 0, 0, 0.729);
+    background: #1d1d1d;
     display: inline-block;
-    width: calc(100% - 43px);
+    width: 100%;
     color: white;
     box-shadow: black 0px 0px 2px;
     margin-top: 3px;
     margin-bottom: 3px;
-    padding: 7px;
+    padding-top: 7px;
+    padding-bottom: 7px;
     transition: 0.1s;
     cursor: pointer;
 }
-
+.spellLevel{
+    margin: 0px;
+    border-bottom: 2px dotted black;
+    font-size: 18px;
+    margin: 5px;
+    font-variant: small-caps;
+    font-family: "Alegreya", sans-serif;
+}
 .spell:hover {
     background: rgba(255, 255, 255, 0.859);
     color: black !important;
@@ -505,9 +513,13 @@ div::-webkit-scrollbar-thumb {
     box-shadow: black 0px 0px 10px;
     border-radius: 3px;
     min-width: 200px;
-    background: rgba(255, 255, 255, 0.612);
+    background: white;
     background-size: cover;
     overflow: hidden;
+}
+
+.richCaption{
+    font-style: italic;
 }
 
 .richDice:hover {
@@ -533,13 +545,18 @@ div::-webkit-scrollbar-thumb {
 
 .richDice h3 {
     font-weight: bold;
-    font-size: 29px;
+    font-size: 30px;
+}
+
+.richDice h1, .richDice h2, .richDice h3, .richDice h4 {
+    font-family: "Alegreya", sans-serif;
 }
 
 .richDice label {
     margin: 0px;
     font-weight: bold;
     margin-top: 5px;
+    font-family: "Alegreya", sans-serif;
 }
 
 .richDice label,
@@ -1211,7 +1228,6 @@ input:checked+.slider:before {
         font-weight: bold;
         font-variant: small-caps;
         font-size: 18px;
-        text-align: left;
     }
 
     .lvl {
@@ -1223,14 +1239,18 @@ input:checked+.slider:before {
     .spellwindow {
         width: auto;
         height: auto;
-        background-color: white;
-        padding-bottom: 0px;
+        background: white;
+        padding-bottom: 10px;
         max-height: unset;
         width: auto;
     }
 
-    .spelldesc {
-        padding: 5px;
+    .spellbanner {
+        border-left: none;
+    }
+
+    .spellbody {
+        border-left: none;
     }
 
     .descwrap {
@@ -1239,6 +1259,7 @@ input:checked+.slider:before {
         box-shadow: unset;
         padding-top: 0px;
         padding-bottom: 0px;
+        margin-top: 0px;
     }
 
     .spell-list {

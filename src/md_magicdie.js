@@ -324,7 +324,7 @@ const richDice = (() => {
             /* The richDice Content */
             let content = `<h3>${this.title}</h3>`;
             if (this.desc) {
-                content += `<p>${this.desc}</p>`;
+                content += `<p class="richCaption">${this.desc}</p>`;
             }
             content += this.image;
             this.fields.forEach((v, k) => {

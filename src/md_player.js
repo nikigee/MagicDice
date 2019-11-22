@@ -565,7 +565,7 @@ const Player = (() => {
                             Dice.gfx_dice(e.target.innerHTML, e.clientX, e.clientY);
                         })
                     }
-                    return spell.x;
+                    return window;
                 };
                 this.spellbook.generate = () => {
                     const main = document.getElementById("main");
@@ -611,10 +611,16 @@ const Player = (() => {
                     const list = document.getElementById("spells");
                     list.innerHTML = ""; // clear list
                     const device_width = (window.innerWidth > 0) ? window.innerWidth : screen.width;
+                    let currentLevel = "";
                     if (!opt.library) {
                         this.parent.magic.spells.forEach((x) => {
                             if (x.name.toLowerCase().includes(opt.name) || !opt.name) {
-                                list.insertAdjacentHTML('beforeend', `<span class="lvl">${(isNaN(Number(x.level[0]))) ? 0 : Number(x.level[0])}</span><span class="spell" ${(this.parent.magic.preparedSpells.indexOf(x.name) != -1) ? `style=color:${"#c12929"}` : ""}>${x.name}</span>`);
+                                if(x.level != currentLevel)
+                                {
+                                    currentLevel = x.level;
+                                    list.insertAdjacentHTML('beforeend', `<h4 class="spellLevel">${x.level + " Level"}</h4>`);
+                                }
+                                list.insertAdjacentHTML('beforeend', `<span class="spell" ${(this.parent.magic.preparedSpells.indexOf(x.name) != -1) ? `style=color:${"#c12929"}` : ""}>${x.name}</span>`);
                                 list.lastChild.addEventListener("click", () => {
                                     if (device_width <= 436)
                                         this.toggleSpelllist();
@@ -625,7 +631,7 @@ const Player = (() => {
                     } else {
                         Library.spells.forEach((x) => {
                             if (x.name.toLowerCase().includes(opt.name) || !opt.name) {
-                                list.insertAdjacentHTML('beforeend', `<span class="lvl">${(isNaN(Number(x.level[0]))) ? 0 : Number(x.level[0])}</span><span class="spell" ${(this.parent.magic.preparedSpells.indexOf(x.name) != -1) ? `style=color:${"#e658ff"}` : ""}>${x.name}</span>`);
+                                list.insertAdjacentHTML('beforeend', `<span class="spell" ${(this.parent.magic.preparedSpells.indexOf(x.name) != -1) ? `style=color:${"#c12929"}` : ""}>${x.name}</span>`);
                                 list.lastChild.addEventListener("click", () => {
                                     if (device_width <= 436)
                                         this.toggleSpelllist();

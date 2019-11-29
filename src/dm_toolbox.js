@@ -42,60 +42,76 @@ const DM = (() => {
         return tileBoard;
     });
 
+    function genID() {
+        const colours = ["blue", "red", "purple", "green", "white", "yellow", "pink", "orange", "crimson", "gold", "darkgreen", "cyan", "magenta"];
+        return {
+            color: colours[Math.floor(Math.random() * colours.length)],
+            number: Math.floor(Math.random() * 20) + 1
+        }
+    }
+
+    class Monster {
+        constructor(props = {}) {
+            const {
+                maxHP = 11,
+                    currentHP = maxHP,
+                    AC = 12,
+                    attack = 3,
+                    name = "Bandit",
+                    image = `./src/img/monster.jpg`,
+                    full_data = {},
+                    id = genID()
+            } = props;
+            this.maxHP = Number(maxHP),
+                this.currentHP = Number(currentHP),
+                this.AC = AC,
+                this.attack = Number(attack),
+                this.name = name,
+                this.full_data = full_data,
+                this.image = image,
+                this.id = id
+        }
+        get pp() {
+            return Math.round((this.currentHP / this.maxHP) * 100)
+        }
+        get strID() {
+            return this.id.color + this.id.number
+        }
+        get isBlooded() {
+            if (this.pp < 50) {
+                return true
+            } else {
+                return false
+            }
+        }
+        get wiki(){
+            return `https://dnd-5e.herokuapp.com/monsters/${this.name.toLowerCase().replace(/ /g, "-")}`;
+        }
+        get self(){
+            console.log("\n%c" + this.name.toUpperCase(), "font-family: Georgia, serif; font-size: 16px;");
+            console.log("HP: %c" + this.currentHP + "/" + this.maxHP + " (" + this.pp + "%)", "color: " + getColor(this.pp));
+            console.log(`AC: ${this.AC}`);
+            console.log(`Attack Roll: ${this.attack < 0 ? this.attack : `+${this.attack}`}`);
+            console.log(`ID: ${this.strID}`);
+            console.log(`Wiki: ${this.wiki}`);
+        }
+        add(amt) {
+            this.currentHP += amt; // the modding itself
+            if (this.currentHP > this.maxHP) {
+                this.currentHP = this.maxHP;
+            }
+            var status = (amt < 0) ? "Damaged" : "Healed"; // did it heal or damage?
+            console.log(status + " by " + amt + " points! %c(HP: " + this.currentHP + " / " + this.maxHP + ")", "color:" + getColor(this.currentHP / this.maxHP * 100));
+            return this.currentHP;
+        }
+    };
+
+    DM_obj.monster = (()=>{
+        return Monster;
+    })();
 
     // Combat and initative tracker
     DM_obj.battleBoard = (() => {
-        function genID() {
-            const colours = ["blue", "red", "purple", "green", "white", "yellow", "pink", "orange", "crimson", "gold", "darkgreen", "cyan", "magenta"];
-            return {
-                color: colours[Math.floor(Math.random() * colours.length)],
-                number: Math.floor(Math.random() * 20) + 1
-            }
-        }
-        class Monster {
-            constructor(props = {}) {
-                const {
-                    maxHP = 11,
-                        currentHP = maxHP,
-                        AC = 12,
-                        attack = 3,
-                        name = "Bandit",
-                        image = `./src/img/monster.jpg`,
-                        full_data = {},
-                        id = genID()
-                } = props;
-                this.maxHP = Number(maxHP),
-                    this.currentHP = Number(currentHP),
-                    this.AC = AC,
-                    this.attack = Number(attack),
-                    this.name = name,
-                    this.full_data = full_data,
-                    this.image = image,
-                    this.id = id
-            }
-            get pp() {
-                return Math.round((this.currentHP / this.maxHP) * 100)
-            }
-            get strID() {
-                return this.id.color + this.id.number
-            }
-            get isBlooded() {
-                if (this.pp < 50) {
-                    return true
-                } else {
-                    return false
-                }
-            }
-            add(amt) {
-                this.currentHP += amt; // the modding itself
-                if (this.currentHP > this.maxHP) {
-                    this.currentHP = this.maxHP;
-                }
-                var status = (amt < 0) ? "Damaged" : "Healed"; // did it heal or damage?
-                console.log(status + " by " + amt + " points! %c(HP: " + this.currentHP + " / " + this.maxHP + ")", "color:" + getColor(this.currentHP / this.maxHP * 100));
-                return this.currentHP;
-            }
-        };
 
         class battleBoard {
             constructor(props = {}) {
@@ -236,7 +252,7 @@ const DM = (() => {
                         const popup = new richDice(e.clientX - 250, e.clientY - 250);
                         popup.setTitle(`${mnstr.name}`);
                         popup.setDescription("Opening a portal to the ethereal plane...");
-                        popup.addCustomHTML("", `<iframe width=500 height=700 src="https://dnd-5e.herokuapp.com/monsters/${mnstr.name.toLowerCase().replace(/ /g, "-")}"></iframe>`);
+                        popup.addCustomHTML("", `<iframe width=500 height=700 src="${mnstr.wiki}"></iframe>`);
                         popup.css.footer_padding = 0;
                         popup.render();
                     });

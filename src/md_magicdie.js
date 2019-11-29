@@ -183,10 +183,11 @@ const Dice = (() => {
         static r(arg, mute) {
             return r(arg, mute);
         }
-        static x(arg) {
+        static x(arg, mute = false) {
             try {
                 const dice = new diceRoll(arg);
-                dice.show();
+                if(!mute)
+                    dice.show();
                 return dice;
             } catch (err) {
                 console.error(err);
@@ -669,8 +670,12 @@ window.addEventListener("load", () => {
         const isVisible = elemTop < window.innerHeight && elemBottom >= 0;
         if (!isVisible) {
             document.querySelector("#toolbar-section").classList.add("toolbar-fixed");
+            if(window.getComputedStyle(document.querySelector("#toolbar-section")).position == "fixed"){
+                document.querySelector("footer").style.marginTop = (38 * magicHandler.managed_players.length) + 1;
+            }
         } else {
             document.querySelector("#toolbar-section").classList.remove("toolbar-fixed");
+            document.querySelector("footer").style.marginTop = 0;
         }
     });
 });

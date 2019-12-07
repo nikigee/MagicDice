@@ -738,7 +738,7 @@ const Player = (() => {
                 }
             };
             return PlayerCard;
-        })();
+        });
 
         /* Spellbook */
         const SpellBook = (() => {
@@ -855,7 +855,7 @@ const Player = (() => {
                 }
             };
             return spellbook;
-        })();
+        });
 
         const MiscNotes = (() => {
             const misc_notes = new SubRender();
@@ -873,7 +873,7 @@ const Player = (() => {
                 });
             };
             return misc_notes;
-        })();
+        });
 
         /*
         ======================================
@@ -892,12 +892,12 @@ const Player = (() => {
                 this.parent = parent;
 
                 // sub sections
-                PlayerCard.setMaster(this);
-                this.playerCard = PlayerCard;
-                SpellBook.setMaster(this);
-                this.spellbook = SpellBook;
-                MiscNotes.setMaster(this);
-                this.misc_notes = MiscNotes;
+                this.playerCard = PlayerCard();
+                this.playerCard.setMaster(this);
+                this.spellbook = SpellBook();
+                this.spellbook.setMaster(this);
+                this.misc_notes = MiscNotes();
+                this.misc_notes.setMaster(this);
             }
             generate(clear = true) {
                 this.playerCard.generate(clear);

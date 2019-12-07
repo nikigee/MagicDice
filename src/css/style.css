@@ -1265,7 +1265,7 @@ input:checked+.slider:before {
     }
 
     .spell-list {
-        width: auto;
+        width: 100%;
         height: auto;
         top: 70px;
         left: 0;

@@ -52,14 +52,14 @@ h3 {
     padding: 10px;
     color: white;
     text-align: center;
-    background: #1d1c27;
+    background: #181821;
     margin-bottom: 40px;
     padding-bottom: 20px;
     box-shadow: 0px 0px 6px #1a1a1a;
 }
 
 #banner img {
-    height: 55px;
+    height: 50px;
     cursor: pointer;
 }
 
@@ -267,6 +267,10 @@ h3 {
 .magic_stats {
     margin-top: 5px;
     text-align: center;
+}
+
+.fa-flask {
+    color: #c12929;
 }
 
 .ability_scores {
@@ -513,7 +517,7 @@ div::-webkit-scrollbar-thumb {
     box-shadow: black 0px 0px 10px;
     border-radius: 3px;
     min-width: 200px;
-    background: white;
+    background: rgba(255, 255, 255, 0.85);
     background-size: cover;
     overflow: hidden;
 }
@@ -690,7 +694,7 @@ div::-webkit-scrollbar-thumb {
 }
 
 footer {
-    background: #1d1c27;
+    background: #181821;
     color: #c1cace;
     font-family: "Timeless", Georgia, 'Times New Roman', Times, serif;
     padding: 20px;
@@ -727,7 +731,7 @@ footer a:hover {
 }
 
 .menu-generic {
-    background: #1d1c27;
+    background: #181821;
     margin: auto;
     display: inline-block;
     padding: 10px;
@@ -781,7 +785,7 @@ footer a:hover {
 }
 
 #main-menu {
-    background: #1d1c27;
+    background: #181821;
     margin: auto;
     display: inline-block;
     border-radius: 2px;
@@ -800,7 +804,7 @@ footer a:hover {
 }
 
 .menu-option:hover {
-    color: #1d1c27;
+    color: #181821;
     background: white;
     font-weight: bold;
 }
@@ -808,7 +812,7 @@ footer a:hover {
 .loading {
     color: white;
     display: inline-block;
-    background: #1d1c27;
+    background: #181821;
     padding: 15px;
     border-radius: 3px;
     box-shadow: 0px 0px 5px #1a1a1a;
@@ -983,7 +987,7 @@ footer a:hover {
 }
 
 .select-hover:hover {
-    background: black;
+    background: rgba(0, 0, 0, 0.66);
     cursor: pointer;
 }
 
@@ -993,7 +997,7 @@ footer a:hover {
     z-index: 9000000;
     left: 15;
     color: white;
-    font-size: 38px;
+    font-size: 36px;
 }
 .active{
     color: #FFC107 !important;
@@ -1109,6 +1113,9 @@ input:checked+.slider:before {
 
 /* banner and menu ui changes for mobile */
 @media only screen and (max-width: 414px) {
+    .select-hover:hover {
+        background: rgba(29, 28, 39, 0.44)
+    }
     .toolbar-hero i{
         font-size: 23px;
     }
@@ -1159,7 +1166,7 @@ input:checked+.slider:before {
     }
 
     #banner img {
-        height: 50px;
+        height: 45px;
     }
 
     #banner {
@@ -1171,7 +1178,7 @@ input:checked+.slider:before {
     }
 
     #main {
-        padding-top: 110px;
+        padding-top: 100px;
     }
 
     #banner h2 {
@@ -1221,17 +1228,12 @@ input:checked+.slider:before {
     }
 
     .spell {
-        background: none;
-        display: inline-block;
-        color: black;
-        box-shadow: none;
-        font-weight: bold;
-        font-variant: small-caps;
-        font-size: 18px;
+        font-size: 14px;
+        text-transform: uppercase;
     }
 
     .lvl {
-        background: #1d1c27;
+        background: #181821;
         box-shadow: none;
         border-radius: 3px;
     }

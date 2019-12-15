@@ -90,11 +90,11 @@ const Dice = (() => {
             if (bonus)
                 total += bonus;
             const negative = this.diceObj.negative;
-            if(negative)
+            if (negative)
                 total = total * -1;
             return total;
         }
-        addDice(number){
+        addDice(number) {
             const obj = this.diceObj;
             obj.iterator += number; // add x dice
             this.dice = serialise(obj); // convert and set
@@ -186,14 +186,14 @@ const Dice = (() => {
         static x(arg, mute = false) {
             try {
                 const dice = new diceRoll(arg);
-                if(!mute)
+                if (!mute)
                     dice.show();
                 return dice;
             } catch (err) {
                 console.error(err);
             }
         }
-        static cvt(roll){
+        static cvt(roll) {
             return cvt(roll);
         }
         static gfx_dice(arg, x, y) {
@@ -271,6 +271,7 @@ const richDice = (() => {
                 },
                 this.title = "Untitled Window",
                 this.fields = new Map(),
+                this.buttons = new Map(),
                 this.image = "",
                 this.ID = Math.floor(Math.random() * 100000);
         }
@@ -308,6 +309,14 @@ const richDice = (() => {
                 content: placeholder
             });
         }
+        addButton(id, value) {
+            try {
+                this.buttons.set(id, value);
+            }
+            catch(err){
+                console.error(err);
+            }
+        }
         addCustomHTML(title, text) {
             this.fields.set(title, {
                 type: 2,
@@ -343,6 +352,15 @@ const richDice = (() => {
                         ${v.content}`;
                 }
             });
+            content += `<div class='buttons'>
+                ${(()=>{
+                    let text = "";
+                    this.buttons.forEach((v, k)=>{
+                        text += `<button class=${k}>${v}</button>`;
+                    });
+                    return text;
+                })()}
+            </div>`
             /* The richDice Container */
             const container = `<div class="richDice ${this.ID}" id="richDice${this.ID}"style="left: ${this.x}; top: ${this.y}; ${this.css.background}">
             <div class="richBar"><span class="richClose"></span></div>
@@ -354,7 +372,10 @@ const richDice = (() => {
             this.dom.firstElementChild.getElementsByClassName("richClose")[0].addEventListener("click", () => {
                 this.dom.remove();
             });
-            document.querySelector(`#richDice${this.ID}`).scrollIntoView({behavior: "smooth", block: "center"}); // scroll it into view
+            document.querySelector(`#richDice${this.ID}`).scrollIntoView({
+                behavior: "smooth",
+                block: "center"
+            }); // scroll it into view
             /* you know javascript is the best language when this ugly mess is the only way of getting this to work. kill me.*/
             var obj = this;
 
@@ -670,7 +691,7 @@ window.addEventListener("load", () => {
         const isVisible = elemTop < window.innerHeight && elemBottom >= 0;
         if (!isVisible) {
             document.querySelector("#toolbar-section").classList.add("toolbar-fixed");
-            if(window.getComputedStyle(document.querySelector("#toolbar-section")).position == "fixed"){
+            if (window.getComputedStyle(document.querySelector("#toolbar-section")).position == "fixed") {
                 document.querySelector("footer").style.marginTop = (38 * magicHandler.managed_players.length) + 1;
             }
         } else {

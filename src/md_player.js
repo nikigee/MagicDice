@@ -596,9 +596,15 @@ const Player = (() => {
                             <span class="label">HP</span>
                             <div class="fill-bar health-bar" style="max-width: 500px;"><span class="fill" style="width: ${percent}%; background: ${getColor(percent)}">${PlayerCard.master.parent.health.currentHP}/${PlayerCard.master.parent.health.maxHP}</span></div>
                         </div>
+                        <div class="row">
+                            <div class="playerTools">
+                                <i class="fa fa-bed" aria-hidden="true"></i>
+                            </div>
+                        </div>
                         <p class="editable ed_health_currentAC"><strong>AC: </strong>${PlayerCard.master.parent.health.currentAC}</p>
                         <p><strong>Proficiency Bonus: </strong>${PlayerCard.master.parent.stats.prof}</p>
                         <p class="editable ed_inv_gold"><strong>Gold: </strong>${PlayerCard.master.parent.inv.gold} GP</p>
+                        <p class="editable ed_hitdice"><strong>Hitdice: </strong>${PlayerCard.master.parent.health.hitdie}</p>
                         <p><strong>Inventory: </strong>${invCount} Items</p>
                         <div class="ability_scores">
                             <div class="mod_pill editable ed_ability_str">
@@ -671,6 +677,52 @@ const Player = (() => {
                                 PlayerCard.update();
                                 d.remove();
                             }
+                        });
+                    });
+                });
+                document.getElementsByClassName(`${PlayerCard.master.ID}`)[0].querySelector(".fa-bed").addEventListener("click", (e)=>{
+                    PlayerCard.master.parent.longrest();
+                    const window = new richDice(e.clientX, e.clientY);
+                    window.setTitle("Longrest");
+                    window.setBackground("./src/img/monsters.jpg");
+                    window.setDescription("You awaken feeling well rested!");
+                    window.setSize(280);
+                    window.css.alignment = "left";
+                    window.addField(`Health (${PlayerCard.master.parent.health.currentHP})`, `Reset to max HP`);
+                    window.addField(`AC (${PlayerCard.master.parent.health.currentAC})`, `Assuming any previous temp AC has been reset.`);
+                    window.addField(`Hitdice (${PlayerCard.master.parent.health.hitdie})`, `You also regain spent Hit Dice, up to a number of dice equal to half of your total number of dice.`);
+                    PlayerCard.update();
+                    window.render();
+                });
+                document.getElementsByClassName(`${PlayerCard.master.ID}`)[0].getElementsByClassName("ed_hitdice")[0].addEventListener("click", (e)=>{
+                    if (PlayerCard.master.editMode) {
+                        return false
+                    }
+                    const window = new richDice(e.clientX, e.clientY);
+                    window.setTitle("Shortrest Healing");
+                    window.setSize(280);
+                    window.setDescription("You sit by the campfire, trying your best to mend your wounds. Select how many hitdice you wish to use.");
+                    window.css.alignment = "left";
+                    window.setBackground("./src/img/tavern.png");
+                    window.addCustomHTML("Hitdice", `
+                        <select>
+                            ${(()=>{
+                                let html = "";
+                                let hitdie = new Dice(PlayerCard.master.parent.health.hitdie);
+                                for(let i = 1; i <= hitdie.diceObj.iterator; i++){
+                                    html += `<option value=${i}>${i}</option>`;
+                                }
+                                return html;
+                            })()}
+                        </select>
+                    `);
+                    window.addButton("submit", `<i class="fa fa-check" aria-hidden="true"></i> Submit`);
+                    window.render((dom)=>{
+                        dom.querySelector(".submit").addEventListener("click", ()=>{
+                            let hitdie = dom.querySelector("select").value;
+                            PlayerCard.master.parent.health.useHitDie(hitdie);
+                            PlayerCard.update();
+                            dom.remove();
                         });
                     });
                 });

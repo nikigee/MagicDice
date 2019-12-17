@@ -513,6 +513,47 @@ const Player = (() => {
                             alert(err.message);
                         }
                     });
+                } else if (editID == "ed_health_hitdice") {
+                    richDice.genPrompt(`Edit Hitdice`, `Change the value of the hitdice`, {
+                        p_title: "Hitdice",
+                        p_placeholder: this.parent.health.hitdie,
+                        x: this.event.clientX,
+                        y: this.event.clientY
+                    }, (data) => {
+                        try {
+                            if (!(/(^\d+d\d+$)/.test(data))) {
+                                throw new Error("Invalid value entered!");
+                            } else {
+                                this.parent.health.hitdie = data;
+                                if (callback)
+                                    callback();
+                            }
+                        } catch (err) {
+                            console.error(err.message);
+                            alert(err.message);
+                        }
+                    });
+                } else if (editID == "ed_exp") {
+                    richDice.genPrompt(`Edit EXP`, `Change your character's experience points (Doesn't affect level).`, {
+                        p_title: "EXP",
+                        p_placeholder: this.parent.exp,
+                        x: this.event.clientX,
+                        y: this.event.clientY
+                    }, (data) => {
+                        try {
+                            data = Math.round(data);
+                            if (!data || !isFinite(data) || data < 0) {
+                                throw new Error("Invalid value entered!");
+                            } else {
+                                this.parent.exp = data;
+                                if (callback)
+                                    callback();
+                            }
+                        } catch (err) {
+                            console.error(err.message);
+                            alert(err.message);
+                        }
+                    });
                 }
             }
         }
@@ -598,13 +639,13 @@ const Player = (() => {
                         </div>
                         <div class="row">
                             <div class="playerTools">
-                                <i class="fa fa-bed" aria-hidden="true"></i>
+                                <i class="fa fa-bed" aria-hidden="true"></i><i class="fa fa-medkit editable ed_health_hitdice" aria-hidden="true"></i></i><i class="fa fa-magic" aria-hidden="true"></i>
                             </div>
                         </div>
                         <p class="editable ed_health_currentAC"><strong>AC: </strong>${PlayerCard.master.parent.health.currentAC}</p>
+                        <p class="editable ed_exp"><strong>Experience: </strong>${PlayerCard.master.parent.exp} XP</p>
                         <p><strong>Proficiency Bonus: </strong>${PlayerCard.master.parent.stats.prof}</p>
                         <p class="editable ed_inv_gold"><strong>Gold: </strong>${PlayerCard.master.parent.inv.gold} GP</p>
-                        <p class="editable ed_hitdice"><strong>Hitdice: </strong>${PlayerCard.master.parent.health.hitdie}</p>
                         <p><strong>Inventory: </strong>${invCount} Items</p>
                         <div class="ability_scores">
                             <div class="mod_pill editable ed_ability_str">
@@ -694,7 +735,17 @@ const Player = (() => {
                     PlayerCard.update();
                     window.render();
                 });
-                document.getElementsByClassName(`${PlayerCard.master.ID}`)[0].getElementsByClassName("ed_hitdice")[0].addEventListener("click", (e)=>{
+                document.getElementsByClassName(`${PlayerCard.master.ID}`)[0].querySelector(".fa-magic").addEventListener("click", (e)=>{
+                    richDice.genPrompt("Roll Dice", "Enter the dice combination of the roll.", {
+                        p_title: "Dice",
+                        p_placeholder: "8d6",
+                        x: e.clientX - 50,
+                        y: e.clientY - 20
+                    }, (data) => {
+                        Dice.gfx_dice(data, e.clientX - 50, e.clientY - 20);
+                    });
+                });
+                document.getElementsByClassName(`${PlayerCard.master.ID}`)[0].getElementsByClassName("ed_health_hitdice")[0].addEventListener("click", (e)=>{
                     if (PlayerCard.master.editMode) {
                         return false
                     }
@@ -704,6 +755,7 @@ const Player = (() => {
                     window.setDescription("You sit by the campfire, trying your best to mend your wounds. Select how many hitdice you wish to use.");
                     window.css.alignment = "left";
                     window.setBackground("./src/img/tavern.png");
+                    window.addField("Current Hitdice", PlayerCard.master.parent.health.hitdie);
                     window.addCustomHTML("Hitdice", `
                         <select>
                             ${(()=>{

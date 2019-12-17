@@ -106,8 +106,8 @@ h3 {
 }
 
 .playerTools .fa:hover{
-    background: #efefef;
-    box-shadow: 0px 0px 3px black;
+    background: #1d1d1d;
+    color: #FFC107;   
 }
 
 .show_more {
@@ -1172,6 +1172,9 @@ input:checked+.slider:before {
     }
     .toolbar-hero i:hover{
         color: unset;
+    }
+    .playerTools .fa{
+        font-size: 22px;
     }
     #alertPopUp{
         position: fixed;

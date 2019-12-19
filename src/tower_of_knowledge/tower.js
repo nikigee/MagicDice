@@ -103,7 +103,7 @@ const Library = (()=>{
                 tool: [],
                 armr: ["Light", "Medium", "Heavy", "Shields"]
             },
-            save_throws: ["str", "chr"]
+            save_throws: ["wis", "chr"]
         });
         library.player_classes.set("Ranger", {
             name: "Ranger",

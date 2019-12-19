@@ -966,7 +966,7 @@ const Player = (() => {
             misc_notes.generate = () => {
                 const window = new richDice((document.body.clientWidth / 2) - 225, 150);
                 window.setTitle("Features and Notes");
-                window.setSize(450);
+                window.setSize(1000);
                 window.setDescription("Use this to list your class features or any miscellaneous notes.");
                 window.addCustomHTML("", `<textarea class='window-big_box'>${misc_notes.master.parent.stats.misc_notes}</textarea>`);
                 window.css.alignment = "left";

@@ -312,8 +312,7 @@ const richDice = (() => {
         addButton(id, value) {
             try {
                 this.buttons.set(id, value);
-            }
-            catch(err){
+            } catch (err) {
                 console.error(err);
             }
         }
@@ -372,10 +371,14 @@ const richDice = (() => {
             this.dom.firstElementChild.getElementsByClassName("richClose")[0].addEventListener("click", () => {
                 this.dom.remove();
             });
-            document.querySelector(`#richDice${this.ID}`).scrollIntoView({
-                behavior: "smooth",
-                block: "center"
-            }); // scroll it into view
+
+            const device_width = (window.innerWidth > 0) ? window.innerWidth : screen.width;
+            if (device_width <= 436) {
+                document.querySelector(`#richDice${this.ID}`).scrollIntoView({
+                    behavior: "smooth",
+                    block: "center"
+                }); // scroll it into view
+            }
             /* you know javascript is the best language when this ugly mess is the only way of getting this to work. kill me.*/
             var obj = this;
 

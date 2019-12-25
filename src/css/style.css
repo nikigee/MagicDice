@@ -202,7 +202,6 @@ h3 {
     background: #d0d0d0;
     border-radius: 3px;
     box-shadow: black 0px 0px 2px;
-    max-height: 400px;
     overflow: auto;
 }
 
@@ -1156,6 +1155,16 @@ input:checked+.slider:before {
     border-radius: 50%;
 }
 
+.toolbar-fixed {
+    position: fixed;
+    width: 100%;
+    z-index: 9000;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
+}
+
 /*
 ==================
     MOBILE CSS
@@ -1200,14 +1209,8 @@ input:checked+.slider:before {
         visibility: visible;
         font-size: 16px;
     }
-    .toolbar-fixed {
-        position: fixed;
-        width: 100%;
-        z-index: 9000;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        margin: auto;
+    .playerBox{
+        margin: 0px;
     }
 
     .load-file {
@@ -1232,7 +1235,7 @@ input:checked+.slider:before {
     }
 
     #main {
-        padding-top: 100px;
+        padding-top: 90px;
     }
 
     #banner h2 {

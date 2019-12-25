@@ -336,8 +336,8 @@ const Player = (() => {
                     richDice.genPrompt(`Edit ${convertText(editID)} Score`, `Use the input below to enter a new ${convertText(editID)} score.`, {
                         p_title: "New Score",
                         p_placeholder: this.parent.stats.ability[editID],
-                        x: this.event.clientX,
-                        y: this.event.clientY
+                        x: this.event.pageX,
+                        y: this.event.pageY
                     }, (data) => {
                         try {
                             if (!data || !isFinite(data) || data < 0 || data > 30) {
@@ -356,8 +356,8 @@ const Player = (() => {
                     richDice.genPrompt(`Edit Max Health`, `Use the input below to enter a new maxHP.`, {
                         p_title: "New Health",
                         p_placeholder: this.parent.health.maxHP,
-                        x: this.event.clientX,
-                        y: this.event.clientY
+                        x: this.event.pageX,
+                        y: this.event.pageY
                     }, (data) => {
                         try {
                             if (!data || !isFinite(data) || data < 0) {
@@ -376,8 +376,8 @@ const Player = (() => {
                     richDice.genPrompt(`Edit Current AC`, `Use the input below to enter a new Current Armor Class.`, {
                         p_title: "New AC",
                         p_placeholder: this.parent.health.currentAC,
-                        x: this.event.clientX,
-                        y: this.event.clientY
+                        x: this.event.pageX,
+                        y: this.event.pageY
                     }, (data) => {
                         try {
                             if (!data || !isFinite(data) || data < 0) {
@@ -396,8 +396,8 @@ const Player = (() => {
                     richDice.genPrompt(`Edit Gold`, `Use the input below to add or take away gold`, {
                         p_title: "Gold Modifier",
                         p_placeholder: "30",
-                        x: this.event.clientX,
-                        y: this.event.clientY
+                        x: this.event.pageX,
+                        y: this.event.pageY
                     }, (data) => {
                         try {
                             if (!data || !isFinite(data)) {
@@ -420,8 +420,8 @@ const Player = (() => {
                     richDice.genPrompt(`Edit Avatar`, `Enter a new URL for the character's avatar.`, {
                         p_title: "URL",
                         p_placeholder: this.parent.render.avatar,
-                        x: this.event.clientX,
-                        y: this.event.clientY
+                        x: this.event.pageX,
+                        y: this.event.pageY
                     }, (data) => {
                         try {
                             if (!data) {
@@ -476,8 +476,8 @@ const Player = (() => {
                     richDice.genPrompt(`Edit Name`, `Enter a new name for your character`, {
                         p_title: "Name",
                         p_placeholder: this.parent.name,
-                        x: this.event.clientX,
-                        y: this.event.clientY
+                        x: this.event.pageX,
+                        y: this.event.pageY
                     }, (data) => {
                         try {
                             if (!data) {
@@ -496,8 +496,8 @@ const Player = (() => {
                     richDice.genPrompt(`Edit Level`, `Enter a new level for your character`, {
                         p_title: "Level",
                         p_placeholder: this.parent.lvl,
-                        x: this.event.clientX,
-                        y: this.event.clientY
+                        x: this.event.pageX,
+                        y: this.event.pageY
                     }, (data) => {
                         try {
                             data = Math.round(data);
@@ -517,8 +517,8 @@ const Player = (() => {
                     richDice.genPrompt(`Edit Hitdice`, `Change the value of the hitdice`, {
                         p_title: "Hitdice",
                         p_placeholder: this.parent.health.hitdie,
-                        x: this.event.clientX,
-                        y: this.event.clientY
+                        x: this.event.pageX,
+                        y: this.event.pageY
                     }, (data) => {
                         try {
                             if (!(/(^\d+d\d+$)/.test(data))) {
@@ -537,8 +537,8 @@ const Player = (() => {
                     richDice.genPrompt(`Edit EXP`, `Change your character's experience points (Doesn't affect level).`, {
                         p_title: "EXP",
                         p_placeholder: this.parent.exp,
-                        x: this.event.clientX,
-                        y: this.event.clientY
+                        x: this.event.pageX,
+                        y: this.event.pageY
                     }, (data) => {
                         try {
                             data = Math.round(data);
@@ -700,7 +700,7 @@ const Player = (() => {
                     if (PlayerCard.master.editMode) {
                         return false
                     }
-                    const health_window = new richDice(e.clientX, e.clientY);
+                    const health_window = new richDice(e.pageX, e.pageY);
                     health_window.setSize(300);
                     health_window.setTitle("Add/Remove Health");
                     health_window.setDescription("Enter a number to add/remove health from this character.");
@@ -721,9 +721,9 @@ const Player = (() => {
                         });
                     });
                 });
-                document.getElementsByClassName(`${PlayerCard.master.ID}`)[0].querySelector(".fa-bed").addEventListener("click", (e)=>{
+                document.getElementsByClassName(`${PlayerCard.master.ID}`)[0].querySelector(".fa-bed").addEventListener("click", (e) => {
                     PlayerCard.master.parent.longrest();
-                    const window = new richDice(e.clientX, e.clientY);
+                    const window = new richDice(e.pageX, e.pageY);
                     window.setTitle("Longrest");
                     window.setBackground("./src/img/monsters.jpg");
                     window.setDescription("You awaken feeling well rested!");
@@ -735,21 +735,21 @@ const Player = (() => {
                     PlayerCard.update();
                     window.render();
                 });
-                document.getElementsByClassName(`${PlayerCard.master.ID}`)[0].querySelector(".fa-magic").addEventListener("click", (e)=>{
+                document.getElementsByClassName(`${PlayerCard.master.ID}`)[0].querySelector(".fa-magic").addEventListener("click", (e) => {
                     richDice.genPrompt("Roll Dice", "Enter the dice combination of the roll.", {
                         p_title: "Dice",
                         p_placeholder: "8d6",
-                        x: e.clientX - 50,
-                        y: e.clientY - 20
+                        x: e.pageX - 50,
+                        y: e.pageY - 20
                     }, (data) => {
-                        Dice.gfx_dice(data, e.clientX - 50, e.clientY - 20);
+                        Dice.gfx_dice(data, e.pageX - 50, e.pageY - 20);
                     });
                 });
-                document.getElementsByClassName(`${PlayerCard.master.ID}`)[0].getElementsByClassName("ed_health_hitdice")[0].addEventListener("click", (e)=>{
+                document.getElementsByClassName(`${PlayerCard.master.ID}`)[0].getElementsByClassName("ed_health_hitdice")[0].addEventListener("click", (e) => {
                     if (PlayerCard.master.editMode) {
                         return false
                     }
-                    const window = new richDice(e.clientX, e.clientY);
+                    const window = new richDice(e.pageX, e.pageY);
                     window.setTitle("Shortrest Healing");
                     window.setSize(280);
                     window.setDescription("You sit by the campfire, trying your best to mend your wounds. Select how many hitdice you wish to use.");
@@ -769,8 +769,8 @@ const Player = (() => {
                         </select>
                     `);
                     window.addButton("submit", `<i class="fa fa-check" aria-hidden="true"></i> Submit`);
-                    window.render((dom)=>{
-                        dom.querySelector(".submit").addEventListener("click", ()=>{
+                    window.render((dom) => {
+                        dom.querySelector(".submit").addEventListener("click", () => {
                             let hitdie = dom.querySelector("select").value;
                             PlayerCard.master.parent.health.useHitDie(hitdie);
                             PlayerCard.update();
@@ -784,7 +784,7 @@ const Player = (() => {
                         if (PlayerCard.master.editMode) {
                             return false
                         }
-                        let rd = new richDice(e.clientX, e.clientY);
+                        let rd = new richDice(e.pageX, e.pageY);
                         const roll = Dice.r("d20", true);
                         rd.setTitle(`${list_of_skills[i].getElementsByClassName("mod_title")[0].textContent} Check`);
                         rd.css.alignment = "left";
@@ -829,6 +829,26 @@ const Player = (() => {
                                 </div>
                             </div>
                             `;
+                    document.querySelectorAll(".skl_row").forEach((e) => {
+                        e.addEventListener("click", (e) => {
+                            let target = e.target;
+                            while (!target.className.includes("skl_row")) {
+                                target = target.parentNode;
+                                if (target == "")
+                                    return false;
+                            }
+                            const value = target.querySelector(".skl_point").innerText;
+                            let rd = new richDice(e.pageX, e.pageY);
+                            const roll = Dice.x(`d20+${value}`, true);
+                            rd.setTitle(`${target.querySelector(".skl_caption").innerText} Check`);
+                            rd.css.alignment = "left";
+                            rd.setSize(280);
+                            rd.setBackground("./src/img/tavern.png");
+                            rd.setDescription(`With a raw roll of <strong>${roll.list[0]}</strong> and a ${target.querySelector(".skl_caption").innerText} bonus of <strong>${value}</strong>, it looks like your overall result is...`);
+                            rd.addField("Result", roll.total);
+                            rd.render();
+                        });
+                    });
                     if (!dontToggle) {
                         PlayerCard.more_info = true;
                     }
@@ -896,7 +916,7 @@ const Player = (() => {
                 let currentLevel = "";
                 if (!opt.library) {
                     spellbook.master.parent.magic.spells.forEach((x) => {
-                        if (x.name.toLowerCase().includes(opt.name) || !opt.name) {
+                        if (x.name.toLowerCase().includes(opt.name) || !opt.name || x.ctime.toLowerCase() == opt.name) {
                             if (x.level != currentLevel) {
                                 currentLevel = x.level;
                                 list.insertAdjacentHTML('beforeend', `<h4 class="spellLevel">${x.level + " Level"}</h4>`);
@@ -911,7 +931,7 @@ const Player = (() => {
                     });
                 } else {
                     Library.spells.forEach((x) => {
-                        if (x.name.toLowerCase().includes(opt.name) || !opt.name) {
+                        if (x.name.toLowerCase().includes(opt.name) || !opt.name || x.ctime.toLowerCase() == opt.name) {
                             list.insertAdjacentHTML('beforeend', `<span class="spell" >${(spellbook.master.parent.magic.preparedSpells.indexOf(x.name) != -1) ? `<i class="fa fa-flask" aria-hidden="true"></i>` : ""} ${x.name}</span>`);
                             list.lastChild.addEventListener("click", () => {
                                 if (device_width <= 436)
@@ -941,7 +961,7 @@ const Player = (() => {
                 const diceRolls = document.getElementsByClassName("diceClick");
                 for (let i = 0; i < diceRolls.length; i++) {
                     diceRolls[i].addEventListener("click", (e) => {
-                        Dice.gfx_dice(e.target.innerHTML, e.clientX, e.clientY);
+                        Dice.gfx_dice(e.target.innerHTML, e.pageX, e.pageY);
                     })
                 }
                 return window;

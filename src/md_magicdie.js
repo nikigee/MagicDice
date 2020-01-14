@@ -219,7 +219,7 @@ const die = {
 }; // alternate name for static functions
 
 // Player character handler to make things easier, rather than forcing the user to assign their characters to variables.
-magicHandler = (() => {
+const magicHandler = (() => {
     class magicHandler {
         constructor() {
             this.managed_players = [];
@@ -556,9 +556,35 @@ class Item {
     }
 }
 const MagicUI = (() => {
+    // Magic Dice Notifications
+    function alert(msg, opts = {}){
+        const {
+            type = "none",
+            background = "rgba(17, 16, 23, 0.61)",
+            color = "white",
+            icon = "fa-question"
+        } = opts;
+        if(type == "info"){
+            // customise notification here
+        } else if(type == "alert"){
+            // customise notification here
+        } else if(type == "error"){
+            // customise notification here
+        }
+        const element = document.createElement("span");
+        element.classList.add("magic-notification");
+        element.style.background = background;
+        element.style.color = color;
+        element.innerHTML = `<i class="fa ${icon}" aria-hidden="true"></i> ${msg}`;
+        document.querySelector("#notif-section").insertAdjacentElement("beforeend", element); // insert into page
+    }
+
     const UI = {};
+
+    UI.alert = alert;
+
     UI.resetDOM = (callback) => {
-        document.body.innerHTML = `<div id="out-wrap" tabindex="0"><div id="banner"><img src="src/img/logo.png" alt="Magic Dice" onclick="MagicUI.mainMenu()"><h2>A character manager built for Dungeons & Dragons 5e</h2></div><div id="main"></div></div><div id="toolbar-section" class="toolbar-fixed"></div><footer><h3>&#169;Magic Dice 2020</h3><span>A tool created by <a href="https://nikgo.me" target="_blank">Nikita Golev</a></span><span>Contact me by <a href="mailto:ngolev.bus@gmail.com">Email</a></span><span>Github <a href="https://github.com/AdmiralSoviet/MagicDice" target="_blank">Source Code</a></span></footer>`
+        document.body.innerHTML = `<div id="out-wrap" tabindex="0"><div id="banner"><img src="src/img/logo.png" alt="Magic Dice" onclick="MagicUI.mainMenu()"><h2>A character manager built for Dungeons & Dragons 5e</h2></div><div id="main"></div></div><div id="notif-section"></div><div id="toolbar-section" class="toolbar-fixed"></div><footer><h3>&#169;Magic Dice 2020</h3><span>A tool created by <a href="https://nikgo.me" target="_blank">Nikita Golev</a></span><span>Contact me by <a href="mailto:ngolev.bus@gmail.com">Email</a></span><span>Github <a href="https://github.com/AdmiralSoviet/MagicDice" target="_blank">Source Code</a></span></footer>`
         UI.populateToolbar();
         const device_width = (window.innerWidth > 0) ? window.innerWidth : screen.width;
         if (magicHandler.managed_players.length && device_width > 436) {

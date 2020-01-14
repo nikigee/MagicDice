@@ -558,18 +558,21 @@ class Item {
 const MagicUI = (() => {
     // Magic Dice Notifications
     function alert(msg, opts = {}){
-        const {
+        let {
             type = "none",
-            background = "rgba(17, 16, 23, 0.61)",
+            background = "rgba(43, 154, 47, 0.85)",
             color = "white",
-            icon = "fa-question"
+            icon = "fa-check"
         } = opts;
         if(type == "info"){
-            // customise notification here
+            background = "rgba(40, 56, 146, 0.85)";
+            icon = "fa-info-circle"
         } else if(type == "alert"){
-            // customise notification here
+            icon = "fa-exclamation-triangle";
+            background = "rgba(181, 136, 0, 0.85)";
         } else if(type == "error"){
-            // customise notification here
+            background = "rgba(142, 29, 20, 0.85)";
+            icon = "fa-times"
         }
         const element = document.createElement("span");
         element.classList.add("magic-notification");
@@ -577,6 +580,10 @@ const MagicUI = (() => {
         element.style.color = color;
         element.innerHTML = `<i class="fa ${icon}" aria-hidden="true"></i> ${msg}`;
         document.querySelector("#notif-section").insertAdjacentElement("beforeend", element); // insert into page
+        window.setTimeout(()=>{
+            element.classList.add("fade");
+            element.addEventListener("animationend", ()=>{element.remove()});
+        }, 5000)
     }
 
     const UI = {};

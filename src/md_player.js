@@ -349,7 +349,7 @@ const Player = (() => {
                             }
                         } catch (err) {
                             console.error(err.message);
-                            alert(err.message);
+                            MagicUI.alert(err.message, {type:"error"});
                         }
                     });
                 } else if (editID == "ed_health_maxHP") {
@@ -369,7 +369,7 @@ const Player = (() => {
                             }
                         } catch (err) {
                             console.error(err.message);
-                            alert(err.message);
+                            MagicUI.alert(err.message, {type:"error"});
                         }
                     });
                 } else if (editID == "ed_health_currentAC") {
@@ -389,7 +389,7 @@ const Player = (() => {
                             }
                         } catch (err) {
                             console.error(err.message);
-                            alert(err.message);
+                            MagicUI.alert(err.message, {type:"error"});
                         }
                     });
                 } else if (editID == "ed_inv_gold") {
@@ -413,7 +413,7 @@ const Player = (() => {
                             }
                         } catch (err) {
                             console.error(err.message);
-                            alert(err.message);
+                            MagicUI.alert(err.message, {type:"error"});
                         }
                     });
                 } else if (editID == "ed_avatar") {
@@ -433,7 +433,7 @@ const Player = (() => {
                             }
                         } catch (err) {
                             console.error(err.message);
-                            alert(err.message);
+                            MagicUI.alert(err.message, {type:"error"});
                         }
                     });
                 } else if (editID.startsWith("ed_sthrow_")) {
@@ -455,7 +455,7 @@ const Player = (() => {
                         }
                     } catch (err) {
                         console.error(err.message);
-                        alert(err.message);
+                        MagicUI.alert(err.message, {type:"error"});
                     }
                 } else if (editID.startsWith("ed_skl_")) {
                     try {
@@ -470,7 +470,7 @@ const Player = (() => {
                         }
                     } catch (err) {
                         console.error(err.message);
-                        alert(err.message);
+                        MagicUI.alert(err.message, {type:"error"});
                     }
                 } else if (editID == "ed_name") {
                     richDice.genPrompt(`Edit Name`, `Enter a new name for your character`, {
@@ -489,7 +489,7 @@ const Player = (() => {
                             }
                         } catch (err) {
                             console.error(err.message);
-                            alert(err.message);
+                            MagicUI.alert(err.message, {type:"error"});
                         }
                     });
                 } else if (editID == "ed_level") {
@@ -505,12 +505,13 @@ const Player = (() => {
                                 throw new Error("Invalid value entered!");
                             } else {
                                 this.parent.lvl = data;
+                                MagicUI.alert(`Updating level...`, {type:"info"});
                                 if (callback)
                                     callback();
                             }
                         } catch (err) {
                             console.error(err.message);
-                            alert(err.message);
+                            MagicUI.alert(err.message, {type:"error"});
                         }
                     });
                 } else if (editID == "ed_health_hitdice") {
@@ -530,7 +531,7 @@ const Player = (() => {
                             }
                         } catch (err) {
                             console.error(err.message);
-                            alert(err.message);
+                            MagicUI.alert(err.message, {type:"error"});
                         }
                     });
                 } else if (editID == "ed_exp") {
@@ -551,7 +552,7 @@ const Player = (() => {
                             }
                         } catch (err) {
                             console.error(err.message);
-                            alert(err.message);
+                            MagicUI.alert(err.message, {type:"error"});
                         }
                     });
                 }
@@ -1141,6 +1142,7 @@ const Player = (() => {
             }
             var status = (amt < 0) ? "Damaged" : "Healed"; // did it heal or damage?
             console.log(status + " by " + amt + " points! %c(HP: " + this.currentHP + " / " + this.maxHP + ")", "color:" + getColor(this.currentHP / this.maxHP * 100));
+            MagicUI.alert(`${status} by ${amt} points! (${(this.currentHP / this.maxHP * 100).toFixed(0)}%)`, {type:"info"});
             return this.currentHP;
         }
         useHitDie(numDice) {
@@ -1148,9 +1150,11 @@ const Player = (() => {
             const dice = new Dice(`${this.hitdie}*${constitution}`);
             if (numDice > dice.diceObj.iterator) {
                 console.log("You don't have enough hit die!");
+                MagicUI.alert("You don't have enough hit die!", {type:"error"});
                 return;
             } else if (this.maxHP == this.currentHP) {
                 console.log("You already have max health!");
+                MagicUI.alert("You already have max health!", {type:"error"});
                 return;
             }
             dice.addDice(numDice * -1); // take from remaining hitdie
@@ -1159,6 +1163,7 @@ const Player = (() => {
             this.add(pointsHealed);
             this.hitdie = `${dice.diceObj.iterator}d${dice.diceObj.face}`;
             console.log(this.hitdie + " remaining");
+            MagicUI.alert(this.hitdie + " remaining", {type:"alert"});
             return pointsHealed;
         }
     }
@@ -1529,7 +1534,6 @@ const Player = (() => {
         }
         setLevel(lvl) {
             this.lvl = lvl;
-            this.stats.prof = serProf(lvl);
             this.longrest();
             this.render.generate();
         }
@@ -1579,6 +1583,7 @@ const Player = (() => {
                 charArray[id] = new Save(this);
                 localStorage["charList"] = JSON.stringify(charArray);
                 console.log("Saved as '" + id + "'");
+                MagicUI.alert(`Saved as '${id}'!`);
                 return true
             }
         }
@@ -1592,6 +1597,7 @@ const Player = (() => {
                 exportName = this.name;
             }
             console.log("[WARNING] This will not save to HTML5 Local Storage, this will save externally only!");
+            MagicUI.alert("Downloading to external file.", {type:"info"});
             // thanks to stack overflow for this code
             var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(new Save(this)));
             var downloadAnchorNode = document.createElement('a');

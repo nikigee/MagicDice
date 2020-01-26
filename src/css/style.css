@@ -89,10 +89,6 @@ h3 {
     min-width: 100px;
     padding-right: 20px;
     transition: 0.3s;
-    -webkit-animation-name: notif-slide;
-    /* Safari 4.0 - 8.0 */
-    -webkit-animation-duration: 0.5s;
-    /* Safari 4.0 - 8.0 */
     animation-name: notif-slide;
     animation-duration: 0.5s;
 }
@@ -607,7 +603,7 @@ div::-webkit-scrollbar-thumb {
 
 .richDice {
     position: absolute;
-    box-shadow: black 0px 0px 10px;
+    box-shadow: black 0px 0px 5px;
     border-radius: 3px;
     min-width: 200px;
     background: rgba(255, 255, 255, 0.85);
@@ -653,7 +649,7 @@ div::-webkit-scrollbar-thumb {
 }
 
 .richDice:hover {
-    box-shadow: black 0px 0px 15px;
+    box-shadow: black 0px 0px 7px;
 }
 
 .richContent h3,

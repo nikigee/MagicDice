@@ -196,6 +196,10 @@ h3 {
     transition: .5s;
 }
 
+.playerBox strong, .label{
+    font-family: "Alegreya", sans-serif;
+}
+
 .show_more:hover {
     color: gold;
     background: black;

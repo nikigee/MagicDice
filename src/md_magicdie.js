@@ -160,18 +160,15 @@ const Dice = (() => {
             dice.css.alignment = "left";
 
             /* List of rolls */
-            if (rollObj.iterator > 1) {
-                let htmlList = "<div class='dice-table'>"; // start the custom html table
-                this.list.forEach((x, i) => {
-                    htmlList += `<div class="gfx_dice">${x}</div>${(i+1 == rollObj.iterator) ? "" : "+"}`;
-                });
-                htmlList += "</div>";
-                dice.addCustomHTML("Rolls:", htmlList);
-            }
+            let htmlList = "<div class='dice-table'>"; // start the custom html table
+            this.list.forEach((x, i) => {
+                htmlList += `<div class="gfx_dice">${x}</div>${(i+1 == rollObj.iterator) ? "" : "+"}`;
+            });
+            htmlList += "</div>";
+            dice.addCustomHTML("Rolls:", htmlList);
             /* Showing the bonus or not */
             if (rollObj.bonus) {
-                if (rollObj.iterator > 1)
-                    dice.addField("Bonus:", `${rollObj.bonus}`);
+                dice.addField("Bonus:", `${rollObj.bonus}`);
             }
             dice.addField(`Total: `, this.total); // display total
             const sound = new Audio("./src/misc/diceroll.mp3");
@@ -557,20 +554,20 @@ class Item {
 }
 const MagicUI = (() => {
     // Magic Dice Notifications
-    function alert(msg, opts = {}){
+    function alert(msg, opts = {}) {
         let {
             type = "none",
-            background = "rgba(43, 154, 47, 0.85)",
-            color = "white",
-            icon = "fa-check"
+                background = "rgba(43, 154, 47, 0.85)",
+                color = "white",
+                icon = "fa-check"
         } = opts;
-        if(type == "info"){
+        if (type == "info") {
             background = "rgba(40, 56, 146, 0.85)";
             icon = "fa-info-circle"
-        } else if(type == "alert"){
+        } else if (type == "alert") {
             icon = "fa-exclamation-triangle";
             background = "rgba(181, 136, 0, 0.85)";
-        } else if(type == "error"){
+        } else if (type == "error") {
             background = "rgba(142, 29, 20, 0.85)";
             icon = "fa-times"
         }
@@ -580,9 +577,11 @@ const MagicUI = (() => {
         element.style.color = color;
         element.innerHTML = `<i class="fa ${icon}" aria-hidden="true"></i> ${msg}`;
         document.querySelector("#notif-section").insertAdjacentElement("beforeend", element); // insert into page
-        window.setTimeout(()=>{
+        window.setTimeout(() => {
             element.classList.add("fade");
-            element.addEventListener("animationend", ()=>{element.remove()});
+            element.addEventListener("animationend", () => {
+                element.remove()
+            });
         }, 5000)
     }
 

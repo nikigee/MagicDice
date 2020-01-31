@@ -796,7 +796,7 @@ div::-webkit-scrollbar-thumb {
     padding: 4px;
     border-radius: 5px;
     border: solid 1px black;
-    margin: 2px;
+    margin: 2px !important;
     padding-left: 6px;
     padding-right: 6px;
     vertical-align: middle;

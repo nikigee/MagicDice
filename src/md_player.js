@@ -54,7 +54,12 @@ const Load = (() => {
             }
             magicHandler.managed_players.push(this.deSer(characters[character]));
             MagicUI.resetDOM(() => {
-                magicHandler.last.enableShortcuts();
+                const device_width = (window.innerWidth > 0) ? window.innerWidth : screen.width;
+                if (device_width > 436) {
+                    magicHandler.last.enableShortcuts();
+                } else{
+                    magicHandler.last.render.generate();
+                }
                 console.log("You can now access this character by simply typing 'ply' into this console.");
             });
         },
@@ -349,7 +354,9 @@ const Player = (() => {
                             }
                         } catch (err) {
                             console.error(err.message);
-                            MagicUI.alert(err.message, {type:"error"});
+                            MagicUI.alert(err.message, {
+                                type: "error"
+                            });
                         }
                     });
                 } else if (editID == "ed_health_maxHP") {
@@ -369,7 +376,9 @@ const Player = (() => {
                             }
                         } catch (err) {
                             console.error(err.message);
-                            MagicUI.alert(err.message, {type:"error"});
+                            MagicUI.alert(err.message, {
+                                type: "error"
+                            });
                         }
                     });
                 } else if (editID == "ed_health_currentAC") {
@@ -389,7 +398,9 @@ const Player = (() => {
                             }
                         } catch (err) {
                             console.error(err.message);
-                            MagicUI.alert(err.message, {type:"error"});
+                            MagicUI.alert(err.message, {
+                                type: "error"
+                            });
                         }
                     });
                 } else if (editID == "ed_inv_gold") {
@@ -413,7 +424,9 @@ const Player = (() => {
                             }
                         } catch (err) {
                             console.error(err.message);
-                            MagicUI.alert(err.message, {type:"error"});
+                            MagicUI.alert(err.message, {
+                                type: "error"
+                            });
                         }
                     });
                 } else if (editID == "ed_avatar") {
@@ -433,7 +446,9 @@ const Player = (() => {
                             }
                         } catch (err) {
                             console.error(err.message);
-                            MagicUI.alert(err.message, {type:"error"});
+                            MagicUI.alert(err.message, {
+                                type: "error"
+                            });
                         }
                     });
                 } else if (editID.startsWith("ed_sthrow_")) {
@@ -455,7 +470,9 @@ const Player = (() => {
                         }
                     } catch (err) {
                         console.error(err.message);
-                        MagicUI.alert(err.message, {type:"error"});
+                        MagicUI.alert(err.message, {
+                            type: "error"
+                        });
                     }
                 } else if (editID.startsWith("ed_skl_")) {
                     try {
@@ -470,7 +487,9 @@ const Player = (() => {
                         }
                     } catch (err) {
                         console.error(err.message);
-                        MagicUI.alert(err.message, {type:"error"});
+                        MagicUI.alert(err.message, {
+                            type: "error"
+                        });
                     }
                 } else if (editID == "ed_name") {
                     richDice.genPrompt(`Edit Name`, `Enter a new name for your character`, {
@@ -489,7 +508,9 @@ const Player = (() => {
                             }
                         } catch (err) {
                             console.error(err.message);
-                            MagicUI.alert(err.message, {type:"error"});
+                            MagicUI.alert(err.message, {
+                                type: "error"
+                            });
                         }
                     });
                 } else if (editID == "ed_level") {
@@ -505,13 +526,17 @@ const Player = (() => {
                                 throw new Error("Invalid value entered!");
                             } else {
                                 this.parent.lvl = data;
-                                MagicUI.alert(`Updating level...`, {type:"info"});
+                                MagicUI.alert(`Updating level...`, {
+                                    type: "info"
+                                });
                                 if (callback)
                                     callback();
                             }
                         } catch (err) {
                             console.error(err.message);
-                            MagicUI.alert(err.message, {type:"error"});
+                            MagicUI.alert(err.message, {
+                                type: "error"
+                            });
                         }
                     });
                 } else if (editID == "ed_health_hitdice") {
@@ -531,7 +556,9 @@ const Player = (() => {
                             }
                         } catch (err) {
                             console.error(err.message);
-                            MagicUI.alert(err.message, {type:"error"});
+                            MagicUI.alert(err.message, {
+                                type: "error"
+                            });
                         }
                     });
                 } else if (editID == "ed_exp") {
@@ -552,7 +579,9 @@ const Player = (() => {
                             }
                         } catch (err) {
                             console.error(err.message);
-                            MagicUI.alert(err.message, {type:"error"});
+                            MagicUI.alert(err.message, {
+                                type: "error"
+                            });
                         }
                     });
                 }
@@ -640,7 +669,7 @@ const Player = (() => {
                         </div>
                         <div class="row">
                             <div class="playerTools">
-                                <i class="fa fa-bed" aria-hidden="true"></i><i class="fa fa-medkit editable ed_health_hitdice" aria-hidden="true"></i></i><i class="fa fa-magic" aria-hidden="true"></i>
+                                <i class="fa fa-bed" aria-hidden="true"></i><i class="fa fa-medkit editable ed_health_hitdice" aria-hidden="true"></i></i><i class="fa fa-magic" aria-hidden="true"></i><i class="fa fa-address-book" aria-hidden="true"></i>
                             </div>
                         </div>
                         <p class="editable ed_health_currentAC"><strong>AC: </strong>${PlayerCard.master.parent.health.currentAC}</p>
@@ -745,6 +774,55 @@ const Player = (() => {
                     }, (data) => {
                         Dice.gfx_dice(data, e.pageX - 50, e.pageY - 20);
                     });
+                });
+                document.getElementsByClassName(`${PlayerCard.master.ID}`)[0].querySelector(".fa-address-book").addEventListener("click", (e) => {
+                    const window = new richDice(e.pageX, e.pageY);
+                    window.setTitle("Proficiencies");
+                    window.setBackground("./src/img/tj-foo-grand-library.jpg");
+                    window.css.alignment = "left";
+                    window.setSize(380);
+                    window.setDescription("A list of the different things your character is proficent in, as well as any languages they know.");
+                    window.addCustomHTML("Languages", `
+                        <div class="pill-list">
+                        ${(()=>{
+                            let html = ``;
+                            PlayerCard.master.parent.stats.misc_prof.lang.forEach(v=> html += `<span>${v}</span>`);
+                            html += `<span class='add-more'><i class="fa fa-plus" aria-hidden="true"></i></span>`;
+                            return html;
+                        })()}
+                        </div>
+                    `);
+                    window.addCustomHTML("Weapons", `
+                        <div class="pill-list">
+                        ${(()=>{
+                            let html = "";
+                            PlayerCard.master.parent.stats.misc_prof.wpn.forEach(v=> html += `<span>${v}</span>`);
+                            html += `<span class='add-more'><i class="fa fa-plus" aria-hidden="true"></i></span>`;
+                            return html;
+                        })()}
+                        </div>
+                    `);
+                    window.addCustomHTML("Tools", `
+                        <div class="pill-list">
+                        ${(()=>{
+                            let html = "";
+                            PlayerCard.master.parent.stats.misc_prof.tool.forEach(v=> html += `<span>${v}</span>`);
+                            html += `<span class='add-more'><i class="fa fa-plus" aria-hidden="true"></i></span>`;
+                            return html;
+                        })()}
+                        </div>
+                    `);
+                    window.addCustomHTML("Armor", `
+                        <div class="pill-list">
+                        ${(()=>{
+                            let html = "";
+                            PlayerCard.master.parent.stats.misc_prof.armr.forEach(v=> html += `<span>${v}</span>`);
+                            html += `<span class='add-more'><i class="fa fa-plus" aria-hidden="true"></i></span>`;
+                            return html;
+                        })()}
+                        </div>
+                    `);
+                    window.render();
                 });
                 document.getElementsByClassName(`${PlayerCard.master.ID}`)[0].getElementsByClassName("ed_health_hitdice")[0].addEventListener("click", (e) => {
                     if (PlayerCard.master.editMode) {
@@ -1142,7 +1220,9 @@ const Player = (() => {
             }
             var status = (amt < 0) ? "Damaged" : "Healed"; // did it heal or damage?
             console.log(status + " by " + amt + " points! %c(HP: " + this.currentHP + " / " + this.maxHP + ")", "color:" + getColor(this.currentHP / this.maxHP * 100));
-            MagicUI.alert(`${status} by ${amt} points! (${(this.currentHP / this.maxHP * 100).toFixed(0)}%)`, {type:"info"});
+            MagicUI.alert(`${status} by ${amt} points! (${(this.currentHP / this.maxHP * 100).toFixed(0)}%)`, {
+                type: "info"
+            });
             return this.currentHP;
         }
         useHitDie(numDice) {
@@ -1150,11 +1230,15 @@ const Player = (() => {
             const dice = new Dice(`${this.hitdie}*${constitution}`);
             if (numDice > dice.diceObj.iterator) {
                 console.log("You don't have enough hit die!");
-                MagicUI.alert("You don't have enough hit die!", {type:"error"});
+                MagicUI.alert("You don't have enough hit die!", {
+                    type: "error"
+                });
                 return;
             } else if (this.maxHP == this.currentHP) {
                 console.log("You already have max health!");
-                MagicUI.alert("You already have max health!", {type:"error"});
+                MagicUI.alert("You already have max health!", {
+                    type: "error"
+                });
                 return;
             }
             dice.addDice(numDice * -1); // take from remaining hitdie
@@ -1163,7 +1247,9 @@ const Player = (() => {
             this.add(pointsHealed);
             this.hitdie = `${dice.diceObj.iterator}d${dice.diceObj.face}`;
             console.log(this.hitdie + " remaining");
-            MagicUI.alert(this.hitdie + " remaining", {type:"alert"});
+            MagicUI.alert(this.hitdie + " remaining", {
+                type: "alert"
+            });
             return pointsHealed;
         }
     }
@@ -1597,7 +1683,9 @@ const Player = (() => {
                 exportName = this.name;
             }
             console.log("[WARNING] This will not save to HTML5 Local Storage, this will save externally only!");
-            MagicUI.alert("Downloading to external file.", {type:"info"});
+            MagicUI.alert("Downloading to external file.", {
+                type: "info"
+            });
             // thanks to stack overflow for this code
             var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(new Save(this)));
             var downloadAnchorNode = document.createElement('a');
@@ -1655,6 +1743,7 @@ const Player = (() => {
                 });
             });
             console.log("Shortcuts enabled!");
+            MagicUI.alert("Shortcuts enabled!");
             // print commands
             const window = new richDice((document.body.clientWidth / 2) - 170, 150);
             window.setSize();

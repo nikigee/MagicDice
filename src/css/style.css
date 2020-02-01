@@ -1265,6 +1265,15 @@ input:checked+.slider:before {
     margin: auto;
 }
 
+.add-more{
+    transition: 0.3s;
+    cursor: pointer;
+}
+.add-more:hover{
+    background: #0b0b13;
+    color: #FFC107;
+}
+
 /*
 ==================
     MOBILE CSS
@@ -1275,6 +1284,11 @@ input:checked+.slider:before {
 @media only screen and (max-width: 414px) {
     .select-hover:hover {
         background: rgba(29, 28, 39, 0.44)
+    }
+
+    .pill-list{
+        margin-left: 10px;
+        margin-right: 10px;
     }
 
     .toolbar-hero i {

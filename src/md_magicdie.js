@@ -592,14 +592,17 @@ const MagicUI = (() => {
     UI.resetDOM = (callback) => {
         document.body.innerHTML = `<div id="out-wrap" tabindex="0"><div id="banner"><img src="src/img/logo.png" alt="Magic Dice" onclick="MagicUI.mainMenu()"><h2>A character manager built for Dungeons & Dragons 5e</h2></div><div id="main"></div></div><div id="notif-section"></div><div id="toolbar-section" class="toolbar-fixed"></div><footer><h3>&#169;Magic Dice 2020</h3><span>A tool created by <a href="https://nikgo.me" target="_blank">Nikita Golev</a></span><span>Contact me by <a href="mailto:ngolev.bus@gmail.com">Email</a></span><span>Github <a href="https://github.com/AdmiralSoviet/MagicDice" target="_blank">Source Code</a></span></footer>`
         UI.populateToolbar();
-        const device_width = (window.innerWidth > 0) ? window.innerWidth : screen.width;
-        if (magicHandler.managed_players.length && device_width > 436) {
-            document.querySelector("#out-wrap").style.minHeight = "calc(100vh - 38px)";
-        }
+
+        document.getElementById("out-wrap").addEventListener("char-loaded", (e)=>UI.populateToolbar());
         if (callback)
             callback();
     };
     UI.populateToolbar = () => {
+        const device_width = (window.innerWidth > 0) ? window.innerWidth : screen.width;
+        if (magicHandler.managed_players.length && device_width > 436) {
+            document.querySelector("#out-wrap").style.minHeight = "calc(100vh - 38px)";
+        }
+
         const toolbar = document.getElementById("toolbar-section");
         toolbar.innerHTML = "";
         for (let i = 0; i < magicHandler.managed_players.length; i++) {
@@ -630,7 +633,7 @@ const MagicUI = (() => {
             });
             document.getElementsByClassName("toolbar-hero")[i].getElementsByClassName("fa-trash-o")[0].addEventListener("click", (e) => {
                 magicHandler.managed_players.splice(i, 1);
-                UI.resetDOM(()=>UI.mainMenu());
+                UI.resetDOM(() => UI.mainMenu());
             });
             document.getElementsByClassName("toolbar-hero")[i].getElementsByClassName("fa-keyboard-o")[0].addEventListener("click", (e) => {
                 magicHandler.managed_players[i].enableShortcuts();
@@ -687,7 +690,12 @@ const MagicUI = (() => {
         document.getElementById("menu-loadfile").addEventListener("click", (e) => {
             Load.restoreFromFile();
             document.getElementById("out-wrap").addEventListener("char-loaded", (e) => {
-                e.detail.enableShortcuts();
+                const device_width = (window.innerWidth > 0) ? window.innerWidth : screen.width;
+                if (device_width > 436) {
+                    e.detail.enableShortcuts();
+                } else {
+                    e.detail.render.generate();
+                }
             });
         });
         document.getElementById("menu-rolldice").addEventListener("click", (e) => {
@@ -711,7 +719,9 @@ console.log("%cA character manager built for Dungeons & Dragons 5e", "font-size:
 
 // first time message for people new to the app.
 window.addEventListener("load", () => {
-    MagicUI.mainMenu();
+    MagicUI.resetDOM(() => {
+        MagicUI.mainMenu()
+    });
 
     // make the toolbar fixed when the footer is not visible. Mobile only.
     window.addEventListener("scroll", (e) => {

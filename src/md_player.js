@@ -53,15 +53,19 @@ const Load = (() => {
                 return false;
             }
             magicHandler.managed_players.push(this.deSer(characters[character]));
-            MagicUI.resetDOM(() => {
-                const device_width = (window.innerWidth > 0) ? window.innerWidth : screen.width;
-                if (device_width > 436) {
-                    magicHandler.last.enableShortcuts();
-                } else{
-                    magicHandler.last.render.generate();
-                }
-                console.log("You can now access this character by simply typing 'ply' into this console.");
+            const device_width = (window.innerWidth > 0) ? window.innerWidth : screen.width;
+            if (device_width > 436) {
+                magicHandler.last.enableShortcuts();
+            } else {
+                magicHandler.last.render.generate();
+            }
+            
+            // emit event for other parts of Magic Dice to use.
+            const loaded = new CustomEvent("char-loaded", {
+                detail: magicHandler.last
             });
+            document.getElementById("out-wrap").dispatchEvent(loaded);
+            console.log("You can now access this character by simply typing 'ply' into this console.");
         },
         ls: function () {
             console.log("---LIST OF CHARACTERS---");
@@ -392,7 +396,7 @@ const Player = (() => {
                             if (!data || !isFinite(data) || data < 0) {
                                 throw new Error("Invalid value entered!");
                             } else {
-                                this.parent.health.currentAC = data;
+                                this.parent.health.defaultAC = data;
                                 if (callback)
                                     callback();
                             }
@@ -782,8 +786,9 @@ const Player = (() => {
                     window.css.alignment = "left";
                     window.setSize(380);
                     window.setDescription("A list of the different things your character is proficent in, as well as any languages they know.");
+
                     window.addCustomHTML("Languages", `
-                        <div class="pill-list">
+                        <div class="pill-list langs">
                         ${(()=>{
                             let html = ``;
                             PlayerCard.master.parent.stats.misc_prof.lang.forEach(v=> html += `<span>${v}</span>`);
@@ -793,7 +798,7 @@ const Player = (() => {
                         </div>
                     `);
                     window.addCustomHTML("Weapons", `
-                        <div class="pill-list">
+                        <div class="pill-list wpns">
                         ${(()=>{
                             let html = "";
                             PlayerCard.master.parent.stats.misc_prof.wpn.forEach(v=> html += `<span>${v}</span>`);
@@ -803,7 +808,7 @@ const Player = (() => {
                         </div>
                     `);
                     window.addCustomHTML("Tools", `
-                        <div class="pill-list">
+                        <div class="pill-list tools">
                         ${(()=>{
                             let html = "";
                             PlayerCard.master.parent.stats.misc_prof.tool.forEach(v=> html += `<span>${v}</span>`);
@@ -813,7 +818,7 @@ const Player = (() => {
                         </div>
                     `);
                     window.addCustomHTML("Armor", `
-                        <div class="pill-list">
+                        <div class="pill-list armrs">
                         ${(()=>{
                             let html = "";
                             PlayerCard.master.parent.stats.misc_prof.armr.forEach(v=> html += `<span>${v}</span>`);
@@ -822,7 +827,76 @@ const Player = (() => {
                         })()}
                         </div>
                     `);
-                    window.render();
+                    window.render((dom) => {
+                        dom.querySelector(".langs").querySelector(".add-more").addEventListener("click", (e) => {
+                            richDice.genPrompt("Add a Language", "Type in the name of the language here.", {
+                                p_title: "Name",
+                                p_placeholder: "Common",
+                                x: e.pageX,
+                                y: e.pageY
+                            }, (data) => {
+                                if (!data || PlayerCard.master.parent.stats.misc_prof.lang.includes(data)) {
+                                    MagicUI.alert("The data you entered is invalid!", {
+                                        type: "error"
+                                    });
+                                    return false;
+                                }
+                                PlayerCard.master.parent.stats.misc_prof.lang.push(data);
+                                dom.querySelector(".langs").querySelector(".add-more").insertAdjacentHTML("beforebegin", `<span>${data}</span>`);
+                            });
+                        });
+                        dom.querySelector(".wpns").querySelector(".add-more").addEventListener("click", (e) => {
+                            richDice.genPrompt("Add a Weapon", "Type in the name of the weapon here.", {
+                                p_title: "Name",
+                                p_placeholder: "Simple Weapons",
+                                x: e.pageX,
+                                y: e.pageY
+                            }, (data) => {
+                                if (!data || PlayerCard.master.parent.stats.misc_prof.wpn.includes(data)) {
+                                    MagicUI.alert("The data you entered is invalid!", {
+                                        type: "error"
+                                    });
+                                    return false;
+                                }
+                                PlayerCard.master.parent.stats.misc_prof.wpn.push(data);
+                                dom.querySelector(".wpns").querySelector(".add-more").insertAdjacentHTML("beforebegin", `<span>${data}</span>`);
+                            });
+                        });
+                        dom.querySelector(".tools").querySelector(".add-more").addEventListener("click", (e) => {
+                            richDice.genPrompt("Add a Tool", "Type in the name of the tool here.", {
+                                p_title: "Name",
+                                p_placeholder: "Thieves Tools",
+                                x: e.pageX,
+                                y: e.pageY
+                            }, (data) => {
+                                if (!data || PlayerCard.master.parent.stats.misc_prof.tool.includes(data)) {
+                                    MagicUI.alert("The data you entered is invalid!", {
+                                        type: "error"
+                                    });
+                                    return false;
+                                }
+                                PlayerCard.master.parent.stats.misc_prof.tool.push(data);
+                                dom.querySelector(".tools").querySelector(".add-more").insertAdjacentHTML("beforebegin", `<span>${data}</span>`);
+                            });
+                        });
+                        dom.querySelector(".armrs").querySelector(".add-more").addEventListener("click", (e) => {
+                            richDice.genPrompt("Add an Armor", "Type in the name of the armor here.", {
+                                p_title: "Name",
+                                p_placeholder: "Light Armor",
+                                x: e.pageX,
+                                y: e.pageY
+                            }, (data) => {
+                                if (!data || PlayerCard.master.parent.stats.misc_prof.armr.includes(data)) {
+                                    MagicUI.alert("The data you entered is invalid!", {
+                                        type: "error"
+                                    });
+                                    return false;
+                                }
+                                PlayerCard.master.parent.stats.misc_prof.armr.push(data);
+                                dom.querySelector(".armrs").querySelector(".add-more").insertAdjacentHTML("beforebegin", `<span>${data}</span>`);
+                            });
+                        });
+                    });
                 });
                 document.getElementsByClassName(`${PlayerCard.master.ID}`)[0].getElementsByClassName("ed_health_hitdice")[0].addEventListener("click", (e) => {
                     if (PlayerCard.master.editMode) {

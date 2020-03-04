@@ -59,7 +59,7 @@ const Load = (() => {
             } else {
                 magicHandler.last.render.generate();
             }
-            
+
             // emit event for other parts of Magic Dice to use.
             const loaded = new CustomEvent("char-loaded", {
                 detail: magicHandler.last
@@ -673,7 +673,7 @@ const Player = (() => {
                         </div>
                         <div class="row">
                             <div class="playerTools">
-                                <i class="fa fa-bed" aria-hidden="true"></i><i class="fa fa-medkit editable ed_health_hitdice" aria-hidden="true"></i></i><i class="fa fa-magic" aria-hidden="true"></i><i class="fa fa-address-book" aria-hidden="true"></i>
+                                <i class="fa fa-bed" aria-hidden="true"></i><i class="fa fa-medkit editable ed_health_hitdice" aria-hidden="true"></i></i><i class="fa fa-magic" aria-hidden="true"></i><i class="fa fa-address-book" aria-hidden="true"></i><i class="fa fa-qrcode" aria-hidden="true"></i>
                             </div>
                         </div>
                         <p class="editable ed_health_currentAC"><strong>AC: </strong>${PlayerCard.master.parent.health.currentAC}</p>
@@ -754,6 +754,47 @@ const Player = (() => {
                             }
                         });
                     });
+                });
+                document.getElementsByClassName(`${PlayerCard.master.ID}`)[0].querySelector(".fa-qrcode").addEventListener("click", (e) => {
+                    try {
+                        const data = new Save(PlayerCard.master.parent); // convert to JSON
+                        MagicUI.alert("Connecting to server...", {
+                            type: "info"
+                        });
+                        fetch("https://nikgo.me/weave/upload", {
+                            method: "POST",
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify(data)
+                        }).then(res => {
+                            if (!res.ok) {
+                                throw new Error(res.statusText);
+                            }
+                            MagicUI.alert("Upload Success!");
+                            var id = res.json(); // get id
+                            id.then((data) => {
+                                const window = new richDice(e.pageX, e.pageY);
+                                window.setTitle("Access Anywhere");
+                                window.setDescription(`Use either the QRCode or link to access this character on any device within the next 15 minutes.`);
+                                window.setBackground("./src/img/monsters.jpg");
+                                window.setSize(300);
+                                //window.css.alignment = "left";
+                                window.addField("Link", `<a href='${data.value}' target='_blank'>${data.value}</a>`);
+                                window.addField("QRCode", "<div class='empty'></div>");
+
+                                window.render((dom)=>{
+                                    new QRCode(dom.querySelector(".empty"), data.value);
+
+                                });
+                            });
+                        });
+                    } catch (err) {
+                        MagicUI.alert(`Error: ${err}`, {
+                            type: "error"
+                        });
+                        return false;
+                    }
                 });
                 document.getElementsByClassName(`${PlayerCard.master.ID}`)[0].querySelector(".fa-bed").addEventListener("click", (e) => {
                     PlayerCard.master.parent.longrest();

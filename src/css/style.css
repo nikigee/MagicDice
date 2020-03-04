@@ -630,6 +630,17 @@ div::-webkit-scrollbar-thumb {
     cursor: pointer;
 }
 
+.richDice a{
+    color: #293b70;
+    text-decoration: none;
+    transition: 0.3s;
+    cursor: pointer;
+    font-weight: bold;
+}
+.richDice a:hover{
+    text-decoration: underline;
+}
+
 .richDice button:hover {
     background: #1d1d1d;
     color: white;
@@ -1272,6 +1283,10 @@ input:checked+.slider:before {
 .add-more:hover{
     background: #0b0b13;
     color: #FFC107;
+}
+
+.empty img{
+    margin: auto;
 }
 
 /*

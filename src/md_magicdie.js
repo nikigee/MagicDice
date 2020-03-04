@@ -593,7 +593,7 @@ const MagicUI = (() => {
         document.body.innerHTML = `<div id="out-wrap" tabindex="0"><div id="banner"><img src="src/img/logo.png" alt="Magic Dice" onclick="MagicUI.mainMenu()"><h2>A character manager built for Dungeons & Dragons 5e</h2></div><div id="main"></div></div><div id="notif-section"></div><div id="toolbar-section" class="toolbar-fixed"></div><footer><h3>&#169;Magic Dice 2020</h3><span>A tool created by <a href="https://nikgo.me" target="_blank">Nikita Golev</a></span><span>Contact me by <a href="mailto:ngolev.bus@gmail.com">Email</a></span><span>Github <a href="https://github.com/AdmiralSoviet/MagicDice" target="_blank">Source Code</a></span></footer>`
         UI.populateToolbar();
 
-        document.getElementById("out-wrap").addEventListener("char-loaded", (e)=>UI.populateToolbar());
+        document.getElementById("out-wrap").addEventListener("char-loaded", (e) => UI.populateToolbar());
         if (callback)
             callback();
     };
@@ -717,11 +717,52 @@ const MagicUI = (() => {
 console.log("%cMagic Dice", "font-size: 30px; color: #c51b1b; text-shadow: 1px 1px black; font-family: Georgia, serif;");
 console.log("%cA character manager built for Dungeons & Dragons 5e", "font-size: 14px; font-style: italic; font-weight: bold; font-family: 'Trebuchet MS', Helvetica, sans-serif;padding: 5px;");
 
+function getParameterByName(name, url) {
+    if (!url) url = window.location.href;
+    name = name.replace(/[\[\]]/g, '\\$&');
+    var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
+        results = regex.exec(url);
+    if (!results) return null;
+    if (!results[2]) return '';
+    return decodeURIComponent(results[2].replace(/\+/g, ' '));
+}
+
 // first time message for people new to the app.
 window.addEventListener("load", () => {
     MagicUI.resetDOM(() => {
         MagicUI.mainMenu()
     });
+
+    let claim = getParameterByName("claim");
+    if (claim) {
+        fetch(`https://nikgo.me/weave/claim/?id=${claim}`)
+            .then((response) => {
+                return response.json();
+            })
+            .then((data) => {
+                try {
+                    if (typeof (Storage) !== "undefined") {
+                        let id = data.name;
+                        // if user doesn't specify id or uses "charList"
+                        if (!id || id == "charList") {
+                            id = this.name;
+                        }
+                        if (localStorage["charList"])
+                            var charArray = JSON.parse(localStorage["charList"]);
+                        else
+                            var charArray = {};
+                        // the actual saving
+                        charArray[id] = data;
+                        localStorage["charList"] = JSON.stringify(charArray);
+                        Load.restore(id);
+                    }
+                } catch (err) {
+                    MagicUI.alert(`Error: ${err}`, {
+                        type: "error"
+                    });
+                }
+            });
+    }
 
     // make the toolbar fixed when the footer is not visible. Mobile only.
     window.addEventListener("scroll", (e) => {

@@ -737,17 +737,23 @@ window.addEventListener("load", () => {
     if (claim) {
         fetch(`https://nikgo.me/weave/claim/?id=${claim}`)
             .then((response) => {
+                if (!response.ok)
+                    throw MagicUI.alert(`Link is either dead or expired!`, {
+                        type: "error"
+                    });
                 return response.json();
             }, (err) => MagicUI.alert(`Error: ${err}`, {
                 type: "error"
             }))
             .then((data) => {
                 try {
-                    if(!data){
+                    if (!data) {
                         throw new Error("Data is empty!");
                     }
-                    const obj = JSON.parse(data);
+                    const obj = data;
                     Load.restoreFromObj(obj);
+                    if (window.document.domain != "")
+                        window.history.pushState('index', 'Title', '/'); // get rid of the getter paramater for proper refreshing/sharing
                 } catch (err) {
                     MagicUI.alert(`Error: ${err}`, {
                         type: "error"

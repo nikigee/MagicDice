@@ -738,24 +738,16 @@ window.addEventListener("load", () => {
         fetch(`https://nikgo.me/weave/claim/?id=${claim}`)
             .then((response) => {
                 return response.json();
-            })
+            }, (err) => MagicUI.alert(`Error: ${err}`, {
+                type: "error"
+            }))
             .then((data) => {
                 try {
-                    if (typeof (Storage) !== "undefined") {
-                        let id = data.name;
-                        // if user doesn't specify id or uses "charList"
-                        if (!id || id == "charList") {
-                            id = this.name;
-                        }
-                        if (localStorage["charList"])
-                            var charArray = JSON.parse(localStorage["charList"]);
-                        else
-                            var charArray = {};
-                        // the actual saving
-                        charArray[id] = data;
-                        localStorage["charList"] = JSON.stringify(charArray);
-                        Load.restore(id);
+                    if(!data){
+                        throw new Error("Data is empty!");
                     }
+                    const obj = JSON.parse(data);
+                    Load.restoreFromObj(obj);
                 } catch (err) {
                     MagicUI.alert(`Error: ${err}`, {
                         type: "error"

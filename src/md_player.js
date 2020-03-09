@@ -793,12 +793,12 @@ const Player = (() => {
                         var id = res.json(); // get id
                         id.then((data) => {
                             const window = new richDice(e.pageX, e.pageY);
-                            window.setTitle("Access Anywhere");
+                            window.setTitle("Plane Shift");
                             window.setDescription(`Use either the QRCode or link to access this character on any device within the next 15 minutes.`);
-                            window.setBackground("./src/img/monsters.jpg");
+                            window.setBackground("./src/img/e45f4a3274db844be192cd1ef0105a0c.jpg");
                             window.setSize(300);
                             //window.css.alignment = "left";
-                            window.addField("Link", `<a href='${data.value}' target='_blank'>${data.value}</a>`);
+                            window.addField("Link", `<a href='${data.value}' target='_blank'>${data.value.replace("https://magic.nikgo.me", "")}</a>`);
                             window.addField("QRCode", "<div class='empty'></div>");
 
                             window.render((dom) => {

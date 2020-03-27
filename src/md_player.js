@@ -955,6 +955,7 @@ const Player = (() => {
             });
             console.log("Shortcuts enabled!");
             MagicUI.alert("Shortcuts enabled!");
+            document.body.style.removeProperty("background");
             // print commands
             const window = new richDice((document.body.clientWidth / 2) - 170, 150);
             window.setSize();

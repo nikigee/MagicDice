@@ -643,15 +643,42 @@ const MagicUI = (() => {
             });
         }
     };
+    UI.detectMob = () => {
+        // stub
+        return window.innerWidth <= 414;
+    }
+    const x = new MutationObserver(function (e) {
+        // when main menu is removed, do this
+        if (e[0].removedNodes) {
+            if (!document.querySelector("#main-wrap")) {
+                document.body.style.removeProperty("background");
+            }
+        };
+    });
+
     UI.mainMenu = () => {
-        document.getElementById("main").innerHTML = `<div id="main-menu">
+        document.body.style.removeProperty("background");
+        document.getElementById("main").innerHTML = `<div id="main-wrap"><img src="./src/img/MagicLogo.png" id="MagicDiceLogo" alt="Magic Dice Logo"><div id="main-menu">
             <span class="menu-option" id="menu-rolldice">Roll Dice</span>
-            <span class="menu-option" id="menu-load">Load</span>
-            <span class="menu-option" id="menu-loadfile">External Load</span>
+            <span class="menu-option" id="menu-load">Load Character</span>
+            <span class="menu-option" id="menu-loadfile">Upload File</span>
             <span class="menu-option" onclick="DM.battleBoard.create()">Battle Tracker</span>
             <span class="menu-option">Settings</span>
-            <span class="menu-option" id="menu-help">Help</span></div>`;
+            <span class="menu-option" id="menu-help">Help</span>
+            <span class="menu-option" id="menu-credits">Credits</span></div></div>`;
 
+        if (!UI.detectMob()) {
+            document.querySelector("#main-wrap").insertAdjacentHTML("beforeend", `<div class="fullscreen-bg" style="visibility: visible;"><video autoplay muted loop id="magic-BG"><source src="./src/img/bg/bg.mp4" type="video/mp4"></video></div>`)
+            document.querySelector("#magic-BG").addEventListener("canplaythrough", () => {
+                console.log("[Video] Start playing...");
+            });
+            document.querySelector("#magic-BG").addEventListener("play", () => {
+                document.body.style.background = "none";
+            })
+            x.observe(document.getElementById("main"), {
+                childList: true
+            });
+        }
         document.getElementById("menu-load").addEventListener("click", () => {
             const characters = JSON.parse(localStorage.getItem("charList"));
             if (!characters)
@@ -675,6 +702,27 @@ const MagicUI = (() => {
                     Load.restore(id);
                 });
             });
+        });
+        document.querySelector("#menu-credits").addEventListener("click", () => {
+            document.getElementById("main").innerHTML = "";
+            const window = new richDice((document.body.clientWidth / 2) - 300, 120);
+            window.setSize(600, 700);
+            window.setImage("./src/img/banner.png");
+            window.setTitle("Credits");
+            window.setDescription("All the wonderful people that made this application possible.");
+
+            window.addField("Created By:", "Nikita Golev");
+            window.addField("Art:", `<span>Alex Marshall - Logo Design</span>
+            <span>Liam H. Ditty - Background Animation</span>
+            <span>Adreas Rocha - <a href='https://www.deviantart.com/andreasrocha/art/Safe-Haven-727116218' target='_blank'>Background Art</a></span>
+            <span>TJ Foo - <a href='https://www.artstation.com/artwork/nEVwO' target='_blank'>Grand Library</a></span>
+            <span>Brett Johnson - <a href='https://www.unrealengine.com/marketplace/en-US/product/medieval-tavern' target='_blank'>Medieval Tavern</a></span>
+            <span>Monica Antonie Meineche - <a href='https://monsiearts.artstation.com/projects/w8EoJ6' target='_blank'>Don't look down</a></span>
+            <span>sinakasra - <a href='https://www.deviantart.com/sinakasra/art/Monster-Out-of-the-Woods-648678868' target='_blank'>Monster Out of the Woods</a></span>`);
+            window.addField("Information & Data:", `<span>Wizards of The Coast - Spells</span>
+            <span>Wizards of The Coast - Monsters</span>`);
+
+            window.render();
         });
 
         document.getElementById("menu-help").addEventListener("click", (e) => {

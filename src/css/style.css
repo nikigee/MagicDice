@@ -1549,6 +1549,17 @@ input:checked+.slider:before {
     #magic-BG {
         display: none;
     }
+
+    body {
+        background: url('../img/bg/2.jpg');
+        background-size: auto;
+        background-position-y: bottom;
+        background-clip: content-box;
+        background-position-x: center;
+        background-position-y: top;
+        background-repeat: no-repeat;
+        background-color: #0f1827;
+    }
 }
 
 /* Player render changes */

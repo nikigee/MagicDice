@@ -643,21 +643,27 @@ const MagicUI = (() => {
             });
         }
     };
-    UI.detectMob = () => {
+    UI.detectMob = (tablet = false) => {
         // stub
-        return window.innerWidth <= 414;
+        if (tablet)
+            return window.innerWidth <= 797;
+        else
+            return window.innerWidth <= 414;
     }
     const x = new MutationObserver(function (e) {
         // when main menu is removed, do this
         if (e[0].removedNodes) {
-            if (!document.querySelector("#main-wrap")) {
+            // we want to delete the video when the user gets off the main menu
+            if (!document.querySelector("#main-wrap") && !document.querySelector("#load-menu") && !document.querySelector(".upload-btn-wrapper")) {
                 document.body.style.removeProperty("background");
+                document.querySelector(".fullscreen-bg").remove(); // delete video
             }
         };
     });
 
     UI.mainMenu = () => {
-        document.body.style.removeProperty("background");
+        if (!document.querySelector("#magic-BG"))
+            document.body.style.removeProperty("background");
         document.getElementById("main").innerHTML = `<div id="main-wrap"><img src="./src/img/MagicLogo.png" id="MagicDiceLogo" alt="Magic Dice Logo"><div id="main-menu">
             <span class="menu-option" id="menu-rolldice">Roll Dice</span>
             <span class="menu-option" id="menu-load">Load Character</span>
@@ -667,17 +673,19 @@ const MagicUI = (() => {
             <span class="menu-option" id="menu-help">Help</span>
             <span class="menu-option" id="menu-credits">Credits</span></div></div>`;
 
-        if (!UI.detectMob()) {
-            document.querySelector("#main-wrap").insertAdjacentHTML("beforeend", `<div class="fullscreen-bg" style="visibility: visible;"><video autoplay muted loop id="magic-BG"><source src="./src/img/bg/bg.mp4" type="video/mp4"></video></div>`)
-            document.querySelector("#magic-BG").addEventListener("canplaythrough", () => {
-                console.log("[Video] Start playing...");
-            });
-            document.querySelector("#magic-BG").addEventListener("play", () => {
-                document.body.style.background = "none";
-            })
-            x.observe(document.getElementById("main"), {
-                childList: true
-            });
+        if (!UI.detectMob(true)) {
+            if (!document.querySelector("#magic-BG")) {
+                document.querySelector("#out-wrap").insertAdjacentHTML("beforeend", `<div class="fullscreen-bg" style="visibility: visible;"><video autoplay muted loop id="magic-BG"><source src="./src/img/bg/bg.mp4" type="video/mp4"></video></div>`)
+                document.querySelector("#magic-BG").addEventListener("canplaythrough", () => {
+                    console.log("[Video] Start playing...");
+                });
+                document.querySelector("#magic-BG").addEventListener("play", () => {
+                    document.body.style.background = "none";
+                })
+                x.observe(document.getElementById("main"), {
+                    childList: true
+                });
+            }
         }
         document.getElementById("menu-load").addEventListener("click", () => {
             const characters = JSON.parse(localStorage.getItem("charList"));
@@ -704,7 +712,7 @@ const MagicUI = (() => {
             });
         });
         document.querySelector("#menu-credits").addEventListener("click", () => {
-            document.getElementById("main").innerHTML = "";
+            //document.getElementById("main").innerHTML = "";
             const window = new richDice((document.body.clientWidth / 2) - 300, 120);
             window.setSize(600, 700);
             window.setImage("./src/img/banner.png");
@@ -726,7 +734,7 @@ const MagicUI = (() => {
         });
 
         document.getElementById("menu-help").addEventListener("click", (e) => {
-            document.getElementById("main").innerHTML = "";
+            //document.getElementById("main").innerHTML = "";
             const window = new richDice((document.body.clientWidth / 2) - 260, 120);
             window.setTitle("Welcome to Magic Dice!");
             window.setSize(520, 700);

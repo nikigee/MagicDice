@@ -451,7 +451,7 @@ const Player = (() => {
             const {
                 parent = undefined,
                     hitdie = parent.lvl + parent.player_class.hitdie,
-                    maxHP = die.x(hitdie).diceObj.face + die.x(`${hitdie}+${parent.stats.ability_mod.cnst}`).addDice(-1).total,
+                    maxHP = new Dice(hitdie).diceObj.face + ((new Dice(hitdie).diceObj.iterator <= 1) ? 0 : new Dice(`${hitdie}+${parent.stats.ability_mod.cnst}`).addDice(-1).total),
                     currentHP = maxHP,
                     defaultAC = 10 + parent.stats.ability_mod.dex,
                     currentAC = defaultAC

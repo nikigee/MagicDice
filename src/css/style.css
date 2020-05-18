@@ -127,6 +127,97 @@ h3 {
     z-index: 90000;
 }
 
+#create-menu {
+    /*background: rgba(0, 0, 0, 0.5); */
+}
+
+.tint {
+    background: rgba(0, 0, 0, 0.35);
+}
+
+#create-wrap {
+    /* background: #181821; */
+    margin-left: 0;
+    margin-right: 0;
+    text-align: left;
+    margin: auto;
+    padding: 20px;
+    color: white;
+    /* max-width: 800px; */
+    /* box-shadow: 0px 0px 3px black; */
+    padding-left: 15%;
+    padding-right: 15%;
+}
+
+#create-wrap a:hover {
+    color: #a51010;
+}
+
+#create-menu p {
+    margin: auto;
+    color: #c1cace;
+    font-family: "Timeless", sans-serif;
+    font-size: 16px;
+    font-style: italic;
+    margin-bottom: 15px;
+}
+
+#mSubmit {
+    background: white;
+    padding: 5px;
+    border-radius: 3px;
+    border: none;
+    font-family: "Alegreya", sans-serif;
+    font-weight: bold;
+    font-size: 14px;
+    width: 100px;
+    margin-top: 10px;
+}
+
+#create-menu label {
+    color: #c1cace;
+    font-family: "Timeless", sans-serif;
+    font-size: 14px;
+    margin-bottom: 5px;
+}
+
+#create-menu input,
+#create-menu select {
+    border: none;
+    width: 100%;
+    padding-bottom: 0px;
+    max-width: 400px;
+    font-size: 16px;
+    font-family: inherit;
+    background: none;
+    color: white;
+    border-bottom: 3px solid #313131;
+    transition: 0.3s;
+    margin-bottom: 10px;
+}
+
+#create-menu input:focus,
+#create-menu select:focus {
+    outline: none;
+    border-bottom: 3px solid #a51010;
+}
+
+#create-menu form {
+    width: calc(100% - 350px);
+    display: inline-block;
+    vertical-align: top;
+}
+
+#mImageReal {
+    max-width: 350px;
+}
+
+#create-menu h2 {
+    font-size: 35px;
+    font-weight: bold;
+    font-family: "Alegreya", sans-serif;
+}
+
 #banner {
     padding: 10px;
     color: white;
@@ -137,7 +228,7 @@ h3 {
 }
 
 #banner img {
-    height: 50px;
+    height: 45px;
     cursor: pointer;
 }
 
@@ -1228,7 +1319,7 @@ footer a:hover {
 
 #alertPopUp {
     position: fixed;
-    top: 113px;
+    top: 75px;
     left: 0;
     right: 0;
     margin: auto;
@@ -1589,6 +1680,14 @@ input:checked+.slider:before {
         /* fix background images */
     }
 
+    #mImageReal {
+        display: none;
+    }
+
+    #create-menu form {
+        width: 100%;
+    }
+
     .playerBox img {
         position: absolute;
         z-index: -300;
@@ -1632,6 +1731,11 @@ input:checked+.slider:before {
     .magic-notification {
         font-size: 16px;
         font-family: "Timeless", sans-serif;
+    }
+
+    #create-wrap{
+        padding-left: 20px;
+        padding-right: 20px;
     }
 
     .magic-notification i {

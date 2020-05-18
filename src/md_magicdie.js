@@ -246,6 +246,17 @@ const magicHandler = (() => {
             this.last.render.generate();
             MagicUI.populateToolbar();
         }
+        loadPlayer(player) {
+            try {
+                this.managed_players.push(player);
+                this.last.render.generate();
+                MagicUI.populateToolbar();
+            } catch (err) {
+                MagicUI.alert(err, {
+                    type: "error"
+                });
+            }
+        }
     }
     return new magicHandler();
 })();
@@ -654,18 +665,99 @@ const MagicUI = (() => {
         // when main menu is removed, do this
         if (e[0].removedNodes) {
             // we want to delete the video when the user gets off the main menu
-            if (!document.querySelector("#main-wrap") && !document.querySelector("#load-menu") && !document.querySelector(".upload-btn-wrapper")) {
+            if (!document.querySelector("#main-wrap") && !document.querySelector("#load-menu") && !document.querySelector("#create-menu") && !document.querySelector(".upload-btn-wrapper")) {
                 document.body.style.removeProperty("background");
                 document.querySelector(".fullscreen-bg").remove(); // delete video
+            }
+            if (!document.querySelector("#create-menu")) {
+                document.getElementById("out-wrap").style.removeProperty("background");
             }
         };
     });
 
+    UI.createCharacter = () => {
+        let playerList = "";
+        Library.player_classes.forEach((v, k) => {
+            playerList += `<option value="${k}">${v.name}</option>`;
+        });
+        document.getElementById("out-wrap").style.background = "rgba(0, 0, 0, 0.35)";
+        document.getElementById("main").innerHTML = `
+            <div id="create-menu"><div id="create-wrap"><h2>Create a Character</h2>
+            <p>This page will take you through the basics needed to generate a character, edit any stats missed by this page using the Edit Mode and make sure to save your character. Magic Dice assumes you have access to the PHB and any supplemental materials needed to make your character. If you need help with making a character, I recommend <a href="https://www.nerdolopedia.com/articles/2018/4/12/a-step-by-step-guide-to-dd-5e-character-creation" target="_blank">this guide</a>.</p>
+            <form><label for="mName">Character Name</label><br>
+            <input type="text" id="mName"><br>
+            <label for="mLevel">Level</label><br>
+            <input type="text" id="mLevel"><br>
+            <label for="mRace">Race</label><br>
+            <input type="text" id="mRace"><br>
+            <label for="mBackground">Background</label><br>
+            <input type="text" id="mBackground"><br>
+            <label for="mClass">Class</label><br>
+            <input type="text" id="mClass" list="player_classes">
+            <datalist id="player_classes">${playerList}</datalist><br>
+            <label for="mImage">Image</label><br>
+            <input type="text" id="mImage" placeholder="url"><br><button id="mSubmit">Create</button></form></div></div>
+        `;
+        const pattern = new RegExp('^(https?:\\/\\/)?' + // protocol
+            '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' + // domain name
+            '((\\d{1,3}\\.){3}\\d{1,3}))' + // OR ip (v4) address
+            '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' + // port and path
+            '(\\?[;&a-z\\d%_.~+=-]*)?' + // query string
+            '(\\#[-a-z\\d_]*)?$', 'i');
+        // add image in if they specify image
+        document.getElementById("mImage").addEventListener("focusout", (e) => {
+            // make sure its a valid url
+            if (pattern.test(document.getElementById("mImage").value)) {
+                if (document.getElementById("mImageReal"))
+                    document.getElementById("mImageReal").remove(); // delete old
+                document.getElementById("create-wrap").insertAdjacentHTML("beforeend", `<img id="mImageReal" src="${document.getElementById("mImage").value}" alt="${document.getElementById("mName").innerText}">`);
+            };
+        });
+        //actual creating the character
+        document.getElementById("mSubmit").addEventListener("click", (e) => {
+            try {
+                e.preventDefault(); // stop page being reset
+
+                // format data into something the playerClass understands
+                // we don't need to do any form validation because the playerClass takes care of that for us
+                const data = {
+                    name: document.getElementById("mName").value,
+                    classData: Library.player_classes.get(document.getElementById("mClass").value),
+                    lvl: document.getElementById("mLevel").value,
+                    renderData: {
+                        avatar: document.getElementById("mImage").value
+                    }
+                }
+                // format notes
+                const notes = `====================
+    ${data.name}
+====================
+Background: ${document.getElementById("mBackground").value}
+Race: ${document.getElementById("mRace").value}
+
+~Class/Race Features Go Here~
+`;
+                data.statsData = {
+                    misc_notes: notes
+                }; // add notes
+                magicHandler.loadPlayer(new Player(data)); // load player into the handler
+            } catch (err) {
+                MagicUI.alert(err, {
+                    type: "error"
+                }); // print error
+            }
+        });
+    };
+
+    /* 
+    The Main Menu and its options go here
+    */
     UI.mainMenu = () => {
         if (!document.querySelector("#magic-BG"))
             document.body.style.removeProperty("background");
         document.getElementById("main").innerHTML = `<div id="main-wrap"><img src="./src/img/MagicLogo.png" id="MagicDiceLogo" alt="Magic Dice Logo"><div id="main-menu">
             <span class="menu-option" id="menu-rolldice">Roll Dice</span>
+            <span class="menu-option" onclick="MagicUI.createCharacter()">Create Character</span>
             <span class="menu-option" id="menu-load">Load Character</span>
             <span class="menu-option" id="menu-loadfile">Upload File</span>
             <span class="menu-option" onclick="DM.battleBoard.create()">Battle Tracker</span>

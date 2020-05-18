@@ -4,11 +4,11 @@ This is a personal project of mine I embarked on to create an extensive and flex
 ## Philosophy
 A lot of Character Managers I have seen for Dungeons and Dragons seem to focus on codifying the entire dnd experience, or at least going beyond a character sheet in the attempts to make the PHB redundant. I like the idea, but it seems all too often this turns out to be more of a hindrance than a feature.
 
-For example, if my character's strength score like this:
+For example, if my character's strength score is calculated like this:
 ```
 15 (base) + 1 (racial) + 2 (ABS) + 1 (Feat) = 19
 ```
-As a player, I don't want to have to create a custom race, manually do the ABS and create a custom feat just to reach 19, I'd rather just enter 19 as my strength score.
+In order to get that final score I don't want to have to create a custom race, manually do the ABS and create a custom feat just to reach 19, I'd rather just enter 19 as my strength score.
 
 Sure, this way I could screw up the calculation and end up running an illegal character and if the tool has a large database to work with, it could be robust enough to eliminate the need for a PHB altogether but more often than not these tools are limited to the SRD because of legal issues anyway.
 

@@ -317,27 +317,37 @@ const Player = (() => {
             }
         }
         prepare_remove(spell) {
-            if (!spell && this.preparedSpells.indexOf(spell.name) == -1) {
-                console.log("You didn't specify a valid spell");
-                return;
+            try {
+                if (!spell && this.preparedSpells.indexOf(spell.name) == -1) {
+                    throw new Error("You didn't specify a valid spell");
+                }
+                const index = this.preparedSpells.indexOf(spell.name);
+                return this.preparedSpells.splice(index, 1);
+            } catch (err) {
+                MagicUI.alert(err, {
+                    type: "error"
+                }); // log error
             }
-            const index = this.preparedSpells.indexOf(spell.name);
-            return this.preparedSpells.splice(index, 1);
         }
         prepare(spell) {
-            if (!spell) {
-                console.log("You didn't specify a valid spell");
-                return;
-            } else if (this.preparedSpells.indexOf(spell.name) > -1) {
-                console.log("You already prepared this spell!");
-                return;
-            }
-            const maxPrepared = this.Mod + this.parent.lvl;
-            if (maxPrepared > this.preparedSpells.length) {
-                this.preparedSpells.push(spell.name);
-                console.log("'" + spell.name + "' has been prepared successfuly! (" + this.preparedSpells.length + "/" + maxPrepared + ")");
-            } else {
-                console.log("You can't prepare any more spells!");
+            try {
+                if (!spell) {
+                    throw new Error("You didn't specify a valid spell");
+                } else if (this.preparedSpells.indexOf(spell.name) > -1) {
+                    throw new Error("You already prepared this spell!");
+                }
+                const maxPrepared = this.Mod + this.parent.lvl;
+                if (maxPrepared > this.preparedSpells.length) {
+                    this.preparedSpells.push(spell.name);
+                    console.log(`'${spell.name}' has been prepared successfuly! (${this.preparedSpells.length} / ${maxPrepared})`);
+                    return true;
+                } else {
+                    throw new Error("You can't prepare any more spells!");
+                }
+            } catch (err) {
+                MagicUI.alert(err, {
+                    type: "error"
+                }); // log error
             }
         }
         list(args = {}) {

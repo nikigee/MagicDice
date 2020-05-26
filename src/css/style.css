@@ -616,6 +616,18 @@ h3 {
     padding: 6px;
 }
 
+#spell-toolbar .fa {
+    color: white;
+    vertical-align: middle;
+    font-size: 17px;
+    transition: 0.3s;
+    cursor: pointer;
+}
+
+#spell-toolbar .fa:hover {
+    color: #FFC107;
+}
+
 #spell-toolbar label {
     color: white;
     vertical-align: middle;
@@ -714,6 +726,18 @@ div::-webkit-scrollbar-thumb {
     background: rgba(255, 255, 255, 0.85);
     background-size: cover;
     overflow: hidden;
+}
+
+.richDice .standardText{
+    border-radius: 2px;
+    padding: 5px;
+    border: solid 1px grey;
+    width: calc(100% - 20px);
+    max-width: 350px;
+    background: white;
+    color: black;
+    margin-left: 10px;
+    margin-right: 10px;
 }
 
 .richDice button {
@@ -1333,6 +1357,28 @@ footer a:hover {
     font-size: 21px;
 }
 
+#spellButtons {
+    margin-left: 5px;
+    margin-top: 3%;
+}
+
+.spellButton {
+    font-family: inherit;
+    margin-left: 2.5px;
+    margin-right: 2.5px;
+    background: white;
+    border: 1px solid black;
+    font-weight: bold;
+    border-radius: 5px;
+    padding: 4px;
+    min-width: 90px;
+    font-size: 12px;
+}
+
+.spellButton i {
+    font-size: 17px;
+}
+
 /* 
 ==================
     Slider CSS
@@ -1733,7 +1779,7 @@ input:checked+.slider:before {
         font-family: "Timeless", sans-serif;
     }
 
-    #create-wrap{
+    #create-wrap {
         padding-left: 20px;
         padding-right: 20px;
     }

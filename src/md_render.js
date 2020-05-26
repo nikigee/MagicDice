@@ -118,7 +118,8 @@ const Render = (() => {
                         if (!data || !isFinite(data) || data < 0) {
                             throw new Error("Invalid value entered!");
                         } else {
-                            this.parent.health.defaultAC = data;
+                            this.parent.health.defaultAC = data; // set both    
+                            this.parent.health.currentAC = data; // set both
                             if (callback)
                                 callback();
                         }
@@ -792,7 +793,7 @@ const Render = (() => {
             main.innerHTML = `
                 <div class="spellbook">
                     <div class="spell-list" style="display: ${device_width <= 436 ? "none" : "inline-block"}">
-                        <div id="spell-toolbar"><input type="text" placeholder="Fireball" id="spell-search">        <input type="checkbox" id="library-toggle"><label for="library-toggle">Search Library</label></div>
+                        <div id="spell-toolbar"><i class="fa fa-plus" aria-hidden="true"></i> <input type="text" placeholder="Fireball" id="spell-search">        <input type="checkbox" id="library-toggle"><label for="library-toggle">Search Library</label></div>
                         <div id="spells">
                         </div>
                     </div>
@@ -817,6 +818,49 @@ const Render = (() => {
                 opts.name = document.getElementById("spell-search").value;
                 opts.library = document.getElementById("library-toggle").checked;
                 spellbook.populate(opts); // populate with options
+            });
+            document.getElementById("spell-toolbar").querySelector(".fa-plus").addEventListener("click", (e) => {
+                const form = new richDice(e.clientX - 150, e.clientY);
+                form.setTitle("Import Custom Spell");
+                form.setDescription("Fill out this form to add a spell to your spellbook.");
+                form.setBackground("./src/img/tj-foo-grand-library.jpg");
+                form.css.alignment = "left"; // set text align left
+                form.addPrompt("Name", "Fireball");
+                form.addPrompt("Level", "3rd");
+                form.addPrompt("School", "Evocation");
+                form.addPrompt("Casting Time", "1 Action");
+                form.addPrompt("Range", "150 ft (20ft)");
+                form.addPrompt("Components", "V, S, M");
+                form.addPrompt("Duration", "Instantaneous");
+                form.addCustomHTML("Description", `<textarea placeholder="Description of spell goes here..." class="${form.ID}Description standardText"></textarea>`);
+                form.render((dom) => {
+                    const inputs = dom.getElementsByTagName("input");
+                    for (let i = 0; i < inputs.length; i++) {
+                        inputs[i].addEventListener("keydown", (e) => {
+                            if (e.key == "Enter") {
+                                const magic = spellbook.master.parent.magic;
+                                const newSpell = new Spell({
+                                    name: dom.getElementsByClassName(`${form.ID}Name`)[0].value,
+                                    level: dom.getElementsByClassName(`${form.ID}Level`)[0].value,
+                                    school: dom.getElementsByClassName(`${form.ID}School`)[0].value,
+                                    ctime: dom.getElementsByClassName(`${form.ID}Casting Time`)[0].value,
+                                    range: dom.getElementsByClassName(`${form.ID}Range`)[0].value,
+                                    components: dom.getElementsByClassName(`${form.ID}Components`)[0].value,
+                                    duration: dom.getElementsByClassName(`${form.ID}Duration`)[0].value,
+                                    description: dom.getElementsByClassName(`${form.ID}Description`)[0].value
+                                }); // create new spell from options
+                                magic.add(newSpell); // add it into spellbook
+
+
+                                const opts = {};
+                                opts.name = document.getElementById("spell-search").value;
+                                opts.library = document.getElementById("library-toggle").checked;
+                                spellbook.populate(opts); // populate spells
+                                dom.remove(); // remove form
+                            }
+                        });
+                    }
+                });
             });
         };
         /* Adds all spells into the list */
@@ -860,6 +904,75 @@ const Render = (() => {
                 });
             }
         };
+
+        function generateButtons(spell, element) {
+            const magic = spellbook.master.parent.magic;
+            let html = `<div id="spellButtons">`;
+            // if spellbook contains spell
+            if (!magic.spells.has(spell.name)) {
+                html += `<button class="spellButton addSpell"><i class="fa fa-plus-circle" aria-hidden="true"></i><div class="spellButtonCap">Add Spell</div></button>`;
+            } else {
+                html += `<button class="spellButton removeSpell"><i class="fa fa-minus-circle" aria-hidden="true"></i><div class="spellButtonCap">Remove Spell</div></button>`;
+                // make sure the spell isn't a cantrip
+                if (spell.intLvl > 0) {
+                    // check if prepared, if so display button
+                    if (magic.preparedSpells.indexOf(spell.name) != -1) {
+                        html += `<button class="spellButton unprepareSpell"><i class="fa fa-flask" aria-hidden="true"></i><div class="spellButtonCap">Unprepare Spell</div></button>`;
+                    } else {
+                        html += `<button class="spellButton prepareSpell"><i class="fa fa-flask" aria-hidden="true"></i><div class="spellButtonCap">Prepare Spell</div></button>`;
+                    }
+                }
+            }
+            html += "</div>";
+            element.insertAdjacentHTML("beforeend", html); // add to the end of element
+            const new_element = document.querySelector("#spellButtons");
+            try {
+                // we could combine this listener into one function but we want to avoid situations where 'Add Spell' instead removes a spell
+                if (new_element.querySelector(".addSpell"))
+                    new_element.querySelector(".addSpell").addEventListener("click", (e) => {
+                        magic.add(spell); // add spell
+                        MagicUI.alert("Spell Added!");
+                    });
+                if (new_element.querySelector(".removeSpell"))
+                    new_element.querySelector(".removeSpell").addEventListener("click", (e) => {
+                        magic.prepare_remove(spell); // unprepare spell first
+                        magic.spells.delete(spell.name); // remove spell
+                        MagicUI.alert("Spell Removed", {
+                            type: "info"
+                        });
+                    });
+                if (new_element.querySelector(".prepareSpell"))
+                    new_element.querySelector(".prepareSpell").addEventListener("click", (e) => {
+                        if (magic.prepare(spell)) {
+                            MagicUI.alert(`Spell Prepared! (${magic.preparedSpells.length} / ${magic.Mod + spellbook.master.parent.lvl})`);
+                        }
+                    });
+                if (new_element.querySelector(".unprepareSpell"))
+                    new_element.querySelector(".unprepareSpell").addEventListener("click", (e) => {
+                        if (magic.prepare_remove(spell)) {
+                            MagicUI.alert(`Spell Unprepared! (${magic.preparedSpells.length} / ${magic.Mod + spellbook.master.parent.lvl})`, {
+                                type: "info"
+                            });
+                        }
+                    });
+            } catch (err) {
+                MagicUI.alert(err, {
+                    type: "error"
+                });
+            }
+            new_element.querySelectorAll(".spellButton").forEach((x) => {
+                x.addEventListener("click", () => {
+                    document.querySelector("#spellButtons").remove(); // remove old;
+                    if (document.querySelector("#spells")) {
+                        const opts = {};
+                        opts.name = document.getElementById("spell-search").value;
+                        opts.library = document.getElementById("library-toggle").checked;
+                        spellbook.populate(opts); // populate if spell list exists
+                    }
+                    generateButtons(spell, element);
+                });
+            });
+        }
         /* Display the spell on the left plane */
         spellbook.display_spell = (spell) => {
             const window = document.getElementsByClassName("spellwindow")[0];
@@ -880,8 +993,9 @@ const Render = (() => {
             for (let i = 0; i < diceRolls.length; i++) {
                 diceRolls[i].addEventListener("click", (e) => {
                     Dice.gfx_dice(e.target.innerHTML, e.pageX, e.pageY);
-                })
+                });
             }
+            generateButtons(spell, document.querySelector(".spellbody"));
             return window;
         };
         spellbook.toggleSpelllist = () => {
@@ -907,7 +1021,7 @@ const Render = (() => {
         misc_notes.generate = () => {
             const window = new richDice((document.body.clientWidth / 2) - 225, 150);
             window.setTitle("Features and Notes");
-            window.setSize(1000);
+            window.setSize(5000);
             window.setDescription("Use this to list your class features or any miscellaneous notes.");
             window.addCustomHTML("", `<textarea class='window-big_box'>${misc_notes.master.parent.stats.misc_notes}</textarea>`);
             window.css.alignment = "left";

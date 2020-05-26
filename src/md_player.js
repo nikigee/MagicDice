@@ -828,7 +828,7 @@ const Player = (() => {
             renderData.parent = this;
             this.name = name;
             this.player_class = new playerClass(classData);
-            this.lvl = lvl;
+            this.lvl = Number(lvl);
             this.stats = new Stats(statsData);
             this.health = new Health(healthData);
             this.exp = exp;

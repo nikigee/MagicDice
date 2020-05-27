@@ -725,7 +725,7 @@ div::-webkit-scrollbar-thumb {
     overflow: hidden;
 }
 
-.richDice .standardText{
+.richDice .standardText {
     border-radius: 2px;
     padding: 5px;
     border: solid 1px grey;
@@ -1357,6 +1357,9 @@ footer a:hover {
 #spellButtons {
     margin-left: 5px;
     margin-top: 3%;
+    margin-right: 5px;
+    text-align: right;
+
 }
 
 .spellButton {
@@ -1370,6 +1373,11 @@ footer a:hover {
     padding: 4px;
     min-width: 90px;
     font-size: 12px;
+    transition: 0.3s;
+}
+
+.spellButton:hover {
+    cursor: pointer;
 }
 
 .spellButton i {
@@ -1508,6 +1516,10 @@ input:checked+.slider:before {
         border-radius: 20px;
         padding: 10px;
         box-shadow: 0px 0px 3px #313131;
+    }
+
+    #spellButtons {
+        text-align: left;
     }
 
     #MagicDiceLogo {

@@ -491,8 +491,8 @@ const Player = (() => {
         }
         useHitDie(numDice) {
             let constitution = (!this.parent.stats) ? 0 : this.parent.stats.ability_mod.cnst;
-            const dice = new Dice(`${this.hitdie}->${constitution}`);
-            if (numDice > dice.list[0].stats.iterator) {
+            const dice = Dice.diceObj(`${this.hitdie}->${constitution}`);
+            if (numDice > dice.stats.iterator) {
                 console.log("You don't have enough hit die!");
                 MagicUI.alert("You don't have enough hit die!", {
                     type: "error"
@@ -507,9 +507,9 @@ const Player = (() => {
             }
             dice.addDice(numDice * -1); // take from remaining hitdie
             // const pointsHealed = Dice.r(String(numDice + "d" + dice.face + "+" + constitution));
-            const pointsHealed = die.x(`${numDice}d${dice.list[0].stats.face}->${constitution}`).total;
+            const pointsHealed = die.x(`${numDice}d${dice.stats.face}->${constitution}`).total;
             this.add(pointsHealed);
-            this.hitdie = `${dice.list[0].stats.iterator}d${dice.list[0].stats.face}`;
+            this.hitdie = `${dice.stats.iterator}d${dice.stats.face}`;
             console.log(this.hitdie + " remaining");
             MagicUI.alert(this.hitdie + " remaining", {
                 type: "alert"

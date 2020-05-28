@@ -37,7 +37,7 @@ const Dice = (() => {
         }
     }
 
-    class Dice {
+    class SingleDice {
         constructor(string = "d20") {
             this.string = string; // the string value of the dice roll
             this.list = []; // list of dice rolls
@@ -59,7 +59,7 @@ const Dice = (() => {
             return diceObj;
         }
         serialise() {
-            return `${this.stats.iterator}d${this.stats.face}${(this.stats.foreach_modifier) ? "->"+diceObj.foreach_modifier : ""}`;
+            return `${this.stats.iterator}d${this.stats.face}${(this.stats.foreach_modifier) ? "->"+this.stats.foreach_modifier : ""}`;
         }
         roll() {
             let num;
@@ -72,14 +72,14 @@ const Dice = (() => {
         }
         addDice(number) {
             this.stats.iterator += number; // add x dice
-            this.string = this.serialise(obj); // convert and set
+            this.string = this.serialise(this.stats); // convert and set
             this.roll(); // reset
             return this;
         }
         reRoll(value) {
             const index = this.list.indexOf(value);
             if (index != -1) {
-                this.list[index] = Math.floor(Math.random() * this.diceObj.face) + 1;
+                this.list[index] = Math.floor(Math.random() * this.stats.face) + 1;
                 return this.list[index];
             }
             return false
@@ -109,15 +109,24 @@ const Dice = (() => {
             this.roll();
         }
         generateList() {
-            const regexp = /\d*d\d+(?:->\-*\d+)*/g;
-            const list = [];
+            const regexp = /\d*d\d+(?:->\-*\d+)*/g; // used to detect dice rolls
+            const list = []; // list of dice rolls
             let val;
             do {
                 val = regexp.exec(this.dice); // extract all dice
                 if (val)
-                    list.push(new Dice(val[0]));
+                    list.push(new SingleDice(val[0])); // put them in the list
             } while (val);
-            this.list = list;
+            this.list = list; // set
+        }
+        get verboseList() {
+            const newList = [];
+            this.list.forEach(x=>{
+                x.list.forEach(v=>{
+                    newList.push(v);
+                });
+            });
+            return newList; // return an array of every dice roll from every set of dice
         }
         get max() {
             let text = this.dice;
@@ -193,9 +202,10 @@ const Dice = (() => {
             });
             return dice;
         }
+        /*
         static r(arg, mute) {
             return r(arg, mute);
-        }
+        } */
         static x(arg, mute = false) {
             try {
                 const dice = new diceRoll(arg);
@@ -207,7 +217,10 @@ const Dice = (() => {
             }
         }
         static cvt(roll) {
-            return Dice.cvt(roll);
+            return SingleDice.cvt(roll);
+        }
+        static diceObj(string) {
+            return new SingleDice(string);
         }
         static gfx_dice(arg, x, y) {
             try {
@@ -225,7 +238,6 @@ const Dice = (() => {
 })();
 
 const die = {
-    r: Dice.r,
     cvt: Dice.cvt,
     x: Dice.x,
     gfx_dice: Dice.gfx_dice

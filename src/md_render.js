@@ -474,7 +474,7 @@ const Render = (() => {
                             if (isFinite(Number(num))) {
                                 PlayerCard.master.parent.health.add(Number(num));
                             } else if (new RegExp(/[0-9]{0,9}d[0-9]{1,9}/).test(num)) {
-                                PlayerCard.master.parent.health.add(Dice.r(String(num)));
+                                PlayerCard.master.parent.health.add(Dice.x(String(num)).total);
                             }
                             PlayerCard.update();
                             d.remove();
@@ -675,8 +675,8 @@ const Render = (() => {
                     <select>
                         ${(()=>{
                             let html = "";
-                            let hitdie = new Dice(PlayerCard.master.parent.health.hitdie);
-                            for(let i = 1; i <= hitdie.diceObj.iterator; i++){
+                            let hitdie = Dice.diceObj(PlayerCard.master.parent.health.hitdie);
+                            for(let i = 1; i <= hitdie.stats.iterator; i++){
                                 html += `<option value=${i}>${i}</option>`;
                             }
                             return html;
@@ -700,7 +700,7 @@ const Render = (() => {
                         return false
                     }
                     let rd = new richDice(e.pageX, e.pageY);
-                    const roll = Dice.r("d20", true);
+                    const roll = Dice.x("d20", true).total;
                     rd.setTitle(`${list_of_skills[i].getElementsByClassName("mod_title")[0].textContent} Check`);
                     rd.css.alignment = "left";
                     rd.setSize(280);
@@ -759,7 +759,7 @@ const Render = (() => {
                         rd.css.alignment = "left";
                         rd.setSize(280);
                         rd.setBackground("./src/img/tavern.png");
-                        rd.setDescription(`With a raw roll of <strong>${roll.list[0]}</strong> and a ${target.querySelector(".skl_caption").innerText} bonus of <strong>${value}</strong>, it looks like your overall result is...`);
+                        rd.setDescription(`With a raw roll of <strong>${roll.verboseList[0]}</strong> and a ${target.querySelector(".skl_caption").innerText} bonus of <strong>${value}</strong>, it looks like your overall result is...`);
                         rd.addField("Result", roll.total);
                         rd.render();
                     });

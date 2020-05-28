@@ -85,8 +85,8 @@ const Dice = (() => {
         }
         get verboseList() {
             const newList = [];
-            this.list.forEach(x=>{
-                x.list.forEach(v=>{
+            this.list.forEach(x => {
+                x.list.forEach(v => {
                     newList.push(v);
                 });
             });
@@ -146,6 +146,8 @@ const Dice = (() => {
             dice.setSize(250, 750);
             dice.css.alignment = "left";
 
+            if (this.list.length > 1)
+                dice.addField("Input: ", this.dice);
             this.list.forEach((x, i) => {
                 /* List of rolls */
                 let htmlList = "<div class='dice-table'>"; // start the custom html table

@@ -461,7 +461,7 @@ const Player = (() => {
             const {
                 parent = undefined,
                     hitdie = parent.lvl + parent.player_class.hitdie,
-                    maxHP = new Dice(hitdie).diceObj.face + ((new Dice(hitdie).diceObj.iterator <= 1) ? 0 : new Dice(`${hitdie}+${parent.stats.ability_mod.cnst}`).addDice(-1).total),
+                    maxHP = new Dice(`${new Dice(parent.player_class.hitdie).max} + ${(parent.lvl - 1) + parent.player_class.hitdie}->${parent.stats.ability_mod.cnst}`).total,
                     currentHP = maxHP,
                     defaultAC = 10 + parent.stats.ability_mod.dex,
                     currentAC = defaultAC
@@ -491,8 +491,8 @@ const Player = (() => {
         }
         useHitDie(numDice) {
             let constitution = (!this.parent.stats) ? 0 : this.parent.stats.ability_mod.cnst;
-            const dice = new Dice(`${this.hitdie}*${constitution}`);
-            if (numDice > dice.diceObj.iterator) {
+            const dice = new Dice(`${this.hitdie}->${constitution}`);
+            if (numDice > dice.list[0].stats.iterator) {
                 console.log("You don't have enough hit die!");
                 MagicUI.alert("You don't have enough hit die!", {
                     type: "error"
@@ -507,9 +507,9 @@ const Player = (() => {
             }
             dice.addDice(numDice * -1); // take from remaining hitdie
             // const pointsHealed = Dice.r(String(numDice + "d" + dice.face + "+" + constitution));
-            const pointsHealed = die.r(`${numDice}d${dice.diceObj.face}*${constitution}`);
+            const pointsHealed = die.x(`${numDice}d${dice.list[0].stats.face}->${constitution}`).total;
             this.add(pointsHealed);
-            this.hitdie = `${dice.diceObj.iterator}d${dice.diceObj.face}`;
+            this.hitdie = `${dice.list[0].stats.iterator}d${dice.list[0].stats.face}`;
             console.log(this.hitdie + " remaining");
             MagicUI.alert(this.hitdie + " remaining", {
                 type: "alert"

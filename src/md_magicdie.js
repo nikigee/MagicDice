@@ -37,31 +37,62 @@ const Dice = (() => {
         }
     }
 
-    /* turns 8d6 into something the computer understands */
-    function cvt(diceRoll) {
-        diceRoll = diceRoll.toLowerCase();
-        let diceObj = {};
-        if (diceRoll[0] == "-") {
-            diceRoll = diceRoll.replace("-", "");
-            diceObj.negative = true;
+    class Dice {
+        constructor(string = "d20") {
+            this.string = string; // the string value of the dice roll
+            this.list = []; // list of dice rolls
+            this.stats = Dice.cvt(string); // the iterator, face, etc.
+            this.roll(); // roll numbers
         }
-        if (diceRoll.includes("*")) {
-            diceObj.foreach_modifier = parseInt(diceRoll.split("*")[1]);
+        static cvt(diceRoll) {
+            diceRoll = diceRoll.toLowerCase();
+            let diceObj = {};
+            if (diceRoll.includes("->")) {
+                diceObj.foreach_modifier = parseInt(diceRoll.split("->")[1]);
+            }
+            diceRoll = diceRoll.split("d");
+            diceObj.iterator = (diceRoll[0] != "") ? parseInt(diceRoll[0]) : 1;
+            diceObj.face = parseInt(diceRoll[1]);
+            if (isNaN(diceObj.iterator) || isNaN(diceObj.face)) {
+                throw Error("Invalid dice roll!");
+            }
+            return diceObj;
         }
-        if (diceRoll.includes("+")) {
-            diceObj.bonus = parseInt(diceRoll.split("+")[1]);
+        serialise() {
+            return `${this.stats.iterator}d${this.stats.face}${(this.stats.foreach_modifier) ? "->"+diceObj.foreach_modifier : ""}`;
         }
-        diceRoll = diceRoll.split("d");
-        diceObj.iterator = (diceRoll[0] != "") ? parseInt(diceRoll[0]) : 1;
-        diceObj.face = parseInt(diceRoll[1]);
-        if (isNaN(diceObj.iterator) || isNaN(diceObj.face)) {
-            throw Error("Invalid dice roll!");
+        roll() {
+            let num;
+            for (let i = 0; i < this.stats.iterator; i++) {
+                num = Math.floor(Math.random() * this.stats.face) + 1;
+                if (this.stats.foreach_modifier)
+                    num += this.stats.foreach_modifier; // add modifier to each roll
+                this.list.push(num); // populate list with random numbers
+            }
         }
-        return diceObj;
-    }
-    /* turns diceObjects into strings */
-    function serialise(diceObj) {
-        return `${(diceObj.negative) ? "-" : ""}${diceObj.iterator}d${diceObj.face}${(diceObj.foreach_modifier) ? "*" : ""}${(diceObj.bonus) ? "+"+diceObj.bonus : ""}`;
+        addDice(number) {
+            this.stats.iterator += number; // add x dice
+            this.string = this.serialise(obj); // convert and set
+            this.roll(); // reset
+            return this;
+        }
+        reRoll(value) {
+            const index = this.list.indexOf(value);
+            if (index != -1) {
+                this.list[index] = Math.floor(Math.random() * this.diceObj.face) + 1;
+                return this.list[index];
+            }
+            return false
+        }
+        get total() {
+            if (this.stats.iterator <= 0)
+                return 0;
+            else
+                return this.list.reduce((a, b) => a + b);
+        }
+        get max() {
+            return this.stats.face * this.stats.iterator; // 8d6 -> 6 * 8
+        }
     }
 
     class diceRoll {
@@ -77,99 +108,84 @@ const Dice = (() => {
             this.dice = dice;
             this.roll();
         }
-        get diceObj() {
-            return cvt(this.dice);
+        generateList() {
+            const regexp = /\d*d\d+(?:->\-*\d+)*/g;
+            const list = [];
+            let val;
+            do {
+                val = regexp.exec(this.dice); // extract all dice
+                if (val)
+                    list.push(new Dice(val[0]));
+            } while (val);
+            this.list = list;
         }
         get max() {
-            const rCvrt = this.diceObj;
-            return ((rCvrt.face + ((rCvrt.foreach_modifier) ? rCvrt.foreach_modifier : 0)) * rCvrt.iterator) + ((rCvrt.bonus) ? rCvrt.bonus : 0);
+            let text = this.dice;
+            this.list.forEach(x => {
+                text = text.replace(x.string, x.max); // replace all dice rolls with the rolled equivelent
+            });
+            return Number(eval(text));
+        }
+        get compText() {
+            let text = this.dice;
+            this.list.forEach(x => {
+                text = text.replace(x.string, x.total); // replace all dice rolls with the rolled equivelent
+            });
+            return text;
         }
         get total() {
-            let total = this.list.reduce((a, b) => a + b); // get total from list
-            const bonus = this.diceObj.bonus;
-            if (bonus)
-                total += bonus;
-            const negative = this.diceObj.negative;
-            if (negative)
-                total = total * -1;
-            return total;
-        }
-        addDice(number) {
-            const obj = this.diceObj;
-            obj.iterator += number; // add x dice
-            this.dice = serialise(obj); // convert and set
-            this.roll(); // reset
-            return this;
-        }
-        reRoll(value) {
-            const index = this.list.indexOf(value);
-            if (index != -1) {
-                this.list[index] = Math.floor(Math.random() * this.diceObj.face) + 1;
-                return this.list[index];
+            try {
+                return Number(eval(this.compText));
+            } catch (err) {
+                MagicUI.alert(err, {
+                    type: "error"
+                });
             }
-            return false
         }
         roll() {
             try {
-                const rCvrt = this.diceObj;
-                if (rCvrt.iterator == 0) {
-                    return 0;
-                }
-                let total = 0;
-                let list = [];
-                let roll;
-                for (let i = 1; i <= rCvrt.iterator; i++) {
-                    roll = Math.floor(Math.random() * rCvrt.face) + 1;
-                    if (rCvrt.foreach_modifier)
-                        roll += rCvrt.foreach_modifier;
-                    list.push(roll);
-                    total += roll;
-                }
-                if (rCvrt.bonus) {
-                    total = total + rCvrt.bonus;
-                }
-                if (rCvrt.negative)
-                    total = total * -1;
-                this.list = list;
-                return this.total;
+                // roll each set of dice
+                this.generateList();
+                return this.total; // return total
             } catch (err) {
                 return console.error(`Something went wrong while rolling the dice! (${err})`);
             }
         }
         show() {
-            console.log(`Dice Roll (${this.dice})`);
-            const rCvrt = this.diceObj;
-            if (rCvrt.foreach_modifier) {
-                console.log("Modfier (+" + rCvrt.foreach_modifier + ")");
-            }
-            this.list.forEach((x, i) => {
-                console.log(`Roll ${i+1}: ${x}`);
+            this.list.forEach(x => {
+                console.log(`Dice Roll (${x.string})`);
+                if (x.stats.foreach_modifier) {
+                    console.log("Modifier (+" + x.stats.foreach_modifier + ")");
+                }
+                x.list.forEach((x, i) => {
+                    console.log(`Roll ${i+1}: ${x}`);
+                });
             });
-            if (rCvrt.bonus) {
-                console.log(`Bonus Applied (+${rCvrt.bonus})`);
-            }
+            console.log(`Total = ${this.compText}`);
             console.log("Total roll: " + this.total);
         }
         render() {
             const dice = new richDice(this.pos.x, this.pos.y);
-            const rollObj = this.diceObj;
+            //const rollObj = this.diceObj;
 
-            dice.setTitle(`Dice Roll (${this.dice})`);
+            dice.setTitle(`Dice Roll`);
             dice.setDescription(`You raise your hand and throw the dice across the table.`);
             dice.setSize(250, 750);
             dice.css.alignment = "left";
 
-            /* List of rolls */
-            let htmlList = "<div class='dice-table'>"; // start the custom html table
             this.list.forEach((x, i) => {
-                htmlList += `<div class="gfx_dice">${x}</div>${(i+1 == rollObj.iterator) ? "" : "+"}`;
+                /* List of rolls */
+                let htmlList = "<div class='dice-table'>"; // start the custom html table
+
+                x.list.forEach((v, i) => {
+                    htmlList += `<div class="gfx_dice">${v}</div>${(i+1 == x.stats.iterator) ? "" : "+"}`;
+                });
+
+                htmlList += "</div>";
+                dice.addCustomHTML(`${i ? i+". " : ""}Roll (${x.string}):`, htmlList);
             });
-            htmlList += "</div>";
-            dice.addCustomHTML("Rolls:", htmlList);
-            /* Showing the bonus or not */
-            if (rollObj.bonus) {
-                dice.addField("Bonus:", `${rollObj.bonus}`);
-            }
+            if (Number(this.compText) != this.total)
+                dice.addField("Evaluation: ", `Total = ${this.compText}`);
             dice.addField(`Total: `, this.total); // display total
             const sound = new Audio("./src/misc/diceroll.mp3");
             dice.render(() => {
@@ -191,7 +207,7 @@ const Dice = (() => {
             }
         }
         static cvt(roll) {
-            return cvt(roll);
+            return Dice.cvt(roll);
         }
         static gfx_dice(arg, x, y) {
             try {

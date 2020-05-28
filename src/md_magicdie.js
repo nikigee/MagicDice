@@ -1,47 +1,9 @@
 const Dice = (() => {
-    /* legacy functions */
-    function r(arg, mute) {
-        try {
-            const rCvrt = cvt(arg);
-            if (rCvrt.iterator == 0) {
-                return 0;
-            }
-            let total = 0;
-            if (rCvrt.foreach_modifier) {
-                if (!mute) {
-                    console.log("Modfier (+" + rCvrt.foreach_modifier + ")");
-                }
-            }
-            let roll;
-            for (let i = 1; i <= rCvrt.iterator; i++) {
-                roll = Math.floor(Math.random() * rCvrt.face) + 1;
-                if (rCvrt.foreach_modifier)
-                    roll += rCvrt.foreach_modifier;
-                if (!mute)
-                    console.log("Roll " + i + ": " + roll);
-                total += roll;
-            }
-            if (rCvrt.bonus) {
-                if (!mute)
-                    console.log(`Bonus Applied (+${rCvrt.bonus})`);
-                total = total + rCvrt.bonus;
-            }
-            if (rCvrt.negative)
-                total = total * -1;
-            if (!mute) {
-                console.log("Total roll: " + total);
-            }
-            return total;
-        } catch (err) {
-            return console.error(`Something went wrong while rolling the dice! (${err})`);
-        }
-    }
-
     class SingleDice {
         constructor(string = "d20") {
             this.string = string; // the string value of the dice roll
             this.list = []; // list of dice rolls
-            this.stats = Dice.cvt(string); // the iterator, face, etc.
+            this.stats = SingleDice.cvt(string); // the iterator, face, etc.
             this.roll(); // roll numbers
         }
         static cvt(diceRoll) {
@@ -63,12 +25,14 @@ const Dice = (() => {
         }
         roll() {
             let num;
+            this.list = [];
             for (let i = 0; i < this.stats.iterator; i++) {
                 num = Math.floor(Math.random() * this.stats.face) + 1;
                 if (this.stats.foreach_modifier)
                     num += this.stats.foreach_modifier; // add modifier to each roll
                 this.list.push(num); // populate list with random numbers
             }
+            return this.total; // return result
         }
         addDice(number) {
             this.stats.iterator += number; // add x dice
@@ -202,10 +166,9 @@ const Dice = (() => {
             });
             return dice;
         }
-        /*
-        static r(arg, mute) {
-            return r(arg, mute);
-        } */
+        static r(arg, mute = false) {
+            return diceRoll.x(arg, mute).total; // return total of the dice roll only
+        }
         static x(arg, mute = false) {
             try {
                 const dice = new diceRoll(arg);
@@ -238,6 +201,7 @@ const Dice = (() => {
 })();
 
 const die = {
+    r: Dice.r,
     cvt: Dice.cvt,
     x: Dice.x,
     gfx_dice: Dice.gfx_dice

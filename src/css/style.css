@@ -1141,6 +1141,7 @@ footer a:hover {
         text-align: left;
         background: none;
         box-shadow: none;
+        margin-left: 1em;
     }
 
     .menu-option {

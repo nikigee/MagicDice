@@ -245,21 +245,104 @@ h3 {
     margin-right: 15px;
 }
 
-.playerBox {
+#column1,
+#column2,
+#column3 {
     display: inline-block;
-    background: rgba(255, 255, 255, 0.50);
-    padding: 5px;
-    box-shadow: black 0px 0px 3px;
+    vertical-align: top;
+}
+
+#column1 {
+    max-width: 350px;
+}
+
+#column2 {
+    width: calc(60% - 200px);
+    max-width: 550px;
+}
+
+#column3 {
+    display: inline-block;
+    width: calc(40% - 160px);
+    max-width: 350px;
+}
+
+
+.ed_avatar {
+    width: 100%;
     border-radius: 3px;
-    margin: 10px;
-    user-select: none;
-    transition: 0.3s;
-    -webkit-transition: 0.3s;
-    position: relative;
+    box-shadow: 0px 0px 3px black;
+}
+
+.ed_name {
+    font-weight: bold;
+    font-family: "Alegreya", sans-serif;
+    font-size: 35px;
+}
+
+#playerBox .label,
+#playerBox label {
+    color: #c1cace;
+    font-family: "Timeless", sans-serif;
+    font-size: 14px;
+    margin-bottom: 5px;
+}
+
+#playerBox br {
+    margin-bottom: 5px;
+}
+
+#playerBox p {
+    font-size: 18px;
+    margin: 0px;
+    margin-bottom: 5px;
+}
+
+.lvl-class {
+    margin: auto;
+    color: #c1cace;
+    font-family: "Timeless", sans-serif;
+    font-size: 16px;
+    font-style: italic;
+    margin-bottom: 15px;
+}
+
+#playerBox {
+    color: white;
+}
+
+#playerInfo {
+    text-align: left;
+    padding-left: 10px;
+    padding-right: 10px;
 }
 
 .playerTools {
     margin-top: 3px;
+}
+
+.skl_row {
+    display: block;
+    font-size: 16px;
+    text-align: left;
+    padding-top: 3px;
+    padding-bottom: 3px;
+    margin-left: 3px;
+    margin-right: 3px;
+}
+
+.skl_point {
+    float: right;
+}
+
+.moreinfo_header {
+    margin: 0px;
+    font-size: 17px;
+    background: #1b1b1b;
+    padding: 8px;
+    font-style: italic;
+    font-weight: normal;
+    color: #c1cace;
 }
 
 .playerTools .fa {
@@ -268,12 +351,11 @@ h3 {
     padding: 3px;
     cursor: pointer;
     transition: 0.3s;
-    color: black;
+    color: #c1cace;
 }
 
 .playerTools .fa:hover {
-    background: #1d1d1d;
-    color: #FFC107;
+    color: #a51010;
 }
 
 .show_more {
@@ -293,11 +375,6 @@ h3 {
     transition: .5s;
 }
 
-.playerBox strong,
-.label {
-    font-family: "Alegreya", sans-serif;
-}
-
 .show_more:hover {
     color: gold;
     background: black;
@@ -307,95 +384,10 @@ h3 {
     font-size: 18px;
 }
 
-.playerBox img {
-    max-height: 500px;
-    border-radius: 5px;
-    box-shadow: black 0px 0px 5px;
-}
-
-.playerInfo {
-    display: inline-block;
-    vertical-align: top;
-    padding-left: 15px;
-    padding-right: 15px;
-    width: 510px;
-    text-align: left;
-    position: relative;
-}
-
-.playerInfo h3 {
-    font-size: 35px;
-    color: #1a1a1a;
-    text-shadow: 0px 0px 1px black;
-    font-family: "Alegreya";
-}
-
-.playerInfo p {
-    margin: 0px;
-    font-size: 18px;
-    margin-top: 5px;
-    margin-bottom: 5px;
-}
-
-
-.skl_row {
-    display: block;
-    text-align: left;
-    background: rgba(255, 255, 255, 0.859);
-    box-shadow: black 0px 0px 2px;
-    border-radius: 3px;
-    padding: 5px;
-    margin: 5px;
-    font-size: 18px;
-    font-weight: bold;
-}
-
-.skl_smaller {
-    font-size: 14px;
-}
-
-.skl_caption {
-    font-weight: bold;
-}
-
-.skl_point {
-    float: right;
-    width: 20px;
-    text-align: center;
-}
-
-.skl_tab {
-    width: calc(49%);
-    display: inline-block;
-    vertical-align: top;
-    margin-top: 5px;
-    margin-bottom: 5px;
-    background: #d0d0d0;
-    border-radius: 3px;
-    box-shadow: black 0px 0px 2px;
-    overflow: auto;
-}
-
-.moreinfo_header {
-    margin: 0px;
-    font-size: 17px;
-    background: #1b1b1b;
-    padding: 8px;
-    color: white;
-    font-style: italic;
-    box-shadow: 0px 0px 3px grey;
-    font-weight: normal;
-}
-
 .lvl-class {
     font-style: italic;
     display: block;
     margin-bottom: 10px;
-}
-
-.label {
-    font-size: 18px;
-    font-weight: bold;
 }
 
 .fill-bar {
@@ -428,6 +420,47 @@ h3 {
     border-radius: 2px;
     margin-top: 2px;
     margin-bottom: 2px;
+    color: black;
+}
+
+.top_stats span {
+    display: block;
+    text-align: center;
+}
+
+.stat_more {
+    background: rgba(255, 255, 255, 0.859);
+    display: inline-block;
+    width: 100px;
+    margin-top: 2px;
+    margin-bottom: 2px;
+    box-shadow: black 0px 0px 2px;
+    border-radius: 2px;
+}
+
+.splitterLeft,
+.splitterRight {
+    width: calc(50% - 2.5px);
+    display: inline-block;
+    vertical-align: top;
+}
+
+.stat_score {
+    font-size: 24px;
+    font-weight: bold;
+    padding: 3px;
+    color: black
+}
+
+.stat_title {
+    font-size: 12px;
+    background: #2f2f2f;
+    color: white;
+    padding: 5px;
+}
+
+.top_stats {
+    margin-bottom: 5px;
 }
 
 .mod_pill:hover {
@@ -463,6 +496,7 @@ h3 {
 
 .ability_scores {
     margin-bottom: 20px;
+    text-align: center;
 }
 
 .magic_pill {
@@ -488,6 +522,7 @@ h3 {
     font-size: 28px;
     font-weight: bold;
     padding: 3px;
+    color: black;
 }
 
 .magic_title {
@@ -1728,11 +1763,38 @@ input:checked+.slider:before {
     }
 }
 
+@media only screen and (max-width: 828px) {
+    .ed_avatar {
+        display: none;
+    }
+
+    #column2 {
+        width: calc(60% - 10px);
+    }
+
+    #column3 {
+        width: calc(40%);
+    }
+}
+
 /* Player render changes */
 @media only screen and (max-width: 955px) {
     html {
         background-color: unset;
         /* fix background images */
+    }
+
+    .ed_name {
+        text-align: center;
+    }
+
+    .splitterLeft,
+    .splitterRight {
+        text-align: center;
+    }
+
+    .playerTools {
+        text-align: center;
     }
 
     #mImageReal {
@@ -1783,9 +1845,91 @@ input:checked+.slider:before {
 
 @media only screen and (max-width: 436px) {
 
+    .ed_avatar {
+        display: unset;
+        position: absolute;
+        z-index: -300;
+        max-height: 100%;
+        min-width: 100%;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        right: 0;
+    }
+
+    .splitterLeft,
+    .splitterRight {
+        text-align: left;
+    }
+
+    #playerBox {
+        position: relative;
+        overflow: hidden;
+        margin-top: 0px;
+        background: rgba(41, 41, 41, 0.4);
+        border-radius: 5px;
+        padding: 10px;
+        box-shadow: 0px 0px 3px black;
+    }
+
     .magic-notification {
         font-size: 16px;
         font-family: "Timeless", sans-serif;
+    }
+
+    #column1,
+    #column2,
+    #column3 {
+        width: auto;
+        display: block;
+    }
+
+    .playerTools {
+        text-align: left;
+        margin-bottom: 5px;
+    }
+
+    .skl_row {
+        padding-top: 3px;
+        padding-bottom: 3px;
+        padding-right: 10px;
+        padding-left: 10px;
+        color: black;
+        display: block;
+        text-align: left;
+        background: rgba(255, 255, 255, 0.859);
+        box-shadow: black 0px 0px 2px;
+        border-radius: 3px;
+        padding: 5px;
+        margin: 5px;
+        font-size: 14px;
+        font-weight: bold;
+    }
+
+    #showMore {
+        background: #1a1a1a;
+        color: white;
+        text-align: center;
+        padding: 5px;
+        position: initial;
+        margin-top: 10px;
+        margin-bottom: 10px;
+        width: 120px;
+        bottom: -20px;
+        left: 0px;
+        right: 0px;
+        margin: auto;
+        border-radius: 5px;
+        box-shadow: 0px 0px 3px black;
+        cursor: pointer;
+        transition: .5s;
+    }
+
+    .skl_tab {
+        background: #232329;
+        padding-bottom: 3px;
+        margin-bottom: 10px;
+        border-radius: 5px;
     }
 
     #create-wrap {

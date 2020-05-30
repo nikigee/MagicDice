@@ -526,6 +526,7 @@ const Player = (() => {
                     expert = [],
                     ability = genABS(27),
                     inspiration = "",
+                    speed = 30,
                     misc_prof = {
                         lang: ["Common"],
                         wpn: parent.player_class.start_prof.wpn,
@@ -652,6 +653,7 @@ const Player = (() => {
             this.inspiration = inspiration;
             this.misc_prof = misc_prof;
             this.misc_notes = misc_notes;
+            this.speed = speed;
             this.skill_modifiers = skill_modifiers;
         }
         get prof() {

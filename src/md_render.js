@@ -130,6 +130,28 @@ const Render = (() => {
                         });
                     }
                 });
+            } else if (editID == "ed_speed") {
+                richDice.genPrompt(`Edit Speed`, `Use the input below to enter a new movement speed for your character`, {
+                    p_title: "Speed",
+                    p_placeholder: this.parent.stats.speed,
+                    x: this.event.pageX,
+                    y: this.event.pageY
+                }, (data) => {
+                    try {
+                        if (!data || !isFinite(data) || data < 0) {
+                            throw new Error("Invalid value entered!");
+                        } else {
+                            this.parent.stats.speed = data; // speed
+                            if (callback)
+                                callback();
+                        }
+                    } catch (err) {
+                        console.error(err.message);
+                        MagicUI.alert(err.message, {
+                            type: "error"
+                        });
+                    }
+                });
             } else if (editID == "ed_inv_gold") {
                 richDice.genPrompt(`Edit Gold`, `Use the input below to add or take away gold`, {
                     p_title: "Gold Modifier",
@@ -333,30 +355,29 @@ const Render = (() => {
     */
     const PlayerCard = (() => {
         const PlayerCard = new SubRender();
-        PlayerCard.more_info = false;
+        PlayerCard.more_info = true;
 
-        PlayerCard.generate = (clear = true) => {
-            const list = document.getElementById("main");
-            if (clear !== false) {
-                list.innerHTML = "";
-            }
-            let newHTML = `
-                <div class="playerBox" id="box${PlayerCard.master.ID}">
-                <img src="${PlayerCard.master.avatar}" class="editable ed_avatar" alt="Avatar">
-                <div class="playerInfo ${PlayerCard.master.ID}">
-                    
+        PlayerCard.generate = () => {
+            document.getElementById("main").innerHTML = ""; // clear first
+            document.getElementById("out-wrap").style.background = "rgba(0, 0, 0, 0.35)"; // make background dark
+            let newHTML = `<div id="playerBox">
+                <div id="column1">
+                    <img src="${PlayerCard.master.avatar}" class="editable ed_avatar" alt="Avatar">
                 </div>
-                <div class="playerExtra ${PlayerCard.master.ID}"></div>
-                <div class="show_more ${PlayerCard.master.ID}"><i class="fa fa-caret-down" aria-hidden="true"></i></div>
+                <div id="column2">
+                    <div id="playerInfo"></div>
                 </div>
-                `;
-            list.insertAdjacentHTML('beforeend', newHTML);
-            console.log("Rendered!");
+                <div id="column3">
+                    <div id="playerExtra"></div>
+                    <div id="showMore"><i class="fa fa-caret-down" aria-hidden="true"></i></div>
+                </div>
+            </div>`;
+            document.getElementById("main").insertAdjacentHTML("beforeend", newHTML);
             PlayerCard.update();
             PlayerCard.displayMoreInfo(true); // loads the skills and saving throws
 
             // Handle the edit mode stuff
-            document.querySelector(`#box${PlayerCard.master.ID}`).addEventListener("click", (e) => {
+            document.querySelector(`#playerBox`).addEventListener("click", (e) => {
                 if (!PlayerCard.master.editMode) {
                     return;
                 }
@@ -382,32 +403,38 @@ const Render = (() => {
                     console.log(err.message); // something went wrong
                 }
             });
-            document.getElementsByClassName(`${PlayerCard.master.ID}`)[2].addEventListener("click", () => {
+            document.querySelector(`#showMore`).addEventListener("click", () => {
                 PlayerCard.displayMoreInfo()
             });
-        };
-
+        }
         PlayerCard.update = () => {
             const percent = (PlayerCard.master.parent.health.currentHP / PlayerCard.master.parent.health.maxHP) * 100;
             const invCount = PlayerCard.master.parent.inv.backpack.size;
-            const box = document.getElementsByClassName(`${PlayerCard.master.ID}`)[0];
+            const box = document.getElementById("playerInfo");
             box.innerHTML = `
                     <h3 class="editable ed_name">${PlayerCard.master.parent.name}</h3>
                     <span class="lvl-class"><span class="editable ed_level">Level ${PlayerCard.master.parent.lvl}</span> <span class="editable ed_class">${PlayerCard.master.parent.player_class.name}</span></span>
                     <div class="row editable ed_health_maxHP">
                         <span class="label">HP</span>
-                        <div class="fill-bar health-bar" style="max-width: 500px;"><span class="fill" style="width: ${percent}%; background: ${getColor(percent)}">${PlayerCard.master.parent.health.currentHP}/${PlayerCard.master.parent.health.maxHP}</span></div>
+                        <div class="fill-bar health-bar"><span class="fill" style="width: ${percent}%; background: ${getColor(percent)}">${PlayerCard.master.parent.health.currentHP}/${PlayerCard.master.parent.health.maxHP}</span></div>
                     </div>
                     <div class="row">
                         <div class="playerTools">
                             <i class="fa fa-bed" aria-hidden="true"></i><i class="fa fa-medkit editable ed_health_hitdice" aria-hidden="true"></i></i><i class="fa fa-magic" aria-hidden="true"></i><i class="fa fa-address-book" aria-hidden="true"></i><i class="fa fa-qrcode" aria-hidden="true"></i>
                         </div>
                     </div>
-                    <p class="editable ed_health_currentAC"><strong>AC: </strong>${PlayerCard.master.parent.health.currentAC}</p>
-                    <p class="editable ed_exp"><strong>Experience: </strong>${PlayerCard.master.parent.exp} XP</p>
-                    <p><strong>Proficiency Bonus: </strong>${PlayerCard.master.parent.stats.prof}</p>
-                    <p class="editable ed_inv_gold"><strong>Gold: </strong>${PlayerCard.master.parent.inv.gold} GP</p>
-                    <p><strong>Inventory: </strong>${invCount} Items</p>
+                    <div class="splitterLeft">
+                        <div class="editable ed_health_currentAC caption"><label>AC </label><br><p>${PlayerCard.master.parent.health.currentAC}</p></div>
+                        <div class="caption"><label>Initiative </label><br><p>${PlayerCard.master.parent.stats.ability_mod.dex}</p></div>
+                        <div class="editable ed_speed caption"><label>Speed </label><br><p>${PlayerCard.master.parent.stats.speed}</p></div>
+                        <div class="caption"><label>Passive Perception </label><br><p>${PlayerCard.master.parent.stats.passive_perception}</p></div>
+                    </div>
+                    <div class="splitterRight">
+                        <div class="editable ed_exp caption"><label>Experience </label><br><p>${PlayerCard.master.parent.exp} XP</p></div>
+                        <div class="caption"><label>Proficiency Bonus </label><br><p>${PlayerCard.master.parent.stats.prof}</p></div>
+                        <div class="editable ed_inv_gold caption"><label>Gold </label><br><p>${PlayerCard.master.parent.inv.gold} GP</p></div>
+                        <div class="caption"><label>Inventory </label><br><p>${invCount} Items</p></div>
+                    </div>
                     <div class="ability_scores">
                         <div class="mod_pill editable ed_ability_str">
                             <span class="mod_title">Strength</span>
@@ -457,7 +484,7 @@ const Render = (() => {
                     </div>
                 `;
 
-            document.getElementsByClassName(`${PlayerCard.master.ID}`)[0].getElementsByClassName("health-bar")[0].addEventListener("click", (e) => {
+            box.getElementsByClassName("health-bar")[0].addEventListener("click", (e) => {
                 if (PlayerCard.master.editMode) {
                     return false
                 }
@@ -482,7 +509,7 @@ const Render = (() => {
                     });
                 });
             });
-            document.getElementsByClassName(`${PlayerCard.master.ID}`)[0].querySelector(".fa-qrcode").addEventListener("click", (e) => {
+            box.querySelector(".fa-qrcode").addEventListener("click", (e) => {
                 const data = new Save(PlayerCard.master.parent); // convert to JSON
                 MagicUI.alert("Connecting to server...", {
                     type: "info"
@@ -517,7 +544,7 @@ const Render = (() => {
                     });
                 });
             });
-            document.getElementsByClassName(`${PlayerCard.master.ID}`)[0].querySelector(".fa-bed").addEventListener("click", (e) => {
+            box.querySelector(".fa-bed").addEventListener("click", (e) => {
                 PlayerCard.master.parent.longrest();
                 const window = new richDice(e.pageX, e.pageY);
                 window.setTitle("Longrest");
@@ -531,7 +558,7 @@ const Render = (() => {
                 PlayerCard.update();
                 window.render();
             });
-            document.getElementsByClassName(`${PlayerCard.master.ID}`)[0].querySelector(".fa-magic").addEventListener("click", (e) => {
+            box.querySelector(".fa-magic").addEventListener("click", (e) => {
                 richDice.genPrompt("Roll Dice", "Enter the dice combination of the roll.", {
                     p_title: "Dice",
                     p_placeholder: "8d6",
@@ -541,7 +568,7 @@ const Render = (() => {
                     Dice.gfx_dice(data, e.pageX - 50, e.pageY - 20);
                 });
             });
-            document.getElementsByClassName(`${PlayerCard.master.ID}`)[0].querySelector(".fa-address-book").addEventListener("click", (e) => {
+            box.querySelector(".fa-address-book").addEventListener("click", (e) => {
                 const window = new richDice(e.pageX, e.pageY);
                 window.setTitle("Proficiencies");
                 window.setBackground("./src/img/tj-foo-grand-library.jpg");
@@ -660,7 +687,7 @@ const Render = (() => {
                     });
                 });
             });
-            document.getElementsByClassName(`${PlayerCard.master.ID}`)[0].getElementsByClassName("ed_health_hitdice")[0].addEventListener("click", (e) => {
+            box.getElementsByClassName("ed_health_hitdice")[0].addEventListener("click", (e) => {
                 if (PlayerCard.master.editMode) {
                     return false
                 }
@@ -693,7 +720,7 @@ const Render = (() => {
                     });
                 });
             });
-            const list_of_skills = document.getElementsByClassName(`${PlayerCard.master.ID}`)[0].getElementsByClassName("mod_pill");
+            const list_of_skills = box.getElementsByClassName("mod_pill");
             for (let i = 0; i < list_of_skills.length; i++) {
                 list_of_skills[i].addEventListener("click", (e) => {
                     if (PlayerCard.master.editMode) {
@@ -709,11 +736,11 @@ const Render = (() => {
                     rd.addField("Result", roll + Number(list_of_skills[i].getElementsByClassName("mod_score")[0].textContent));
                     rd.render();
                 });
-            }
+            };
         };
 
         PlayerCard.displayMoreInfo = (dontToggle = false) => {
-            const player_extra = document.getElementsByClassName(PlayerCard.master.ID)[1];
+            const player_extra = document.getElementById("playerExtra");
             if ((!PlayerCard.more_info && !dontToggle) || PlayerCard.more_info && dontToggle) {
                 player_extra.innerHTML = `
                         <div class="ply_moreinfo">
@@ -767,12 +794,12 @@ const Render = (() => {
                 if (!dontToggle) {
                     PlayerCard.more_info = true;
                 }
-                document.getElementsByClassName(`${PlayerCard.master.ID}`)[2].getElementsByTagName("i")[0].className = "fa fa-caret-up";
+                document.getElementById("showMore").getElementsByTagName("i")[0].className = "fa fa-caret-up";
             } else {
                 player_extra.innerHTML = "";
                 if (!dontToggle) {
                     PlayerCard.more_info = false;
-                    document.getElementsByClassName(`${PlayerCard.master.ID}`)[2].getElementsByTagName("i")[0].className = "fa fa-caret-down";
+                    document.getElementById("showMore").getElementsByTagName("i")[0].className = "fa fa-caret-down";
                 }
             }
         };

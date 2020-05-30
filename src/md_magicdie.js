@@ -599,6 +599,10 @@ const MagicUI = (() => {
         UI.populateToolbar();
 
         document.getElementById("out-wrap").addEventListener("char-loaded", (e) => UI.populateToolbar());
+
+        x.observe(document.getElementById("main"), {
+            childList: true
+        });
         if (callback)
             callback();
     };
@@ -658,12 +662,17 @@ const MagicUI = (() => {
     const x = new MutationObserver(function (e) {
         // when main menu is removed, do this
         if (e[0].removedNodes) {
+            console.log("yeet");
             // we want to delete the video when the user gets off the main menu
             if (!document.querySelector("#main-wrap") && !document.querySelector("#load-menu") && !document.querySelector("#create-menu") && !document.querySelector(".upload-btn-wrapper")) {
-                document.body.style.removeProperty("background");
-                document.querySelector(".fullscreen-bg").remove(); // delete video
+                if (document.querySelector(".fullscreen-bg")) {
+                    console.log("veet");
+                    document.body.style.removeProperty("background");
+                    document.querySelector(".fullscreen-bg").remove(); // delete video
+                }
             }
-            if (!document.querySelector("#create-menu")) {
+            if (!document.querySelector("#create-menu") && !document.querySelector("#playerBox")) {
+                console.log("meet");
                 document.getElementById("out-wrap").style.removeProperty("background");
             }
         };
@@ -768,9 +777,6 @@ Race: ${document.getElementById("mRace").value}
                 document.querySelector("#magic-BG").addEventListener("play", () => {
                     document.body.style.background = "none";
                 })
-                x.observe(document.getElementById("main"), {
-                    childList: true
-                });
             }
         }
         document.getElementById("menu-load").addEventListener("click", () => {

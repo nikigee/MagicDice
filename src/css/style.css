@@ -1847,15 +1847,16 @@ input:checked+.slider:before {
 @media only screen and (max-width: 436px) {
 
     .ed_avatar {
-        display: unset;
+        display: block;
         position: absolute;
         z-index: -300;
         max-height: 100%;
         min-width: 100%;
         left: 0;
         top: 0;
-        bottom: 0;
+        width: auto;
         right: 0;
+        margin: auto;
     }
 
     .splitterLeft,
@@ -1898,13 +1899,15 @@ input:checked+.slider:before {
         color: black;
         display: block;
         text-align: left;
-        background: rgba(255, 255, 255, 0.859);
+        background: rgb(222, 222, 222);
         box-shadow: black 0px 0px 2px;
         border-radius: 3px;
         padding: 5px;
         margin: 5px;
         font-size: 14px;
         font-weight: bold;
+        padding-left: 10px;
+        padding-right: 10px;
     }
 
     #showMore {
@@ -1927,7 +1930,7 @@ input:checked+.slider:before {
     }
 
     .skl_tab {
-        background: #232329;
+        background: #b3b3b3;
         padding-bottom: 3px;
         margin-bottom: 10px;
         border-radius: 5px;

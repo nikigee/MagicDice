@@ -1861,7 +1861,7 @@ input:checked+.slider:before {
 
     .splitterLeft,
     .splitterRight {
-        text-align: left;
+        text-align: center;
     }
 
     #playerBox {

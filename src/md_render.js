@@ -1088,6 +1088,18 @@ const Render = (() => {
         generate(clear = true) {
             this.playerCard.generate(clear);
         }
+        toggleEditMode() {
+            this.editMode = (this.editMode) ? false : true; // change edit mode
+            if (this.editMode == true) {
+                document.body.insertAdjacentHTML("beforeEnd", `<h2 id="alertPopUp">*EDIT MODE*</h2>`);
+                if (MagicUI.toolbars.get(this.ID))
+                    MagicUI.toolbars.get(this.ID).querySelector(".fa-pencil").classList.add("active"); // make it always gold
+            } else {
+                document.querySelector("#alertPopUp").remove();
+                if (MagicUI.toolbars.get(this.ID))
+                    MagicUI.toolbars.get(this.ID).querySelector(".fa-pencil").classList.remove("active"); // remove that
+            }
+        }
     };
     return Render;
 })();

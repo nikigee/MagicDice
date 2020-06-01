@@ -922,6 +922,7 @@ const Player = (() => {
             const {
                 self = "x",
                     gfx_self = "X",
+                    edit_mode = "E",
                     skills = "c",
                     inv = "i",
                     magic = "m",
@@ -941,6 +942,8 @@ const Player = (() => {
                         this.self;
                     } else if (e.key == gfx_self) {
                         this.render.generate();
+                    } else if (e.key == edit_mode) {
+                        this.render.toggleEditMode();
                     } else if (e.key == skills) {
                         this.stats.list_sthrows();
                         this.stats.list_skills();
@@ -974,15 +977,18 @@ const Player = (() => {
             window.setTitle("Magic Dice Shortcuts");
             window.setDescription("A complete list of keyboard shortcuts.");
             window.css.alignment = "left";
-            window.addCustomHTML("", `<ul>
-                <li><strong>${self} -</strong> Lists all character information.</li>
-                <li><strong>${gfx_self} -</strong> Generates character information in GUI format.</li>
-                <li><strong>${skills} -</strong> Lists all character skills plus saving throws.</li>
-                <li><strong>${inv} -</strong> Lists a character's inventory.</li>
+            window.addCustomHTML("Navigation:", `<ul>
+                <li><strong>Shift + ${gfx_self} -</strong> Opens Player Card.</li>
+                <li><strong>Shift + ${edit_mode} -</strong> Toggle edit mode.</li>
+                <li><strong>Shift + ${gfx_magic} -</strong> Opens spellbook.</li>
+                <li><strong>Shift + ${roll} -</strong> Roll dice menu.</li>
+                <li><strong>Shift + ${notes} -</strong> Opens the notebook for tracking character notes.</li>
+            </ul>`);
+            window.addCustomHTML("Console:", `<ul>
+                <li><strong>${self} -</strong> Prints character information to console.</li>
+                <li><strong>${skills} -</strong> Prints all character skills plus saving throws to console.</li>
+                <li><strong>${inv} -</strong> Prints a character's inventory.</li>
                 <li><strong>${magic} -</strong> Lists character spells.</li>
-                <li><strong>${gfx_magic} -</strong> Generates character GUI spellbook.</li>
-                <li><strong>${roll} -</strong> Rolls a d20 quickly.</li>
-                <li><strong>${notes} -</strong> Opens the notebook for tracking character notes.</li>
             </ul>`);
             window.render();
         }

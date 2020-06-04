@@ -75,7 +75,7 @@ const DM = (() => {
             return Math.round((this.currentHP / this.maxHP) * 100)
         }
         get strID() {
-            return this.id.color + this.id.number
+            return `${this.id.color}.${this.id.number}`
         }
         get isBlooded() {
             if (this.pp < 50) {
@@ -84,10 +84,10 @@ const DM = (() => {
                 return false
             }
         }
-        get wiki(){
+        get wiki() {
             return `https://dnd-5e.herokuapp.com/monsters/${this.name.toLowerCase().replace(/ /g, "-")}`;
         }
-        get self(){
+        get self() {
             console.log("\n%c" + this.name.toUpperCase(), "font-family: Georgia, serif; font-size: 16px;");
             console.log("HP: %c" + this.currentHP + "/" + this.maxHP + " (" + this.pp + "%)", "color: " + getColor(this.pp));
             console.log(`AC: ${this.AC}`);
@@ -106,7 +106,7 @@ const DM = (() => {
         }
     };
 
-    DM_obj.monster = (()=>{
+    DM_obj.monster = (() => {
         return Monster;
     })();
 
@@ -210,13 +210,24 @@ const DM = (() => {
                         <h3>${mnstr.name}</h3>
                         <span class="ac-shield">AC: ${mnstr.AC}</span>
                         <span id="attack${mnstr.strID}">Attack Roll: ${mnstr.attack < 0 ? mnstr.attack : `+${mnstr.attack}`}</span>
-                        <span style="color:${mnstr.id.color}">ID: ${mnstr.strID}</span>
+                        <span id="id${mnstr.strID}" style="color:${mnstr.id.color}">ID: ${mnstr.strID}</span>
                         <div class="fill-bar health-bar"><span class="fill" style="width: ${mnstr.pp}%; background: ${getColor(mnstr.pp)}">${mnstr.currentHP}/${mnstr.maxHP}</span></div>
                         <div class="monster-buttons"><i class="fa fa-info-circle"></i><i class="fa fa-remove"></i></div>
                     </div>
                     </div>`);
                     document.getElementById(`attack${mnstr.strID}`).addEventListener("click", (e) => {
                         Dice.gfx_dice(`d20+${mnstr.attack}`, e.clientX - 100, e.clientY - 50);
+                    });
+                    document.getElementById(`id${mnstr.strID}`).addEventListener("click", (e) => {
+                        richDice.genPrompt("Set ID", "Set the non-color part of the id.", {
+                            p_title: "ID",
+                            p_placeholder: "4 or d10 or Jeff",
+                            x: e.clientX,
+                            y: e.clientY
+                        }, (data) => {
+                            mnstr.id.number = data;
+                            this.updateBattle();
+                        });
                     });
                     const health_bar = document.getElementsByClassName("health-bar");
                     health_bar[health_bar.length - 1].addEventListener("click", (e) => {
@@ -368,6 +379,7 @@ const DM = (() => {
                             ${list}
                         </datalist>`);
                         library.addPrompt("Quantity", "1");
+                        library.addPrompt("Color Grouping", "orange");
                         // handle callback
                         library.render((dom) => {
                             const inputs = dom.getElementsByTagName("input");
@@ -377,14 +389,14 @@ const DM = (() => {
                                         if (!Library.monsters.get(dom.getElementsByClassName(`monster_name_input`)[0].value)) {
                                             return false;
                                         }
+                                        const color_string = dom.getElementsByClassName(`${library.ID}Color Grouping`)[0].value.length ? dom.getElementsByClassName(`${library.ID}Color Grouping`)[0].value.toLowerCase() : genID().color;
                                         let j = isNaN(dom.getElementsByClassName(`${library.ID}Quantity`)[0].value) ? 1 : Number(dom.getElementsByClassName(`${library.ID}Quantity`)[0].value);
                                         if (j == 0)
                                             j = 1;
                                         const monster = Library.monsters.get(dom.getElementsByClassName(`monster_name_input`)[0].value);
-                                        const id_color = genID().color;
                                         for (let i = 0; i < j; i++) {
                                             monster.id = {
-                                                color: id_color,
+                                                color: color_string,
                                                 number: i + 1
                                             };
                                             this.addMonster(monster);

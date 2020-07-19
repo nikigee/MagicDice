@@ -29,7 +29,7 @@
 import MainMenu from "./components/MainMenu.vue";
 
 export default {
-  name: "App",
+  name: "MagicDice",
   components: {
     MainMenu
   }
@@ -38,4 +38,5 @@ export default {
 
 <style>
 @import "./assets/css/style.css";
+@import "./assets/css/animate.min.css";
 </style>

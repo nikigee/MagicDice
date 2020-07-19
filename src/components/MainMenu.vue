@@ -1,11 +1,16 @@
 <template>
-  <transition appear name="animate__fadeInDown">
+  <transition 
+  appear
+  name="loaded-in"
+  enter-active-class="animate__bounce"
+  leave-active-class="animate__bounce"
+  >
     <div id="main-wrap">
       <img src="../assets/images/MagicLogo.png" id="MagicDiceLogo" alt="Magic Dice Logo" />
       <div id="main-menu">
-        <span class="menu-option" id="menu-rolldice">Roll Dice</span>
-        <span class="menu-option" onclick="MagicUI.createCharacter()">Create Character</span>
-        <span class="menu-option" id="menu-load">Load Character</span>
+        <span class="menu-option">Roll Dice</span>
+        <span class="menu-option">Create Character</span>
+        <span class="menu-option">Load Character</span>
       </div>
     </div>
   </transition>
@@ -19,7 +24,6 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-@import "../assets/css/animate.min.css";
 #main-wrap {
   text-align: center;
   top: 0;

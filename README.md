@@ -32,6 +32,29 @@ You can now run this tool in your browser at https://nikgo.me/MagicDice
 ## Getting Started
 I have an example character loaded by default and the character creator is pretty quick and easy so I recommend just getting on and experimenting a bit.
 
+## Project setup
+```
+npm install
+```
+
+### Compiles and hot-reloads for development
+```
+npm run serve
+```
+
+### Compiles and minifies for production
+```
+npm run build
+```
+
+### Lints and fixes files
+```
+npm run lint
+```
+
+### Customize configuration
+See [Configuration Reference](https://cli.vuejs.org/config/).
+
 ## Creating a Character
 1. Use the new character creator and simply input all the basic options.
 1. Use the Edit Mode to make any desired changes.

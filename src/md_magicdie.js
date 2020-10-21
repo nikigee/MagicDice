@@ -595,7 +595,7 @@ const MagicUI = (() => {
     UI.alert = alert;
 
     UI.resetDOM = (callback) => {
-        document.body.innerHTML = `<div id="out-wrap" tabindex="0"><div id="banner"><img src="src/img/Magic-Dice-Logo-Banner-Transparent.png" alt="Magic Dice" onclick="MagicUI.mainMenu()"></div><div id="main"></div></div><div id="notif-section"></div><div id="toolbar-section" class="toolbar-fixed"></div><footer><h3>&#169;Magic Dice 2020</h3><span>A tool created by <a href="https://nikgo.me" target="_blank">Nikita Golev</a></span><span>Contact me by <a href="mailto:ngolev.bus@gmail.com">Email</a></span><span>Github <a href="https://github.com/AdmiralSoviet/MagicDice" target="_blank">Source Code</a></span></footer>`
+        document.body.innerHTML = `<div id="out-wrap" tabindex="0"><div id="banner" style="visibility: hidden"><img src="src/img/Magic-Dice-Logo-Banner-Transparent.png" alt="Magic Dice" onclick="MagicUI.mainMenu()"></div><div id="main"></div></div><div id="notif-section"></div><div id="toolbar-section" class="toolbar-fixed"></div><footer><span>&#169;Magic Dice 2020</span><span>Created by <a href="https://nikgo.me" target="_blank">Nikita Golev</a></span><span><a href="mailto:ngolev.bus@gmail.com">Contact Me</a></span><span><a href="https://github.com/AdmiralSoviet/MagicDice/" target="_blank">Github Repository</a></span><span id="menu-credits"><a>Credits</a></span></footer>`
         UI.populateToolbar();
 
         document.getElementById("out-wrap").addEventListener("char-loaded", (e) => UI.populateToolbar());
@@ -658,17 +658,19 @@ const MagicUI = (() => {
     const x = new MutationObserver(function (e) {
         // when main menu is removed, do this
         if (e[0].removedNodes) {
-            console.log("yeet");
             // we want to delete the video when the user gets off the main menu
-            if (!document.querySelector("#main-wrap") && !document.querySelector("#load-menu") && !document.querySelector("#create-menu") && !document.querySelector(".upload-btn-wrapper")) {
-                if (document.querySelector(".fullscreen-bg")) {
-                    console.log("veet");
-                    document.body.style.removeProperty("background");
-                    document.querySelector(".fullscreen-bg").remove(); // delete video
+            if (!document.querySelector("#main-wrap")) {
+                if (!document.querySelector("#load-menu") && !document.querySelector("#create-menu") && !document.querySelector(".upload-btn-wrapper")) {
+                    if (document.querySelector(".fullscreen-bg")) {
+                        document.body.style.removeProperty("background");
+                        document.querySelector(".fullscreen-bg").remove(); // delete video
+                    }
                 }
+                document.querySelector("#banner").style.visibility = "visible";
+            } else {
+                document.querySelector("#banner").style.visibility = "hidden";
             }
             if (!document.querySelector("#create-menu") && !document.querySelector("#playerBox")) {
-                console.log("meet");
                 document.getElementById("out-wrap").style.removeProperty("background");
             }
         };
@@ -752,17 +754,15 @@ Race: ${document.getElementById("mRace").value}
     The Main Menu and its options go here
     */
     UI.mainMenu = () => {
-        if (!document.querySelector("#magic-BG"))
+        if (!document.querySelector("#magic-BG")) {
             document.body.style.removeProperty("background");
+            document.querySelector("#banner").style.visibility = "hidden";
+        }
         document.getElementById("main").innerHTML = `<div id="main-wrap"><img src="./src/img/MagicLogo.png" id="MagicDiceLogo" alt="Magic Dice Logo"><div id="main-menu">
             <span class="menu-option" id="menu-rolldice">Roll Dice</span>
             <span class="menu-option" onclick="MagicUI.createCharacter()">Create Character</span>
             <span class="menu-option" id="menu-load">Load Character</span>
-            <span class="menu-option" id="menu-loadfile">Upload File</span>
-            <span class="menu-option" onclick="DM.battleBoard.create()">Battle Tracker</span>
-            <span class="menu-option">Settings</span>
-            <span class="menu-option" id="menu-help">Help</span>
-            <span class="menu-option" id="menu-credits">Credits</span></div></div>`;
+            <span class="menu-option" id="menu-loadfile">Upload File</span></div></div>`;
 
         if (!UI.detectMob(true)) {
             if (!document.querySelector("#magic-BG")) {
@@ -818,15 +818,6 @@ Race: ${document.getElementById("mRace").value}
             window.addField("Information & Data:", `<span>Wizards of The Coast - Spells</span>
             <span>Wizards of The Coast - Monsters</span>`);
 
-            window.render();
-        });
-
-        document.getElementById("menu-help").addEventListener("click", (e) => {
-            //document.getElementById("main").innerHTML = "";
-            const window = new richDice((document.body.clientWidth / 2) - 260, 120);
-            window.setTitle("Welcome to Magic Dice!");
-            window.setSize(520, 700);
-            window.addField("tbd", "tbd");
             window.render();
         });
         document.getElementById("menu-loadfile").addEventListener("click", (e) => {

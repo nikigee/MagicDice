@@ -62,16 +62,16 @@ class playerClass {
     constructor(props = {}) {
         const {
             name = "Fighter",
-                url = "https://roll20.net/compendium/dnd5e/" + name,
-                misc = {},
-                hitdie = "d10",
-                spcMod = undefined,
-                start_prof = {
-                    wpn: [],
-                    tool: [],
-                    armr: []
-                },
-                save_throws = ["str", "cnst"]
+            url = "https://roll20.net/compendium/dnd5e/" + name,
+            misc = {},
+            hitdie = "d10",
+            spcMod = undefined,
+            start_prof = {
+                wpn: [],
+                tool: [],
+                armr: []
+            },
+            save_throws = ["str", "cnst"]
         } = props;
         this.name = name;
         this.misc = misc;
@@ -135,12 +135,7 @@ const Load = (() => {
                 return false;
             }
             magicHandler.managed_players.push(this.deSer(characters[character]));
-            const device_width = (window.innerWidth > 0) ? window.innerWidth : screen.width;
-            if (device_width > 436) {
-                magicHandler.last.enableShortcuts();
-            } else {
-                magicHandler.last.render.generate();
-            }
+            magicHandler.last.render.generate();
 
             // emit event for other parts of Magic Dice to use.
             const loaded = new CustomEvent("char-loaded", {
@@ -267,8 +262,8 @@ const Player = (() => {
         constructor(props = {}) {
             const {
                 parent = undefined,
-                    spells = {},
-                    preparedSpells = []
+                spells = {},
+                preparedSpells = []
             } = props;
             this.spells = objToMap(spells);
             this.parent = parent;
@@ -353,7 +348,7 @@ const Player = (() => {
         list(args = {}) {
             const {
                 name = undefined,
-                    lvl = undefined
+                lvl = undefined
             } = args;
             if (args.name) {
                 args.name = args.name.toLowerCase();
@@ -376,7 +371,7 @@ const Player = (() => {
         constructor(props = {}) {
             const {
                 gold = Math.floor(Math.random() * 100) + 1,
-                    backpack = {}
+                backpack = {}
             } = props;
             this.gold = gold;
             this.backpack = objToMap(backpack);
@@ -460,11 +455,11 @@ const Player = (() => {
         constructor(props = {}) {
             const {
                 parent = undefined,
-                    hitdie = parent.lvl + parent.player_class.hitdie,
-                    maxHP = new Dice(`${new Dice(parent.player_class.hitdie).max} + ${(parent.lvl - 1) + parent.player_class.hitdie}->${parent.stats.ability_mod.cnst}`).total,
-                    currentHP = maxHP,
-                    defaultAC = 10 + parent.stats.ability_mod.dex,
-                    currentAC = defaultAC
+                hitdie = parent.lvl + parent.player_class.hitdie,
+                maxHP = new Dice(`${new Dice(parent.player_class.hitdie).max} + ${(parent.lvl - 1) + parent.player_class.hitdie}->${parent.stats.ability_mod.cnst}`).total,
+                currentHP = maxHP,
+                defaultAC = 10 + parent.stats.ability_mod.dex,
+                currentAC = defaultAC
             } = props;
             this.maxHP = maxHP;
             this.currentHP = currentHP;
@@ -521,129 +516,129 @@ const Player = (() => {
         constructor(props = {}) {
             const {
                 parent = undefined,
-                    save_throws = parent.player_class.save_throws,
-                    marks = [],
-                    expert = [],
-                    ability = genABS(27),
-                    inspiration = "",
-                    speed = 30,
-                    misc_prof = {
-                        lang: ["Common"],
-                        wpn: parent.player_class.start_prof.wpn,
-                        tool: parent.player_class.start_prof.tool,
-                        armr: parent.player_class.start_prof.armr
+                save_throws = parent.player_class.save_throws,
+                marks = [],
+                expert = [],
+                ability = genABS(27),
+                inspiration = "",
+                speed = 30,
+                misc_prof = {
+                    lang: ["Common"],
+                    wpn: parent.player_class.start_prof.wpn,
+                    tool: parent.player_class.start_prof.tool,
+                    armr: parent.player_class.start_prof.armr
+                },
+                misc_notes = "",
+                skill_modifiers = {
+                    acrobatics: {
+                        name: "Acrobatics",
+                        raw: "dex",
+                        expert: false,
+                        proficent: false
                     },
-                    misc_notes = "",
-                    skill_modifiers = {
-                        acrobatics: {
-                            name: "Acrobatics",
-                            raw: "dex",
-                            expert: false,
-                            proficent: false
-                        },
-                        animal_handling: {
-                            name: "Animal Handling",
-                            raw: "wis",
-                            expert: false,
-                            proficent: false
-                        },
-                        arcana: {
-                            name: "Arcana",
-                            raw: "int",
-                            expert: false,
-                            proficent: false
-                        },
-                        athletics: {
-                            name: "Athletics",
-                            raw: "str",
-                            expert: false,
-                            proficent: false
-                        },
-                        deception: {
-                            name: "Deception",
-                            raw: "chr",
-                            expert: false,
-                            proficent: false
-                        },
-                        history: {
-                            name: "History",
-                            raw: "int",
-                            expert: false,
-                            proficent: false
-                        },
-                        insight: {
-                            name: "Insight",
-                            raw: "wis",
-                            expert: false,
-                            proficent: false
-                        },
-                        intimidation: {
-                            name: "Intimidation",
-                            raw: "chr",
-                            expert: false,
-                            proficent: false
-                        },
-                        investigation: {
-                            name: "Investigation",
-                            raw: "int",
-                            expert: false,
-                            proficent: false
-                        },
-                        medicine: {
-                            name: "Medicine",
-                            raw: "wis",
-                            expert: false,
-                            proficent: false
-                        },
-                        nature: {
-                            name: "Nature",
-                            raw: "int",
-                            expert: false,
-                            proficent: false
-                        },
-                        perception: {
-                            name: "Perception",
-                            raw: "wis",
-                            expert: false,
-                            proficent: false
-                        },
-                        performance: {
-                            name: "Performance",
-                            raw: "chr",
-                            expert: false,
-                            proficent: false
-                        },
-                        persuasion: {
-                            name: "Persuasion",
-                            raw: "chr",
-                            expert: false,
-                            proficent: false
-                        },
-                        religon: {
-                            name: "Religon",
-                            raw: "int",
-                            expert: false,
-                            proficent: false
-                        },
-                        sleight_of_hand: {
-                            name: "Sleight of Hand",
-                            raw: "dex",
-                            expert: false,
-                            proficent: false
-                        },
-                        stealth: {
-                            name: "Stealth",
-                            raw: "dex",
-                            expert: false,
-                            proficent: false
-                        },
-                        survival: {
-                            name: "Survival",
-                            raw: "wis",
-                            expert: false,
-                            proficent: false
-                        }
+                    animal_handling: {
+                        name: "Animal Handling",
+                        raw: "wis",
+                        expert: false,
+                        proficent: false
+                    },
+                    arcana: {
+                        name: "Arcana",
+                        raw: "int",
+                        expert: false,
+                        proficent: false
+                    },
+                    athletics: {
+                        name: "Athletics",
+                        raw: "str",
+                        expert: false,
+                        proficent: false
+                    },
+                    deception: {
+                        name: "Deception",
+                        raw: "chr",
+                        expert: false,
+                        proficent: false
+                    },
+                    history: {
+                        name: "History",
+                        raw: "int",
+                        expert: false,
+                        proficent: false
+                    },
+                    insight: {
+                        name: "Insight",
+                        raw: "wis",
+                        expert: false,
+                        proficent: false
+                    },
+                    intimidation: {
+                        name: "Intimidation",
+                        raw: "chr",
+                        expert: false,
+                        proficent: false
+                    },
+                    investigation: {
+                        name: "Investigation",
+                        raw: "int",
+                        expert: false,
+                        proficent: false
+                    },
+                    medicine: {
+                        name: "Medicine",
+                        raw: "wis",
+                        expert: false,
+                        proficent: false
+                    },
+                    nature: {
+                        name: "Nature",
+                        raw: "int",
+                        expert: false,
+                        proficent: false
+                    },
+                    perception: {
+                        name: "Perception",
+                        raw: "wis",
+                        expert: false,
+                        proficent: false
+                    },
+                    performance: {
+                        name: "Performance",
+                        raw: "chr",
+                        expert: false,
+                        proficent: false
+                    },
+                    persuasion: {
+                        name: "Persuasion",
+                        raw: "chr",
+                        expert: false,
+                        proficent: false
+                    },
+                    religon: {
+                        name: "Religon",
+                        raw: "int",
+                        expert: false,
+                        proficent: false
+                    },
+                    sleight_of_hand: {
+                        name: "Sleight of Hand",
+                        raw: "dex",
+                        expert: false,
+                        proficent: false
+                    },
+                    stealth: {
+                        name: "Stealth",
+                        raw: "dex",
+                        expert: false,
+                        proficent: false
+                    },
+                    survival: {
+                        name: "Survival",
+                        raw: "wis",
+                        expert: false,
+                        proficent: false
                     }
+                }
             } = props;
             this.parent = parent;
             this.save_throws = save_throws;
@@ -815,14 +810,14 @@ const Player = (() => {
         constructor(props = {}) {
             const {
                 name = "John Doe",
-                    classData = {},
-                    lvl = 1,
-                    healthData = {},
-                    exp = 0,
-                    magicData = {},
-                    statsData = {},
-                    invData = {},
-                    renderData = {}
+                classData = {},
+                lvl = 1,
+                healthData = {},
+                exp = 0,
+                magicData = {},
+                statsData = {},
+                invData = {},
+                renderData = {}
             } = props;
             statsData.parent = this;
             healthData.parent = this;
@@ -918,77 +913,28 @@ const Player = (() => {
             downloadAnchorNode.remove();
         }
         enableShortcuts(keybinds = {}) {
-            // default keybinds
-            const {
-                self = "x",
-                    gfx_self = "X",
-                    edit_mode = "E",
-                    skills = "c",
-                    inv = "i",
-                    magic = "m",
-                    gfx_magic = "M",
-                    notes = "J",
-                    roll = "R"
-            } = keybinds;
-            // clear event listeners
-            MagicUI.resetDOM(() => {
-                console.log("Cleared previous shortcuts...");
-                document.getElementById("out-wrap").addEventListener("keypress", (e) => {
-                    // don't mistake keypress while typing for a keyboard shortcut
-                    if (e.target.tagName === "INPUT" || e.target.tagName === "TEXTAREA") {
-                        return false;
-                    }
-                    if (e.key == self) {
-                        this.self;
-                    } else if (e.key == gfx_self) {
-                        this.render.generate();
-                    } else if (e.key == edit_mode) {
-                        this.render.toggleEditMode();
-                    } else if (e.key == skills) {
-                        this.stats.list_sthrows();
-                        this.stats.list_skills();
-                    } else if (e.key == inv) {
-                        this.inv.list();
-                    } else if (e.key == magic) {
-                        this.magic.list();
-                    } else if (e.key == gfx_magic) {
-                        this.render.spellbook.generate();
-                    } else if (e.key == roll) {
-                        e.preventDefault();
-                        richDice.genPrompt("Roll Dice", "Enter any RPG style dice combination.", {
-                            p_title: "Dice",
-                            p_placeholder: "8d6",
-                            x: (document.body.clientWidth / 2) - 140,
-                            y: 150
-                        }, (data) => {
-                            Dice.gfx_dice(data, (document.body.clientWidth / 2) - 140, 150);
-                        });
-                    } else if (e.key == notes) {
-                        this.render.misc_notes.generate();
-                    }
-                });
-            });
-            console.log("Shortcuts enabled!");
-            MagicUI.alert("Shortcuts enabled!");
-            document.body.style.removeProperty("background");
             // print commands
             const window = new richDice((document.body.clientWidth / 2) - 170, 150);
             window.setSize();
             window.setTitle("Magic Dice Shortcuts");
             window.setDescription("A complete list of keyboard shortcuts.");
             window.css.alignment = "left";
+            window.addCustomHTML("Functions:", `<ul>
+                <li><strong>Shift + ${MagicUI.shortcuts.save} -</strong> Saves the character.</li>
+                <li><strong>Shift + ${MagicUI.shortcuts.edit_mode} -</strong> Toggles edit mode.</li>
+            </ul>`);
             window.addCustomHTML("Navigation:", `<ul>
-                <li><strong>Shift + ${gfx_self} -</strong> Opens Player Card.</li>
-                <li><strong>Shift + ${edit_mode} -</strong> Toggle edit mode.</li>
-                <li><strong>Shift + ${gfx_magic} -</strong> Opens spellbook.</li>
-                <li><strong>Shift + ${roll} -</strong> Roll dice menu.</li>
-                <li><strong>Shift + ${notes} -</strong> Opens the notebook for tracking character notes.</li>
+                <li><strong>Shift + ${MagicUI.shortcuts.gfx_self} -</strong> Opens Player Card.</li>
+                <li><strong>Shift + ${MagicUI.shortcuts.gfx_magic} -</strong> Opens spellbook.</li>
+                <li><strong>Shift + ${MagicUI.shortcuts.roll} -</strong> Roll dice menu.</li>
+                <li><strong>Shift + ${MagicUI.shortcuts.notes} -</strong> Opens the notebook for tracking character notes.</li>
+                <li><strong>Shift + ${MagicUI.shortcuts.shortcuts} -</strong> Opens this list of shortcuts.</li>
             </ul>`);
             window.addCustomHTML("Console:", `<ul>
-                <li><strong>${self} -</strong> Prints character information to console.</li>
-                <li><strong>${skills} -</strong> Prints all character skills plus saving throws to console.</li>
-                <li><strong>${inv} -</strong> Prints a character's inventory.</li>
-                <li><strong>${magic} -</strong> Lists character spells.</li>
+                <li><strong>${MagicUI.shortcuts.self} -</strong> Prints character information to console.</li>
+                <li><strong>${MagicUI.shortcuts.skills} -</strong> Prints all character skills plus saving throws to console.</li>
+                <li><strong>${MagicUI.shortcuts.inv} -</strong> Prints a character's inventory.</li>
+                <li><strong>${MagicUI.shortcuts.magic} -</strong> Lists character spells.</li>
             </ul>`);
             window.render();
         }

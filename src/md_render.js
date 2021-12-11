@@ -164,7 +164,7 @@ const Render = (() => {
                             throw new Error("Invalid value entered!");
                         } else {
                             this.parent.inv.gold += Number(data);
-                            console.log(`Gold: ${this.parent.inv.gold-Number(data)} -> ${this.parent.inv.gold}`);
+                            console.log(`Gold: ${this.parent.inv.gold - Number(data)} -> ${this.parent.inv.gold}`);
                             if (Number(this.parent.inv.gold) < 0) {
                                 this.parent.inv.gold = 0;
                             }
@@ -418,22 +418,22 @@ const Render = (() => {
                         <span class="label">HP</span>
                         <div class="fill-bar health-bar"><span class="fill" style="width: ${percent}%; background: ${getColor(percent)}">${PlayerCard.master.parent.health.currentHP}/${PlayerCard.master.parent.health.maxHP}</span></div>
                     </div>
-                    <div class="row">
+                    <div class="row" style="display: flex;align-items: center;justify-content: space-between;">
                         <div class="playerTools">
-                            <i class="fa fa-bed" aria-hidden="true"></i><i class="fa fa-medkit editable ed_health_hitdice" aria-hidden="true"></i></i><i class="fa fa-magic" aria-hidden="true"></i><i class="fa fa-address-book" aria-hidden="true"></i><i class="fa fa-qrcode" aria-hidden="true"></i>
+                            <i class="fa fa-bed" aria-hidden="true"></i><i class="fa fa-medkit editable ed_health_hitdice" aria-hidden="true"></i></i><i class="fa fa-address-book" aria-hidden="true"></i><i class="fa fa-qrcode" aria-hidden="true"></i><i class="fa fa-keyboard"></i><i class="fa fa-download"></i>
                         </div>
+                        <div class="edit-wrap"><span>Edit Mode</span> <label class="switch"><input type="checkbox"><span class="slider round"></span></label></div>
                     </div>
-                    <div class="splitterLeft">
-                        <div class="editable ed_health_currentAC caption"><label>AC </label><br><p>${PlayerCard.master.parent.health.currentAC}</p></div>
-                        <div class="caption"><label>Initiative </label><br><p>${PlayerCard.master.parent.stats.ability_mod.dex}</p></div>
-                        <div class="editable ed_speed caption"><label>Speed </label><br><p>${PlayerCard.master.parent.stats.speed}</p></div>
-                        <div class="caption"><label>Passive Perception </label><br><p>${PlayerCard.master.parent.stats.passive_perception}</p></div>
-                    </div>
-                    <div class="splitterRight">
-                        <div class="editable ed_exp caption"><label>Experience </label><br><p>${PlayerCard.master.parent.exp} XP</p></div>
-                        <div class="caption"><label>Proficiency Bonus </label><br><p>${PlayerCard.master.parent.stats.prof}</p></div>
-                        <div class="editable ed_inv_gold caption"><label>Gold </label><br><p>${PlayerCard.master.parent.inv.gold} GP</p></div>
-                        <div class="caption"><label>Inventory </label><br><p>${invCount} Items</p></div>
+                    <div class="playerExtra">
+                            <div class="editable ed_health_currentAC caption"><label>AC </label><br><p>${PlayerCard.master.parent.health.currentAC}</p></div>
+                            <div class="caption"><label>Initiative </label><br><p>${PlayerCard.master.parent.stats.ability_mod.dex}</p></div>
+                            <div class="editable ed_speed caption"><label>Speed </label><br><p>${PlayerCard.master.parent.stats.speed}</p></div>
+                            <div class="caption"><label>Passive Perception </label><br><p>${PlayerCard.master.parent.stats.passive_perception}</p></div>
+                            <div class="editable ed_exp caption"><label>Experience </label><br><p>${PlayerCard.master.parent.exp} XP</p></div>
+                            <div class="caption"><label>Proficiency Bonus </label><br><p>${PlayerCard.master.parent.stats.prof}</p></div>
+                            <div class="editable ed_inv_gold caption"><label>Gold </label><br><p>${PlayerCard.master.parent.inv.gold} GP</p></div>
+                            <div class="caption"><label>Inventory </label><br><p>${invCount} Items</p></div>
+                            <div class="caption"><label>Hitdie </label><br><p>${PlayerCard.master.parent.health.hitdie}</p></div>
                     </div>
                     <div class="ability_scores">
                         <div class="mod_pill editable ed_ability_str">
@@ -509,6 +509,15 @@ const Render = (() => {
                     });
                 });
             });
+            box.querySelector(".fa-keyboard").addEventListener("click", (e) => {
+                PlayerCard.master.parent.enableShortcuts();
+            });
+            if (PlayerCard.master.parent.render.editMode) {
+                document.querySelector(".edit-wrap").querySelector("input").checked = true;
+            }
+            document.querySelector(".edit-wrap").querySelector("input").addEventListener("change", (e) => {
+                PlayerCard.master.parent.render.toggleEditMode();
+            });
             box.querySelector(".fa-qrcode").addEventListener("click", (e) => {
                 const data = new Save(PlayerCard.master.parent); // convert to JSON
                 MagicUI.alert("Connecting to server...", {
@@ -558,15 +567,8 @@ const Render = (() => {
                 PlayerCard.update();
                 window.render();
             });
-            box.querySelector(".fa-magic").addEventListener("click", (e) => {
-                richDice.genPrompt("Roll Dice", "Enter the dice combination of the roll.", {
-                    p_title: "Dice",
-                    p_placeholder: "8d6",
-                    x: e.pageX - 50,
-                    y: e.pageY - 20
-                }, (data) => {
-                    Dice.gfx_dice(data, e.pageX - 50, e.pageY - 20);
-                });
+            box.querySelector(".fa-download").addEventListener("click", (e) => {
+                PlayerCard.master.parent.saveToFile();
             });
             box.querySelector(".fa-address-book").addEventListener("click", (e) => {
                 const window = new richDice(e.pageX, e.pageY);
@@ -578,9 +580,9 @@ const Render = (() => {
 
                 window.addCustomHTML("Languages", `
                     <div class="pill-list langs">
-                    ${(()=>{
+                    ${(() => {
                         let html = ``;
-                        PlayerCard.master.parent.stats.misc_prof.lang.forEach(v=> html += `<span>${v}</span>`);
+                        PlayerCard.master.parent.stats.misc_prof.lang.forEach(v => html += `<span>${v}</span>`);
                         html += `<span class='add-more'><i class="fa fa-plus" aria-hidden="true"></i></span>`;
                         return html;
                     })()}
@@ -588,9 +590,9 @@ const Render = (() => {
                 `);
                 window.addCustomHTML("Weapons", `
                     <div class="pill-list wpns">
-                    ${(()=>{
+                    ${(() => {
                         let html = "";
-                        PlayerCard.master.parent.stats.misc_prof.wpn.forEach(v=> html += `<span>${v}</span>`);
+                        PlayerCard.master.parent.stats.misc_prof.wpn.forEach(v => html += `<span>${v}</span>`);
                         html += `<span class='add-more'><i class="fa fa-plus" aria-hidden="true"></i></span>`;
                         return html;
                     })()}
@@ -598,9 +600,9 @@ const Render = (() => {
                 `);
                 window.addCustomHTML("Tools", `
                     <div class="pill-list tools">
-                    ${(()=>{
+                    ${(() => {
                         let html = "";
-                        PlayerCard.master.parent.stats.misc_prof.tool.forEach(v=> html += `<span>${v}</span>`);
+                        PlayerCard.master.parent.stats.misc_prof.tool.forEach(v => html += `<span>${v}</span>`);
                         html += `<span class='add-more'><i class="fa fa-plus" aria-hidden="true"></i></span>`;
                         return html;
                     })()}
@@ -608,9 +610,9 @@ const Render = (() => {
                 `);
                 window.addCustomHTML("Armor", `
                     <div class="pill-list armrs">
-                    ${(()=>{
+                    ${(() => {
                         let html = "";
-                        PlayerCard.master.parent.stats.misc_prof.armr.forEach(v=> html += `<span>${v}</span>`);
+                        PlayerCard.master.parent.stats.misc_prof.armr.forEach(v => html += `<span>${v}</span>`);
                         html += `<span class='add-more'><i class="fa fa-plus" aria-hidden="true"></i></span>`;
                         return html;
                     })()}
@@ -700,14 +702,14 @@ const Render = (() => {
                 window.addField("Current Hitdice", PlayerCard.master.parent.health.hitdie);
                 window.addCustomHTML("Hitdice", `
                     <select>
-                        ${(()=>{
-                            let html = "";
-                            let hitdie = Dice.diceObj(PlayerCard.master.parent.health.hitdie);
-                            for(let i = 1; i <= hitdie.stats.iterator; i++){
-                                html += `<option value=${i}>${i}</option>`;
-                            }
-                            return html;
-                        })()}
+                        ${(() => {
+                        let html = "";
+                        let hitdie = Dice.diceObj(PlayerCard.master.parent.health.hitdie);
+                        for (let i = 1; i <= hitdie.stats.iterator; i++) {
+                            html += `<option value=${i}>${i}</option>`;
+                        }
+                        return html;
+                    })()}
                     </select>
                 `);
                 window.addButton("submit", `<i class="fa fa-check" aria-hidden="true"></i> Submit`);
@@ -746,28 +748,28 @@ const Render = (() => {
                         <div class="ply_moreinfo">
                             <div class="skl_savethrows skl_tab">
                                 <h4 class="moreinfo_header">Saving Throws</h4>
-                                ${(()=>{
-                                    let text = "";
-                                    PlayerCard.master.parent.stats.sthrows.forEach((v, k)=>{
-                                        text += `<span class="skl_row editable ed_sthrow_${k}"><span class="skl_caption">${PlayerCard.master.parent.stats.save_throws.includes(k) ? '<i class="fa fa-star" aria-hidden="true"></i>' : '<i class="fa fa-star-o" aria-hidden="true"></i>'} ${convertText(k)}</span>
+                                ${(() => {
+                        let text = "";
+                        PlayerCard.master.parent.stats.sthrows.forEach((v, k) => {
+                            text += `<span class="skl_row editable ed_sthrow_${k}"><span class="skl_caption">${PlayerCard.master.parent.stats.save_throws.includes(k) ? '<i class="fa fa-star" aria-hidden="true"></i>' : '<i class="fa fa-star-o" aria-hidden="true"></i>'} ${convertText(k)}</span>
                                         <span class="skl_point">${v}</span></span>`
-                                    });
-                                    return text;
-                                })()}
+                        });
+                        return text;
+                    })()}
                             </div>
                             <div class="skl_skills skl_tab">
                                 <h4 class="moreinfo_header">Skills</h4>
-                                ${(()=>{
-                                    let text = "";
-                                    for(var property in PlayerCard.master.parent.stats.skills)
-                                        if(PlayerCard.master.parent.stats.skills.hasOwnProperty(property)){
-                                            const skill = PlayerCard.master.parent.stats.skills[property];
-                                            const skill_info = PlayerCard.master.parent.stats.skill_modifiers[property];
-                                            text += `<span class="skl_row skl_smaller editable ed_skl_${property}"><span class="skl_caption">${skill_info.proficent ? '<i class="fa fa-star" aria-hidden="true"></i>' : '<i class="fa fa-star-o" aria-hidden="true"></i>'} ${skill_info.name}</span>
+                                ${(() => {
+                        let text = "";
+                        for (var property in PlayerCard.master.parent.stats.skills)
+                            if (PlayerCard.master.parent.stats.skills.hasOwnProperty(property)) {
+                                const skill = PlayerCard.master.parent.stats.skills[property];
+                                const skill_info = PlayerCard.master.parent.stats.skill_modifiers[property];
+                                text += `<span class="skl_row skl_smaller editable ed_skl_${property}"><span class="skl_caption">${skill_info.proficent ? '<i class="fa fa-star" aria-hidden="true"></i>' : '<i class="fa fa-star-o" aria-hidden="true"></i>'} ${skill_info.name}</span>
                                             <span class="skl_point">${skill}</span></span>`
-                                        }
-                                    return text;
-                                })()}
+                            }
+                        return text;
+                    })()}
                             </div>
                         </div>
                         `;
@@ -894,7 +896,7 @@ const Render = (() => {
         spellbook.populate = (opt = {}) => {
             const {
                 library = false,
-                    name = ""
+                name = ""
             } = opt;
             if (opt.name)
                 opt.name = opt.name.toLowerCase();
@@ -1070,7 +1072,7 @@ const Render = (() => {
         constructor(props = {}) {
             const {
                 parent = undefined,
-                    avatar = "./src/img/render_default.jpg"
+                avatar = "./src/img/render_default.jpg"
             } = props;
             this.avatar = avatar;
             this.ID = Math.floor(Math.random() * 999999);
@@ -1090,14 +1092,21 @@ const Render = (() => {
         }
         toggleEditMode() {
             this.editMode = (this.editMode) ? false : true; // change edit mode
+            const edit = document.querySelector(".edit-wrap");
             if (this.editMode == true) {
                 document.body.insertAdjacentHTML("beforeEnd", `<h2 id="alertPopUp">*EDIT MODE*</h2>`);
                 if (MagicUI.toolbars.get(this.ID))
                     MagicUI.toolbars.get(this.ID).querySelector(".fa-pencil").classList.add("active"); // make it always gold
+                if (edit) {
+                    edit.querySelector("input").checked = true;
+                }
             } else {
                 document.querySelector("#alertPopUp").remove();
                 if (MagicUI.toolbars.get(this.ID))
                     MagicUI.toolbars.get(this.ID).querySelector(".fa-pencil").classList.remove("active"); // remove that
+                if (edit) {
+                    edit.querySelector("input").checked = false;
+                }
             }
         }
     };

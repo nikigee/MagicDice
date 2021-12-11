@@ -21,7 +21,7 @@ const Dice = (() => {
             return diceObj;
         }
         serialise() {
-            return `${this.stats.iterator}d${this.stats.face}${(this.stats.foreach_modifier) ? "->"+this.stats.foreach_modifier : ""}`;
+            return `${this.stats.iterator}d${this.stats.face}${(this.stats.foreach_modifier) ? "->" + this.stats.foreach_modifier : ""}`;
         }
         roll() {
             let num;
@@ -63,7 +63,7 @@ const Dice = (() => {
         constructor(dice = "d20", opts = {}) {
             const {
                 x = (document.body.clientWidth / 2) - 225,
-                    y = 150
+                y = 150
             } = opts;
             this.pos = {
                 x,
@@ -131,7 +131,7 @@ const Dice = (() => {
                     console.log("Modifier (+" + x.stats.foreach_modifier + ")");
                 }
                 x.list.forEach((x, i) => {
-                    console.log(`Roll ${i+1}: ${x}`);
+                    console.log(`Roll ${i + 1}: ${x}`);
                 });
             });
             console.log(`Total = ${this.compText}`);
@@ -153,11 +153,11 @@ const Dice = (() => {
                 let htmlList = "<div class='dice-table'>"; // start the custom html table
 
                 x.list.forEach((v, i) => {
-                    htmlList += `<div class="gfx_dice">${v}</div>${(i+1 == x.stats.iterator) ? "" : "+"}`;
+                    htmlList += `<div class="gfx_dice">${v}</div>${(i + 1 == x.stats.iterator) ? "" : "+"}`;
                 });
 
                 htmlList += "</div>";
-                dice.addCustomHTML(`${i ? i+". " : ""}Roll (${x.string}):`, htmlList);
+                dice.addCustomHTML(`${i ? i + ". " : ""}Roll (${x.string}):`, htmlList);
             });
             if (Number(this.compText) != this.total)
                 dice.addField("Evaluation: ", `Total = ${this.compText}`);
@@ -345,8 +345,8 @@ const richDice = (() => {
                     <span>${v.content}</span>`;
                 } else if (v.type == 1) {
                     content += `
-                    <label for="${this.ID+k}">${k}</label>
-                    <input type="text" placeholder="${v.content}" class="${this.ID+k}">`;
+                    <label for="${this.ID + k}">${k}</label>
+                    <input type="text" placeholder="${v.content}" class="${this.ID + k}">`;
                 } else if (v.type == 2) {
                     content += `
                         <h4>${k}</h4>
@@ -354,9 +354,9 @@ const richDice = (() => {
                 }
             });
             content += `<div class='buttons'>
-                ${(()=>{
+                ${(() => {
                     let text = "";
-                    this.buttons.forEach((v, k)=>{
+                    this.buttons.forEach((v, k) => {
                         text += `<button class=${k}>${v}</button>`;
                     });
                     return text;
@@ -425,9 +425,9 @@ const richDice = (() => {
         }, callback) {
             const {
                 p_title = p_title,
-                    p_placeholder = p_placeholder,
-                    x = x,
-                    y = y
+                p_placeholder = p_placeholder,
+                x = x,
+                y = y
             } = opts;
             const window = new richDice(opts.x, opts.y);
             window.setTitle(title);
@@ -463,17 +463,17 @@ const Spell = (() => {
         constructor(props = {}) {
             const {
                 name = "Unkown Spell",
-                    level = "1st",
-                    school = "Spell",
-                    components = "V S",
-                    ctime = "1 Action",
-                    ritual = "no",
-                    concentration = "no",
-                    description = "No description exists for this spell.",
-                    duration = "Instantaneous",
-                    range = "10 feet",
-                    roll = "0d4",
-                    url = "https://dnd5e.fandom.com/wiki/" + name.replace(/ /g, "_"),
+                level = "1st",
+                school = "Spell",
+                components = "V S",
+                ctime = "1 Action",
+                ritual = "no",
+                concentration = "no",
+                description = "No description exists for this spell.",
+                duration = "Instantaneous",
+                range = "10 feet",
+                roll = "0d4",
+                url = "https://dnd5e.fandom.com/wiki/" + name.replace(/ /g, "_"),
             } = props;
             this.name = name;
             if (!isNaN(level)) {
@@ -532,15 +532,15 @@ class Item {
     constructor(props = {}) {
         const {
             name = "Unkown Item",
-                cost = 0,
-                dmg = "",
-                dmgType = "",
-                range = 10,
-                desc = "No description exists for this item",
-                weight = 1,
-                qnty = 1,
-                properties = [],
-                singleUse = false
+            cost = 0,
+            dmg = "",
+            dmgType = "",
+            range = 10,
+            desc = "No description exists for this item",
+            weight = 1,
+            qnty = 1,
+            properties = [],
+            singleUse = false
         } = props;
         this.name = name;
         this.cost = cost;
@@ -562,9 +562,9 @@ const MagicUI = (() => {
     function alert(msg, opts = {}) {
         let {
             type = "none",
-                background = "rgba(43, 154, 47, 0.85)",
-                color = "white",
-                icon = "fa-check"
+            background = "rgba(43, 154, 47, 0.85)",
+            color = "white",
+            icon = "fa-check"
         } = opts;
         if (type == "info") {
             background = "rgba(40, 56, 146, 0.85)";
@@ -594,11 +594,66 @@ const MagicUI = (() => {
 
     UI.alert = alert;
 
+    // default keybinds
+    UI.shortcuts = {
+        self: "x",
+        gfx_self: "X",
+        edit_mode: "E",
+        skills: "c",
+        inv: "i",
+        magic: "m",
+        gfx_magic: "M",
+        notes: "J",
+        roll: "R",
+        shortcuts: "K",
+        save: "S"
+    };
+
     UI.resetDOM = (callback) => {
         document.body.innerHTML = `<div id="out-wrap" tabindex="0"><div id="banner" style="visibility: hidden"><img src="src/img/Magic-Dice-Logo-Banner-Transparent.png" alt="Magic Dice" onclick="MagicUI.mainMenu()"></div><div id="main"></div></div><div id="notif-section"></div><div id="toolbar-section" class="toolbar-fixed"></div><footer><span>&#169;Magic Dice 2020</span><span>Created by <a href="https://nikgo.me" target="_blank">Nikita Golev</a></span><span><a href="mailto:ngolev.bus@gmail.com">Contact Me</a></span><span><a href="https://github.com/AdmiralSoviet/MagicDice/" target="_blank">Github Repository</a></span><span id="menu-credits"><a>Credits</a></span></footer>`
-        UI.populateToolbar();
+        //UI.populateToolbar();
 
         document.getElementById("out-wrap").addEventListener("char-loaded", (e) => UI.populateToolbar());
+
+        // shortcuts
+        document.getElementById("out-wrap").addEventListener("keypress", (e) => {
+            // don't mistake keypress while typing for a keyboard shortcut
+            if (e.target.tagName === "INPUT" || e.target.tagName === "TEXTAREA") {
+                return false;
+            }
+            if (e.key == UI.shortcuts.self) {
+                magicHandler.last.self;
+            } else if (e.key == UI.shortcuts.gfx_self) {
+                magicHandler.last.render.generate();
+            } else if (e.key == UI.shortcuts.edit_mode) {
+                magicHandler.last.render.toggleEditMode();
+            } else if (e.key == UI.shortcuts.skills) {
+                magicHandler.last.stats.list_sthrows();
+                magicHandler.last.stats.list_skills();
+            } else if (e.key == UI.shortcuts.inv) {
+                magicHandler.last.inv.list();
+            } else if (e.key == UI.shortcuts.magic) {
+                magicHandler.last.magic.list();
+            } else if (e.key == UI.shortcuts.gfx_magic) {
+                magicHandler.last.render.spellbook.generate();
+            } else if (e.key == UI.shortcuts.roll) {
+                e.preventDefault();
+                richDice.genPrompt("Roll Dice", "Enter any RPG style dice combination.", {
+                    p_title: "Dice",
+                    p_placeholder: "8d6",
+                    x: (document.body.clientWidth / 2) - 140,
+                    y: 150
+                }, (data) => {
+                    Dice.gfx_dice(data, (document.body.clientWidth / 2) - 140, 150);
+                });
+            } else if (e.key == UI.shortcuts.notes) {
+                magicHandler.last.render.misc_notes.generate();
+            } else if (e.key == UI.shortcuts.shortcuts) {
+                magicHandler.last.enableShortcuts();
+            } else if (e.key == UI.shortcuts.save) {
+                magicHandler.last.save();
+            }
+        });
 
         x.observe(document.getElementById("main"), {
             childList: true
@@ -610,42 +665,70 @@ const MagicUI = (() => {
     UI.toolbars = new Map();
     UI.populateToolbar = () => {
         const device_width = (window.innerWidth > 0) ? window.innerWidth : screen.width;
-        if (magicHandler.managed_players.length && device_width > 436) {
-            document.querySelector("#out-wrap").style.minHeight = "calc(100vh - 38px)";
-        }
 
-        const toolbar = document.getElementById("toolbar-section");
-        toolbar.innerHTML = "";
-        for (let i = 0; i < magicHandler.managed_players.length; i++) {
-            let initials = magicHandler.managed_players[i].name.match(/\b\w/g) || [];
-            initials = ((initials.shift() || '') + (initials.pop() || '')).toUpperCase();
-            toolbar.insertAdjacentHTML("beforeend", `<div class="toolbar-hero"><span>${initials}</span><i class="fa fa-user-circle"></i><i class="fa fa-pencil" aria-hidden="true"></i><i class="fa fa-book"></i><i class="fa fa-sticky-note"></i><i class="fa fa-keyboard-o"></i><i class="fa fa-floppy-o"></i><i class="fa fa-cloud"></i><i class="fa fa-trash-o"></i></div>`);
-            document.getElementsByClassName("toolbar-hero")[i].getElementsByClassName("fa-pencil")[0].addEventListener("click", (e) => {
-                magicHandler.managed_players[i].render.toggleEditMode();
-            });
-            document.getElementsByClassName("toolbar-hero")[i].getElementsByClassName("fa-user-circle")[0].addEventListener("click", (e) => {
-                magicHandler.managed_players[i].render.generate();
-            });
-            document.getElementsByClassName("toolbar-hero")[i].getElementsByClassName("fa-book")[0].addEventListener("click", (e) => {
-                magicHandler.managed_players[i].render.spellbook.generate();
-            });
-            document.getElementsByClassName("toolbar-hero")[i].getElementsByClassName("fa-floppy-o")[0].addEventListener("click", (e) => {
-                magicHandler.managed_players[i].saveToFile();
-            });
-            document.getElementsByClassName("toolbar-hero")[i].getElementsByClassName("fa-cloud")[0].addEventListener("click", (e) => {
-                magicHandler.managed_players[i].save();
-            });
-            document.getElementsByClassName("toolbar-hero")[i].getElementsByClassName("fa-trash-o")[0].addEventListener("click", (e) => {
-                magicHandler.managed_players.splice(i, 1);
-                UI.resetDOM(() => UI.mainMenu());
-            });
-            document.getElementsByClassName("toolbar-hero")[i].getElementsByClassName("fa-keyboard-o")[0].addEventListener("click", (e) => {
-                magicHandler.managed_players[i].enableShortcuts();
-            });
-            document.getElementsByClassName("toolbar-hero")[i].getElementsByClassName("fa-sticky-note")[0].addEventListener("click", (e) => {
-                magicHandler.managed_players[i].render.misc_notes.generate();
-            });
-            UI.toolbars.set(magicHandler.managed_players[i].render.ID, document.getElementsByClassName("toolbar-hero")[i]); // link every toolbar to a player
+        // Transform the Banner into a navigation bar.
+        if (magicHandler.managed_players.length && device_width > 436) {
+            const banner = document.querySelector("#banner");
+            banner.style = "display: flex;flex-flow: row;justify-content: space-around;align-items: center;flex-direction: row;";
+            if (!banner.querySelector(".navbar-wrap")) {
+                //banner.insertAdjacentHTML("beforeend", `<div class="edit-wrap"><span>Edit Mode</span> <label class="switch"><input type="checkbox"><span class="slider round"></span></label></div>`)
+                banner.insertAdjacentHTML("beforeend", `<div class="navbar-wrap"><i class="fa fa-user-circle"></i><i class="fa fa-hat-wizard"></i><i class="fa fa-scroll"></i><i class="fa fa-dice"></i></div>`);
+                const nav = document.querySelector(".navbar-wrap");
+                nav.querySelector(".fa-dice").addEventListener("click", (e) => {
+                    richDice.genPrompt("Roll Dice", "Enter the dice combination of the roll.", {
+                        p_title: "Dice",
+                        p_placeholder: "8d6",
+                        x: e.pageX - 100,
+                        y: e.pageY + 30
+                    }, (data) => {
+                        Dice.gfx_dice(data, e.pageX - 100, e.pageY + 31);
+                    });
+                });
+                nav.querySelector(".fa-user-circle").addEventListener("click", (e)=>{
+                    magicHandler.last.render.generate();
+                });
+                nav.querySelector(".fa-hat-wizard").addEventListener("click", (e)=>{
+                    magicHandler.last.render.spellbook.generate();
+                });
+                nav.querySelector(".fa-scroll").addEventListener("click", (e)=>{
+                    magicHandler.last.render.misc_notes.generate();
+                });
+            }
+            UI.alert(`You can view shortcuts with SHIFT + ${UI.shortcuts.shortcuts}`, { type: "info" });
+        } else if (magicHandler.managed_players.length) {
+            const toolbar = document.getElementById("toolbar-section");
+            toolbar.innerHTML = "";
+            for (let i = 0; i < magicHandler.managed_players.length; i++) {
+                let initials = magicHandler.managed_players[i].name.match(/\b\w/g) || [];
+                initials = ((initials.shift() || '') + (initials.pop() || '')).toUpperCase();
+                toolbar.insertAdjacentHTML("beforeend", `<div class="toolbar-hero"><span>${initials}</span><i class="fa fa-user-circle"></i><i class="fa fa-pencil" aria-hidden="true"></i><i class="fa fa-book"></i><i class="fa fa-sticky-note"></i><i class="fa fa-keyboard-o"></i><i class="fa fa-floppy-o"></i><i class="fa fa-cloud"></i><i class="fa fa-trash-o"></i></div>`);
+                document.getElementsByClassName("toolbar-hero")[i].getElementsByClassName("fa-pencil")[0].addEventListener("click", (e) => {
+                    magicHandler.managed_players[i].render.toggleEditMode();
+                });
+                document.getElementsByClassName("toolbar-hero")[i].getElementsByClassName("fa-user-circle")[0].addEventListener("click", (e) => {
+                    magicHandler.managed_players[i].render.generate();
+                });
+                document.getElementsByClassName("toolbar-hero")[i].getElementsByClassName("fa-book")[0].addEventListener("click", (e) => {
+                    magicHandler.managed_players[i].render.spellbook.generate();
+                });
+                document.getElementsByClassName("toolbar-hero")[i].getElementsByClassName("fa-floppy-o")[0].addEventListener("click", (e) => {
+                    magicHandler.managed_players[i].saveToFile();
+                });
+                document.getElementsByClassName("toolbar-hero")[i].getElementsByClassName("fa-cloud")[0].addEventListener("click", (e) => {
+                    magicHandler.managed_players[i].save();
+                });
+                document.getElementsByClassName("toolbar-hero")[i].getElementsByClassName("fa-trash-o")[0].addEventListener("click", (e) => {
+                    magicHandler.managed_players.splice(i, 1);
+                    UI.resetDOM(() => UI.mainMenu());
+                });
+                document.getElementsByClassName("toolbar-hero")[i].getElementsByClassName("fa-keyboard-o")[0].addEventListener("click", (e) => {
+                    magicHandler.managed_players[i].enableShortcuts();
+                });
+                document.getElementsByClassName("toolbar-hero")[i].getElementsByClassName("fa-sticky-note")[0].addEventListener("click", (e) => {
+                    magicHandler.managed_players[i].render.misc_notes.generate();
+                });
+                UI.toolbars.set(magicHandler.managed_players[i].render.ID, document.getElementsByClassName("toolbar-hero")[i]); // link every toolbar to a player
+            }
         }
     };
     UI.detectMob = (tablet = false) => {
@@ -655,15 +738,21 @@ const MagicUI = (() => {
         else
             return window.innerWidth <= 414;
     }
+    // config for UI
+    UI.settings = {
+        videoBackground: true
+    }
     const x = new MutationObserver(function (e) {
         // when main menu is removed, do this
         if (e[0].removedNodes) {
-            // we want to delete the video when the user gets off the main menu
             if (!document.querySelector("#main-wrap")) {
-                if (!document.querySelector("#load-menu") && !document.querySelector("#create-menu") && !document.querySelector(".upload-btn-wrapper")) {
-                    if (document.querySelector(".fullscreen-bg")) {
-                        document.body.style.removeProperty("background");
-                        document.querySelector(".fullscreen-bg").remove(); // delete video
+                // we decide whether to disable video outside of main menu or not
+                if (!UI.settings.videoBackground) {
+                    if (!document.querySelector("#load-menu") && !document.querySelector("#create-menu") && !document.querySelector(".upload-btn-wrapper")) {
+                        if (document.querySelector(".fullscreen-bg")) {
+                            document.body.style.removeProperty("background");
+                            document.querySelector(".fullscreen-bg").remove(); // delete video
+                        }
                     }
                 }
                 document.querySelector("#banner").style.visibility = "visible";
@@ -823,12 +912,7 @@ Race: ${document.getElementById("mRace").value}
         document.getElementById("menu-loadfile").addEventListener("click", (e) => {
             Load.restoreFromFile();
             document.getElementById("out-wrap").addEventListener("char-loaded", (e) => {
-                const device_width = (window.innerWidth > 0) ? window.innerWidth : screen.width;
-                if (device_width > 436) {
-                    e.detail.enableShortcuts();
-                } else {
-                    e.detail.render.generate();
-                }
+                e.detail.render.generate();
             });
         });
         document.getElementById("menu-rolldice").addEventListener("click", (e) => {

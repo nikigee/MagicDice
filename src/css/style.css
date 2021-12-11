@@ -219,6 +219,46 @@ h3 {
     font-family: "Alegreya", sans-serif;
 }
 
+.navbar-wrap {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.navbar-wrap i {
+    color: #c1cace;
+    font-size: 22px;
+    padding-left: 10px;
+    padding-right: 10px;
+    transition: 0.3s;
+    cursor: pointer;
+}
+
+.navbar-wrap i:hover {
+    color: #a51010;
+    text-shadow: 0px 0px 5px #a71e25;
+}
+
+.edit-wrap {
+    color: #c1cace;
+    font-style: italic;
+    font-size: 12px;
+}
+
+.playerExtra {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    align-content: space-between;
+    /* flex-basis: max-content; */
+    max-height: 170px;
+}
+
+.caption {
+    display: inline-block;
+}
+
 #banner {
     padding: 10px;
     color: white;
@@ -231,6 +271,7 @@ h3 {
 #banner img {
     height: 45px;
     cursor: pointer;
+    vertical-align: middle;
 }
 
 #banner h1 {
@@ -247,6 +288,10 @@ h3 {
     padding-bottom: 60px;
     margin-left: 15px;
     margin-right: 15px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: stretch;
 }
 
 #column1,
@@ -313,6 +358,11 @@ h3 {
 
 #playerBox {
     color: white;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: flex-start;
+    align-content: stretch;
 }
 
 #playerInfo {
@@ -397,6 +447,7 @@ h3 {
 .fill-bar {
     background: rgba(39, 39, 39, 0.831);
     box-shadow: #1a1a1a 0px 0px 1px;
+    border-radius: 5px;
 }
 
 .fill {
@@ -407,6 +458,7 @@ h3 {
     padding-top: 2px;
     padding-bottom: 2px;
     background: limegreen;
+    border-radius: 5px;
 }
 
 .row {
@@ -467,8 +519,8 @@ h3 {
     margin-bottom: 5px;
 }
 
-.mod_pill:hover {
-    box-shadow: #32cd32 0px 0px 10px;
+.mod_pill:hover, .magic_pill:hover{
+    box-shadow: black 0px 0px 5px;
 }
 
 .mod_pill span {
@@ -513,10 +565,6 @@ h3 {
     border-radius: 2px;
 }
 
-.magic_pill:hover {
-    box-shadow: #32cd32 0px 0px 10px;
-}
-
 .magic_pill span {
     display: block;
     text-align: center;
@@ -538,12 +586,17 @@ h3 {
 
 .spellbook {
     display: inline-block;
-    max-width: 1000px;
-    min-width: 511px;
+    /* max-width: 1000px; */
+    /* min-width: 511px; */
     margin: 10px;
-    max-height: 700px;
+    /* max-height: 700px; */
     vertical-align: top;
-    width: 100%;
+    /* width: 100%; */
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: stretch;
+    align-content: stretch;
 }
 
 .spellbook span {
@@ -552,18 +605,20 @@ h3 {
 
 .spellwindow {
     display: inline-block;
-    background: url("../img/simple-old-paper-2-transparent.jpg");
+    background: url(../img/simple-old-paper-2-transparent.jpg);
     background-size: cover;
     box-shadow: black 0px 0px 5px;
-    width: 60%;
+    /* width: 60%; */
     transition: 0.3s;
     -webkit-transition: 0.3s;
     vertical-align: top;
     text-align: left;
     overflow: auto;
-    min-height: 300px;
-    height: 100%;
-    max-height: 700px;
+    /* min-height: 300px; */
+    /* height: 100%; */
+    max-height: 800px;
+    margin-right: 10px;
+    max-width: 700px;
 }
 
 .spellbody {
@@ -630,17 +685,19 @@ h3 {
 }
 
 .spell-list {
-    background: url("../img/simple-old-paper-2-transparent.jpg");
+    background: url(../img/simple-old-paper-2-transparent.jpg);
     background-size: cover;
     box-shadow: black 0px 0px 5px;
     user-select: none;
-    width: calc(40% - 25px);
+    /* width: calc(40% - 25px); */
     transition: 0.3s;
     -webkit-transition: 0.3s;
     display: inline-block;
     overflow: auto;
-    height: 100%;
-    max-height: 700px;
+    /* height: 100%; */
+    max-height: 800px;
+    max-width: 400px;
+    min-width: 300px;
 }
 
 #spells {
@@ -1221,7 +1278,7 @@ footer a:hover {
     width: 100%;
     height: -webkit-fill-available;
     height: -moz-available;
-    max-height: 500px;
+    min-height: 300px;
     font-family: inherit;
     font-size: 16px;
 }

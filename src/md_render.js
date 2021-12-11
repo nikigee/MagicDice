@@ -361,12 +361,8 @@ const Render = (() => {
             document.getElementById("main").innerHTML = ""; // clear first
             document.getElementById("out-wrap").style.background = "rgba(0, 0, 0, 0.35)"; // make background dark
             let newHTML = `<div id="playerBox">
-                <div id="column1">
-                    <img src="${PlayerCard.master.avatar}" class="editable ed_avatar" alt="Avatar">
-                </div>
-                <div id="column2">
-                    <div id="playerInfo"></div>
-                </div>
+                <img src="${PlayerCard.master.avatar}" class="editable ed_avatar" alt="Avatar">
+                <div id="playerInfo"></div>
                 <div id="column3">
                     <div id="playerExtra"></div>
                     <div id="showMore"><i class="fa fa-caret-down" aria-hidden="true"></i></div>
@@ -1047,16 +1043,24 @@ const Render = (() => {
     */
     const MiscNotes = (() => {
         const misc_notes = new SubRender();
+        if (!misc_notes.width || !misc_notes.height) {
+            misc_notes.width = 500;
+            misc_notes.height = 400;
+        }
         misc_notes.generate = () => {
             const window = new richDice((document.body.clientWidth / 2) - 225, 150);
             window.setTitle("Features and Notes");
-            window.setSize(5000);
+            window.setSize(1500);
             window.setDescription("Use this to list your class features or any miscellaneous notes.");
             window.addCustomHTML("", `<textarea class='window-big_box'>${misc_notes.master.parent.stats.misc_notes}</textarea>`);
             window.css.alignment = "left";
             window.render((dom) => {
+                dom.getElementsByClassName("window-big_box")[0].style.width = misc_notes.width;
+                dom.getElementsByClassName("window-big_box")[0].style.height = misc_notes.height;
                 dom.getElementsByClassName("window-big_box")[0].addEventListener("change", (e) => {
                     misc_notes.master.parent.stats.misc_notes = e.target.value;
+                    misc_notes.width = e.target.style.width;
+                    misc_notes.height = e.target.style.height;
                 });
             });
         };

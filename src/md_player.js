@@ -105,6 +105,18 @@ const Load = (() => {
             }
             return new Player(restored);
         },
+        deleteCharacter: function (ID) {
+            try {
+                let list = JSON.parse(localStorage.charList); // get character list
+                delete list[ID];
+                localStorage.charList = JSON.stringify(list);
+                MagicUI.alert(`${ID} is gone, bye bye`);
+            } catch (err) {
+                MagicUI.alert(err, {
+                    type: "error"
+                });
+            }
+        },
         restoreFromObj: function (characterData) {
             try {
                 magicHandler.managed_players.push(this.deSer(characterData));

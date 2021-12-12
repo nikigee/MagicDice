@@ -416,9 +416,9 @@ const Render = (() => {
                     </div>
                     <div class="row" style="display: flex;align-items: center;justify-content: space-between;">
                         <div class="playerTools">
-                            <i class="fa fa-bed" aria-hidden="true"></i><i class="fa fa-medkit editable ed_health_hitdice" aria-hidden="true"></i></i><i class="fa fa-address-book" aria-hidden="true"></i><i class="fa fa-qrcode" aria-hidden="true"></i><i class="fa fa-keyboard"></i><i class="fa fa-download"></i>
+                            <i class="fa fa-bed" aria-hidden="true"></i><i class="fa fa-medkit editable ed_health_hitdice" aria-hidden="true"></i></i><i class="fa fa-address-book" aria-hidden="true"></i><i class="fa fa-keyboard"></i><i class="fa fa-qrcode" aria-hidden="true"></i><i class="fa fa-download"></i>
                         </div>
-                        <div class="edit-wrap"><span>Edit Mode</span> <label class="switch"><input type="checkbox"><span class="slider round"></span></label></div>
+                        <div class="edit-wrap"><span>Edit Mode</span> <label class="switch"><input type="checkbox"><span class="slider round"></span></label> <i class="fa fa-cloud-download"></i></div>
                     </div>
                     <div class="playerExtra">
                             <div class="editable ed_health_currentAC caption"><label>AC </label><br><p>${PlayerCard.master.parent.health.currentAC}</p></div>
@@ -507,6 +507,9 @@ const Render = (() => {
             });
             box.querySelector(".fa-keyboard").addEventListener("click", (e) => {
                 PlayerCard.master.parent.enableShortcuts();
+            });
+            box.querySelector(".fa-cloud-download").addEventListener("click", (e) => {
+                PlayerCard.master.parent.save();
             });
             if (PlayerCard.master.parent.render.editMode) {
                 document.querySelector(".edit-wrap").querySelector("input").checked = true;

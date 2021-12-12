@@ -243,6 +243,15 @@ h3 {
     font-size: 12px;
 }
 
+.edit-wrap i{
+    font-size: 16px;
+}
+
+.edit-wrap i:hover {
+    cursor: pointer;
+    color: #a71e25;
+}
+
 .playerExtra {
     display: flex;
     flex-wrap: wrap;
@@ -521,7 +530,7 @@ h3 {
     margin-bottom: 5px;
 }
 
-.mod_pill:hover, .magic_pill:hover{
+.mod_pill:hover, .magic_pill:hover {
     box-shadow: black 0px 0px 5px;
 }
 
@@ -1426,6 +1435,7 @@ footer a:hover {
     color: white;
     vertical-align: top;
     margin: 10px;
+    position: relative;
 }
 
 .load-file h3 {

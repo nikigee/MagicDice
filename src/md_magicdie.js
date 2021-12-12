@@ -684,16 +684,18 @@ const MagicUI = (() => {
                         Dice.gfx_dice(data, e.pageX - 100, e.pageY + 31);
                     });
                 });
-                nav.querySelector(".fa-user-circle").addEventListener("click", (e)=>{
+                nav.querySelector(".fa-user-circle").addEventListener("click", (e) => {
                     magicHandler.last.render.generate();
                 });
-                nav.querySelector(".fa-hat-wizard").addEventListener("click", (e)=>{
+                nav.querySelector(".fa-hat-wizard").addEventListener("click", (e) => {
                     magicHandler.last.render.spellbook.generate();
                 });
-                nav.querySelector(".fa-scroll").addEventListener("click", (e)=>{
+                nav.querySelector(".fa-scroll").addEventListener("click", (e) => {
                     magicHandler.last.render.misc_notes.generate();
                 });
             }
+            // we want magic dice to only use one character at a time on desktop
+            magicHandler.managed_players = [magicHandler.last];
             UI.alert(`You can view shortcuts with SHIFT + ${UI.shortcuts.shortcuts}`, { type: "info" });
         } else if (magicHandler.managed_players.length) {
             const toolbar = document.getElementById("toolbar-section");
@@ -875,17 +877,31 @@ Race: ${document.getElementById("mRace").value}
                     <div class="tint select-hover">
                     <h3>${characters[property].name}</h3> <span class="lvl-caption">${characters[property].classData.name} lvl.${characters[property].lvl}</span>
                     </div>
+                    <i class="fa fa-times" style="position: absolute;top: 5;right: 7px; visibility: hidden;"></i>
                     </div>`
             };
             const loadFiles = Array.from(document.getElementsByClassName("load-file"));
             loadFiles.forEach((x) => {
+                x.addEventListener("mouseover", (e) => {
+                    x.querySelector(".fa-times").style.visibility = "visible";
+                });
+                x.addEventListener("mouseleave", (e) => {
+                    x.querySelector(".fa-times").style.visibility = "hidden";
+                });
                 x.addEventListener("click", (e) => {
                     let target = e.target;
-                    while (target.classList[0] != "load-file")
-                        target = target.parentNode;
-                    const id = target.id;
-                    Load.restore(id);
+                    if (target == x.querySelector(".fa-times")) {
+                        Load.deleteCharacter(target.parentNode.id);
+                        UI.mainMenu(); // refresh
+                    }
+                    else {
+                        while (target.classList[0] != "load-file")
+                            target = target.parentNode;
+                        const id = target.id;
+                        Load.restore(id);
+                    }
                 });
+
             });
         });
         document.querySelector("#menu-credits").addEventListener("click", () => {

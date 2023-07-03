@@ -1075,6 +1075,32 @@ const Render = (() => {
         return misc_notes;
     });
 
+    const MiscNotesMobile = (() => {
+        const misc_notes = new SubRender();
+        if (!misc_notes.width || !misc_notes.height) {
+            misc_notes.width = 500;
+            misc_notes.height = 400;
+        }
+        misc_notes.generate = () => {
+            const window = new richDice((document.body.clientWidth / 2) - 225, 150);
+            window.setTitle("Features and Notes");
+            window.setSize(1500);
+            window.setDescription("Use this to list your class features or any miscellaneous notes.");
+            window.addCustomHTML("", `<textarea class='window-big_box'>${misc_notes.master.parent.stats.misc_notes}</textarea>`);
+            window.css.alignment = "left";
+            window.render((dom) => {
+                dom.getElementsByClassName("window-big_box")[0].style.width = misc_notes.width;
+                dom.getElementsByClassName("window-big_box")[0].style.height = misc_notes.height;
+                dom.getElementsByClassName("window-big_box")[0].addEventListener("change", (e) => {
+                    misc_notes.master.parent.stats.misc_notes = e.target.value;
+                    misc_notes.width = e.target.style.width;
+                    misc_notes.height = e.target.style.height;
+                });
+            });
+        };
+        return misc_notes;
+    });
+
     /*
     ======================================
         The Handler for the Render GUI
@@ -1097,6 +1123,8 @@ const Render = (() => {
             this.spellbook = SpellBook();
             this.spellbook.setMaster(this);
             this.misc_notes = MiscNotes();
+            this.misc_notes.setMaster(this);
+            this.misc_notes_mobile = MiscNotesMobile();
             this.misc_notes.setMaster(this);
         }
         generate(clear = true) {

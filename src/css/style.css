@@ -1723,8 +1723,9 @@ input:checked + .slider:before {
 		font-size: 16px;
 	}
 
-	.playerBox {
+	#playerBox {
 		margin: 0px;
+        display: block;
 	}
 
 	.load-file {
@@ -1794,6 +1795,10 @@ input:checked + .slider:before {
 
 	.toolbar-hero {
 		text-align: center;
+        display: flex;
+        justify-content: space-evenly;
+        align-items: center;
+        flex-direction: row;
 	}
 
 	.spellbanner h2 {

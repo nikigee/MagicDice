@@ -361,7 +361,12 @@ const Render = (() => {
             document.getElementById("main").innerHTML = ""; // clear first
             document.getElementById("out-wrap").style.background = "rgba(0, 0, 0, 0.35)"; // make background dark
             let newHTML = `<div id="playerBox">
-                <img src="${PlayerCard.master.avatar}" class="editable ed_avatar" alt="Avatar">
+                <div id="playerAvatar">
+                    <img src="${PlayerCard.master.avatar}" class="editable ed_avatar" alt="Avatar" onerror="MagicUI.imgError(this);">
+                    <div id="avatarButtons">
+                        
+                    </div>
+                </div>
                 <div id="playerInfo"></div>
                 <div id="column3">
                     <div id="playerExtra"></div>

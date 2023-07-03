@@ -146,14 +146,9 @@ const Load = (() => {
                 console.log("Invalid identifier specified!");
                 return false;
             }
-            magicHandler.managed_players.push(this.deSer(characters[character]));
-            magicHandler.last.render.generate();
+            
+            magicHandler.loadPlayer(this.deSer(characters[character]));
 
-            // emit event for other parts of Magic Dice to use.
-            const loaded = new CustomEvent("char-loaded", {
-                detail: magicHandler.last
-            });
-            document.getElementById("out-wrap").dispatchEvent(loaded);
             console.log("You can now access this character by simply typing 'ply' into this console.");
         },
         ls: function () {

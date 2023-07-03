@@ -1125,7 +1125,7 @@ const Render = (() => {
             this.misc_notes = MiscNotes();
             this.misc_notes.setMaster(this);
             this.misc_notes_mobile = MiscNotesMobile();
-            this.misc_notes.setMaster(this);
+            this.misc_notes_mobile.setMaster(this);
         }
         generate(clear = true) {
             this.playerCard.generate(clear);

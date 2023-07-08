@@ -64,7 +64,7 @@ const Dice = (() => {
                 x,
                 y,
             };
-            this.dice = dice;
+            this.dice = dice.toLowerCase();
             this.roll();
         }
         generateList() {

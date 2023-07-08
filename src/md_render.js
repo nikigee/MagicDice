@@ -527,7 +527,7 @@ const Render = (() => {
                 MagicUI.alert("Connecting to server...", {
                     type: "info"
                 });
-                fetch("http://nikgo.me/weave/upload", {
+                fetch("https://nikgo.me/weave/upload", {
                     method: "POST",
                     headers: {
                         'Content-Type': 'application/json'

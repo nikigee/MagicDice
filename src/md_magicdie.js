@@ -3,7 +3,7 @@ const Dice = (() => {
         constructor(string = "d20") {
             this.string = string.toLowerCase(); // the string value of the dice roll
             this.list = []; // list of dice rolls
-            this.stats = SingleDice.cvt(string); // the iterator, face, etc.
+            this.stats = SingleDice.cvt(string.toLowerCase()); // the iterator, face, etc.
             this.roll(); // roll numbers
         }
         static cvt(diceRoll) {

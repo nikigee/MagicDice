@@ -1089,9 +1089,6 @@ const Render = (() => {
             `;
             const noteDiv = document.querySelector("#notes");
             noteDiv.style.height = `${noteDiv.scrollHeight+4}px`;
-            noteDiv.addEventListener("input", (e)=>{
-                
-            })
             noteDiv.addEventListener("change", (e) => {
                 misc_notes.master.parent.stats.misc_notes = e.target.value;
                 e.target.style.height = "";

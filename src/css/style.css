@@ -2007,6 +2007,7 @@ input:checked + .slider:before {
 	#column3 {
 		width: auto;
 		display: block;
+        margin: auto;
 	}
 
 	.playerTools {

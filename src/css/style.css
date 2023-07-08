@@ -1776,13 +1776,13 @@ input:checked + .slider:before {
 	}
 
 	.richDice {
-		left: auto !important;
-		top: auto !important;
-		border-radius: 3px;
-		position: relative;
+		border-radius: 0px;
 		display: block;
-		margin-top: 20px;
-		margin-bottom: 20px;
+        position: fixed;
+        top: 50% !important;
+        left: 50% !important;
+        transform: translate(-50%, -50%);
+        width: 90%;
 	}
 
 	.richContent {

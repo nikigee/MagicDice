@@ -1,7 +1,7 @@
 const Dice = (() => {
     class SingleDice {
         constructor(string = "d20") {
-            this.string = string; // the string value of the dice roll
+            this.string = string.toLowerCase(); // the string value of the dice roll
             this.list = []; // list of dice rolls
             this.stats = SingleDice.cvt(string); // the iterator, face, etc.
             this.roll(); // roll numbers

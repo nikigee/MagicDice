@@ -1082,6 +1082,15 @@ const Render = (() => {
             misc_notes.height = 400;
         }
         misc_notes.generate = () => {
+            document.querySelector("#main").innerHTML = `
+                <div id="notesArea">
+                    <textarea class='window-big_box'>${misc_notes.master.parent.stats.misc_notes}</textarea>
+                </div>
+            `;
+            document.querySelector("#notesArea").addEventListener("change", (e) => {
+                misc_notes.master.parent.stats.misc_notes = e.target.value;
+            });
+            /*
             const window = new richDice((document.body.clientWidth / 2) - 225, 150);
             window.setTitle("Features and Notes");
             window.setSize(1500);
@@ -1097,6 +1106,8 @@ const Render = (() => {
                     misc_notes.height = e.target.style.height;
                 });
             });
+            */
+
         };
         return misc_notes;
     });

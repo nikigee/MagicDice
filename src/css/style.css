@@ -1654,6 +1654,14 @@ input:checked + .slider:before {
 		margin-left: unset;
 	}
 
+    #notesArea {
+        height: calc(75vh + 40px);
+    }
+
+    #notesArea textarea{
+        height: 100%;
+    }
+
 	footer {
 		background: #181821;
 		padding-top: 10px;
@@ -1750,7 +1758,9 @@ input:checked + .slider:before {
 	}
 
 	#main {
-		padding-top: 85px;
+		padding-top: 70px;
+        margin-left: 5px;
+        margin-right: 5px;
 	}
 
 	#banner h2 {
@@ -1823,6 +1833,7 @@ input:checked + .slider:before {
 		background: white;
 		padding-bottom: 10px;
 		max-height: unset;
+        margin: 0px;
 		width: auto;
 	}
 

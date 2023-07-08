@@ -1080,7 +1080,7 @@ window.addEventListener("load", () => {
 
     let claim = getParameterByName("claim");
     if (claim) {
-        fetch(`https://nikgo.me/weave/claim/?id=${claim}`)
+        fetch(`http://nikgo.me/weave/claim/?id=${claim}`)
             .then(
                 (response) => {
                     if (!response.ok)

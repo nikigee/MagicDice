@@ -1654,10 +1654,6 @@ input:checked + .slider:before {
 		margin-left: unset;
 	}
 
-    #notesArea {
-        height: calc(75vh + 40px);
-    }
-
     #notesArea textarea{
         height: 100%;
     }

@@ -1084,11 +1084,18 @@ const Render = (() => {
         misc_notes.generate = () => {
             document.querySelector("#main").innerHTML = `
                 <div id="notesArea">
-                    <textarea class='window-big_box'>${misc_notes.master.parent.stats.misc_notes}</textarea>
+                    <textarea id="notes" class='window-big_box'>${misc_notes.master.parent.stats.misc_notes}</textarea>
                 </div>
             `;
-            document.querySelector("#notesArea").addEventListener("change", (e) => {
+            const noteDiv = document.querySelector("#notes");
+            noteDiv.style.height = `${noteDiv.scrollHeight+4}px`;
+            noteDiv.addEventListener("input", (e)=>{
+                
+            })
+            noteDiv.addEventListener("change", (e) => {
                 misc_notes.master.parent.stats.misc_notes = e.target.value;
+                e.target.style.height = "";
+                e.target.style.height = `${e.target.scrollHeight+4}px`;
             });
             /*
             const window = new richDice((document.body.clientWidth / 2) - 225, 150);
